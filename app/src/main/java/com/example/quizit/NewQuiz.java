@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -27,10 +29,6 @@ public class NewQuiz extends AppCompatActivity {
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.newQuizLay);
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.addCancelLay);
-
-        /*EditText quizTitle = findViewById(R.id.quizNameID);
-        Button newQuestionBtn = findViewById(R.id.newQuestionsbtn);
-        Button cancelQuestionBtn = findViewById(R.id.cancelQuestionbtn);*/
 
         RelativeLayout newQuestionRelativeLayout = new RelativeLayout(this);
         newQuestionRelativeLayout.setId(View.generateViewId());
@@ -63,6 +61,41 @@ public class NewQuiz extends AppCompatActivity {
 
             newQuestionRelativeLayout.addView(options[i], optionLayout);
         }
+
+        TextView correctAnswerLabel = new TextView(this);
+        correctAnswerLabel.setText("Correct Answer:");
+        correctAnswerLabel.setId(View.generateViewId());
+
+        RelativeLayout.LayoutParams correctAnswerLabelLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        correctAnswerLabelLay.leftMargin = 50;
+        correctAnswerLabelLay.topMargin = 20;
+        correctAnswerLabelLay.bottomMargin = 30;
+        correctAnswerLabelLay.addRule(RelativeLayout.BELOW, options[options.length - 1].getId());
+
+        newQuestionRelativeLayout.addView(correctAnswerLabel, correctAnswerLabelLay);
+
+        CheckBox[] optionsCheckBoxes = new CheckBox[options.length];
+
+        for(int i = 0; i < optionsCheckBoxes.length; i++) {
+            optionsCheckBoxes[i] = new CheckBox(this);
+            optionsCheckBoxes[i].setText((i + 1) + "");
+            optionsCheckBoxes[i].setId(View.generateViewId());
+
+
+            RelativeLayout.LayoutParams optionCheckBoxLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            if(i == 0) {
+                optionCheckBoxLay.addRule(RelativeLayout.END_OF, correctAnswerLabel.getId());
+                optionCheckBoxLay.leftMargin = 20;
+            } else {
+                optionCheckBoxLay.addRule(RelativeLayout.END_OF, optionsCheckBoxes[i - 1].getId());
+                optionCheckBoxLay.leftMargin = 10;
+            }
+            optionCheckBoxLay.addRule(RelativeLayout.ALIGN_TOP, correctAnswerLabel.getId());
+            optionCheckBoxLay.addRule(RelativeLayout.ALIGN_BOTTOM, correctAnswerLabel.getId());
+            newQuestionRelativeLayout.addView(optionsCheckBoxes[i], optionCheckBoxLay);
+        }
+
         if(questionList_rel_lay.size() > 0) {
             newQuestionRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 1).getId());
         } else {
@@ -76,6 +109,7 @@ public class NewQuiz extends AppCompatActivity {
         RelativeLayout.LayoutParams addCancelLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         addCancelLayout.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 1).getId());
         addCancelLayout.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        addCancelLayout.bottomMargin = 100;
         linearLayout.setLayoutParams(addCancelLayout);
     }
 }
