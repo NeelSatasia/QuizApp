@@ -15,10 +15,18 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static MainActivity instance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        instance = this;
+    }
+
+    public static MainActivity getInstance() {
+        return instance;
     }
 
     public void createNewQuiz(View view) {

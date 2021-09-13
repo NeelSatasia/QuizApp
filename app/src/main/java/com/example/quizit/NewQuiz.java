@@ -2,6 +2,7 @@ package com.example.quizit;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,11 @@ import java.util.ArrayList;
 public class NewQuiz extends AppCompatActivity {
 
     private ArrayList<RelativeLayout> questionList_rel_lay;
+    private RelativeLayout layout;
+    private LinearLayout addCancelLayout;
+    private Button addBtn;
+    private Button cancelBtn;
+    private Button createQuizBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +29,15 @@ public class NewQuiz extends AppCompatActivity {
         setContentView(R.layout.activity_new_quiz);
 
         questionList_rel_lay = new ArrayList<RelativeLayout>();
+
+        layout = findViewById(R.id.newQuizLay);
+        addCancelLayout = findViewById(R.id.addCancelLay);
+        addBtn = findViewById(R.id.newQuestionbtn);
+        cancelBtn = findViewById(R.id.cancelQuestionbtn);
+        createQuizBtn = findViewById(R.id.createQuizBtn);
     }
 
     public void createNewQuestion(View view) {
-
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.newQuizLay);
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.addCancelLay);
-
         RelativeLayout newQuestionRelativeLayout = new RelativeLayout(this);
         newQuestionRelativeLayout.setId(View.generateViewId());
         RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -104,12 +112,40 @@ public class NewQuiz extends AppCompatActivity {
         newQuestionRelParams.topMargin = 60;
 
         questionList_rel_lay.add(newQuestionRelativeLayout);
-        layout.addView(newQuestionRelativeLayout, newQuestionRelParams);
+        layout.addView(questionList_rel_lay.get(questionList_rel_lay.size() - 1), newQuestionRelParams);
 
-        RelativeLayout.LayoutParams addCancelLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        addCancelLayout.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 1).getId());
-        addCancelLayout.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        addCancelLayout.bottomMargin = 100;
-        linearLayout.setLayoutParams(addCancelLayout);
+        alignButtons();
+    }
+
+    public void deleteQuestion(View view) {
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.newQuizLay);
+
+        layout.removeView(questionList_rel_lay.get(questionList_rel_lay.size() - 1));
+        questionList_rel_lay.remove(questionList_rel_lay.size() - 1);
+
+        if(questionList_rel_lay.size() == 0) {
+            Intent mainIntent = new Intent(this, MainActivity.class);
+            startActivity(mainIntent);
+        } else {
+            alignButtons();
+        }
+    }
+
+    public void createNewQuiz(View view) {
+        //MainActivity.getInstance().createNewQuiz();
+    }
+
+    public void alignButtons() {
+        RelativeLayout.LayoutParams addCancelLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        addCancelLay.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 1).getId());
+        addCancelLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        addCancelLay.bottomMargin = 10;
+        addCancelLayout.setLayoutParams(addCancelLay);
+
+        RelativeLayout.LayoutParams createQuizLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        createQuizLay.addRule(RelativeLayout.BELOW, addCancelLayout.getId());
+        createQuizLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        createQuizLay.bottomMargin = 100;
+        createQuizBtn.setLayoutParams(createQuizLay);
     }
 }
