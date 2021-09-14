@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static MainActivity instance;
 
+    private static ArrayList<Quiz> quizzes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,5 +34,22 @@ public class MainActivity extends AppCompatActivity {
     public void createNewQuiz(View view) {
         Intent intent = new Intent(this, NewQuiz.class);
         startActivity(intent);
+    }
+
+    public void goToUserQuizzes(View view) {
+        Intent intent = new Intent(this, Quizzes.class);
+        startActivity(intent);
+    }
+
+    public void addNewQuiz(String quizName, ArrayList<Question> questionList) {
+        Quiz newQuiz = new Quiz(quizName, questionList);
+        quizzes.add(newQuiz);
+
+        RelativeLayout quizzesLayout = findViewById(R.id.userQuizzesRelLay);
+
+    }
+
+    public ArrayList<Quiz> getQuizzes() {
+        return quizzes;
     }
 }

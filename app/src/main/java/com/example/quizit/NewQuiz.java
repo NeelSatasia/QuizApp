@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -17,7 +19,9 @@ import java.util.ArrayList;
 public class NewQuiz extends AppCompatActivity {
 
     private ArrayList<RelativeLayout> questionList_rel_lay;
+    private ArrayList<Question> questionsList;
     private RelativeLayout layout;
+    private TextView quizName;
     private LinearLayout addCancelLayout;
     private Button addBtn;
     private Button cancelBtn;
@@ -29,8 +33,9 @@ public class NewQuiz extends AppCompatActivity {
         setContentView(R.layout.activity_new_quiz);
 
         questionList_rel_lay = new ArrayList<RelativeLayout>();
-
+        questionsList = new ArrayList<Question>();
         layout = findViewById(R.id.newQuizLay);
+        quizName = findViewById(R.id.quizNameID);
         addCancelLayout = findViewById(R.id.addCancelLay);
         addBtn = findViewById(R.id.newQuestionbtn);
         cancelBtn = findViewById(R.id.cancelQuestionbtn);
@@ -40,8 +45,8 @@ public class NewQuiz extends AppCompatActivity {
     public void createNewQuestion(View view) {
         RelativeLayout newQuestionRelativeLayout = new RelativeLayout(this);
         newQuestionRelativeLayout.setId(View.generateViewId());
-        RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
+        RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         EditText newQuestion = new EditText(this);
         newQuestion.setHint("Question " + (questionList_rel_lay.size() + 1));
         newQuestion.setId(View.generateViewId());
@@ -82,10 +87,10 @@ public class NewQuiz extends AppCompatActivity {
 
         newQuestionRelativeLayout.addView(correctAnswerLabel, correctAnswerLabelLay);
 
-        CheckBox[] optionsCheckBoxes = new CheckBox[options.length];
+        RadioButton[] optionsCheckBoxes = new RadioButton[options.length];
 
         for(int i = 0; i < optionsCheckBoxes.length; i++) {
-            optionsCheckBoxes[i] = new CheckBox(this);
+            optionsCheckBoxes[i] = new RadioButton(this);
             optionsCheckBoxes[i].setText((i + 1) + "");
             optionsCheckBoxes[i].setId(View.generateViewId());
 
@@ -102,6 +107,48 @@ public class NewQuiz extends AppCompatActivity {
             optionCheckBoxLay.addRule(RelativeLayout.ALIGN_TOP, correctAnswerLabel.getId());
             optionCheckBoxLay.addRule(RelativeLayout.ALIGN_BOTTOM, correctAnswerLabel.getId());
             newQuestionRelativeLayout.addView(optionsCheckBoxes[i], optionCheckBoxLay);
+        }
+
+        String[] optionsStrArr = new String[options.length];
+
+        questionsList.add(new Question("", optionsStrArr, ""));
+
+        newQuestion.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                questionsList.get(questionsList.size() - 1).question = newQuestion.getText().toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                questionsList.get(questionsList.size() - 1).question = newQuestion.getText().toString();
+            }
+        });
+
+        for(int i = 0; i < options.length; i++) {
+            int j = i;
+            options[i].addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    questionsList.get(questionsList.size() - 1).options[j] = options[j].getText().toString();
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    questionsList.get(questionsList.size() - 1).options[j] = options[j].getText().toString();
+                }
+            });
+
         }
 
         if(questionList_rel_lay.size() > 0) {
@@ -132,7 +179,7 @@ public class NewQuiz extends AppCompatActivity {
     }
 
     public void createNewQuiz(View view) {
-        //MainActivity.getInstance().createNewQuiz();
+        MainActivity.getInstance().addNewQuiz(quizName.getText().toString(), questionsList);
     }
 
     public void alignButtons() {
