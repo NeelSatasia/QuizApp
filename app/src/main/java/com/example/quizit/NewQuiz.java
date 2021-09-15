@@ -1,8 +1,10 @@
 package com.example.quizit;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,12 +15,18 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 public class NewQuiz extends AppCompatActivity {
 
     private ArrayList<RelativeLayout> questionList_rel_lay;
+    private ArrayList<QuizInfo> quizzes;
     private ArrayList<Question> questionsList;
     private RelativeLayout layout;
     private TextView quizName;
@@ -34,6 +42,7 @@ public class NewQuiz extends AppCompatActivity {
 
         questionList_rel_lay = new ArrayList<RelativeLayout>();
         questionsList = new ArrayList<Question>();
+        quizzes = new ArrayList<QuizInfo>();
         layout = findViewById(R.id.newQuizLay);
         quizName = findViewById(R.id.quizNameID);
         addCancelLayout = findViewById(R.id.addCancelLay);
@@ -179,7 +188,15 @@ public class NewQuiz extends AppCompatActivity {
     }
 
     public void createNewQuiz(View view) {
-        MainActivity.getInstance().addNewQuiz(quizName.getText().toString(), questionsList);
+        QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList);
+        quizzes.add(newQuiz);
+
+        Intent intent = new Intent(this, Quizzes.class);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("QuizzesList", newQuiz);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     public void alignButtons() {

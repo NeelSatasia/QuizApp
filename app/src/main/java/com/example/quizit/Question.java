@@ -1,6 +1,8 @@
 package com.example.quizit;
 
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable {
 
     String question;
     String[] options;
