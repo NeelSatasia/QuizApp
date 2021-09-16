@@ -26,7 +26,6 @@ import java.util.Set;
 public class NewQuiz extends AppCompatActivity {
 
     private ArrayList<RelativeLayout> questionList_rel_lay;
-    private ArrayList<QuizInfo> quizzes;
     private ArrayList<Question> questionsList;
     private RelativeLayout layout;
     private TextView quizName;
@@ -42,7 +41,6 @@ public class NewQuiz extends AppCompatActivity {
 
         questionList_rel_lay = new ArrayList<RelativeLayout>();
         questionsList = new ArrayList<Question>();
-        quizzes = new ArrayList<QuizInfo>();
         layout = findViewById(R.id.newQuizLay);
         quizName = findViewById(R.id.quizNameID);
         addCancelLayout = findViewById(R.id.addCancelLay);
@@ -189,7 +187,6 @@ public class NewQuiz extends AppCompatActivity {
 
     public void createNewQuiz(View view) {
         QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList);
-        quizzes.add(newQuiz);
 
         Intent intent = new Intent(this, Quizzes.class);
 

@@ -3,10 +3,13 @@ package com.example.quizit;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
@@ -20,6 +23,13 @@ public class Quizzes extends AppCompatActivity {
     private RelativeLayout relLay;
     private ArrayList<Button> quizzesBtn;
     private ArrayList<QuizInfo> quizzes;
+
+    private AlertDialog.Builder alertDialogBuilder;
+    private AlertDialog alertDialog;
+
+    private Button takeQuizBtn;
+    private Button editQuizBtn;
+    private Button deleteQuizBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,44 @@ public class Quizzes extends AppCompatActivity {
             quizBtnLay.bottomMargin = 10;
 
             quizzesBtn.add(newQuizBtn);
+            int j = i;
+            quizzesBtn.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    alertDialogBuilder = new AlertDialog.Builder(Quizzes.this);
+                    View popupView = getLayoutInflater().inflate(R.layout.quizoptionpopup, null);
+
+                    alertDialogBuilder.setView(popupView);
+                    alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
+                    takeQuizBtn = popupView.findViewById(R.id.takeQuizBtn);
+                    editQuizBtn = popupView.findViewById(R.id.editQuizBtn);
+                    deleteQuizBtn = popupView.findViewById(R.id.deleteQuizBtn);
+
+                    takeQuizBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+
+                    editQuizBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+
+                    deleteQuizBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            quizzes.remove(j);
+                            alertDialog.dismiss();
+                        }
+                    });
+                }
+            });
 
             relLay.addView(newQuizBtn, quizBtnLay);
         }

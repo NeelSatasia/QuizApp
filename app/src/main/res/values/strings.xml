@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Quizit</string>
+
+    <string-array name="quizDropDown">
+        <item>Take</item>
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
 </resources>

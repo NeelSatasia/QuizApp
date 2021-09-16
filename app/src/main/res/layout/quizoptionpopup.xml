@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+
+        <Button
+            android:id="@+id/takeQuizBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take" />
+
+        <Button
+            android:id="@+id/editQuizBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit"
+            android:layout_below="@+id/takeQuizBtn"/>
+
+        <Button
+            android:id="@+id/deleteQuizBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:layout_below="@+id/editQuizBtn"/>
+    </LinearLayout>
+</RelativeLayout>
