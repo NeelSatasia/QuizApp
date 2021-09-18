@@ -1,5 +1,6 @@
 package com.example.quizit;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -16,11 +17,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.net.Inet4Address;
 import java.util.ArrayList;
 
 public class Quizzes extends AppCompatActivity {
 
     private RelativeLayout relLay;
+    private TextView yourQuizzesLabel;
     private ArrayList<Button> quizzesBtn;
     private ArrayList<QuizInfo> quizzes;
 
@@ -31,14 +34,19 @@ public class Quizzes extends AppCompatActivity {
     private Button editQuizBtn;
     private Button deleteQuizBtn;
 
+    private TextView noQuizzesLabel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_quizzes);
 
         relLay = findViewById(R.id.userQuizzesRelLay);
+        yourQuizzesLabel = findViewById(R.id.yourQuizzesLabel);
 
-        quizzesBtn = new ArrayList<Button>();
+        noQuizzesLabel = new TextView(this);
+        noQuizzesLabel.setText("No Quizzes Found!");
+        noQuizzesLabel.setTextSize(15);
 
         loadData();
 
@@ -49,10 +57,12 @@ public class Quizzes extends AppCompatActivity {
             saveData();
         }
 
+        quizzesBtn = new ArrayList<Button>();
+
         for(int i = 0; i < quizzes.size(); i++) {
             Button newQuizBtn = new Button(this);
             newQuizBtn.setText(quizzes.get(i).quizName);
-            newQuizBtn.setId(View.generateViewId());
+
 
             RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             if(quizzesBtn.size() == 0) {
@@ -64,8 +74,9 @@ public class Quizzes extends AppCompatActivity {
             quizBtnLay.bottomMargin = 10;
 
             quizzesBtn.add(newQuizBtn);
+            quizzesBtn.get(quizzesBtn.size() - 1).setId(View.generateViewId());
             int j = i;
-            quizzesBtn.get(i).setOnClickListener(new View.OnClickListener() {
+            newQuizBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     alertDialogBuilder = new AlertDialog.Builder(Quizzes.this);
@@ -96,7 +107,31 @@ public class Quizzes extends AppCompatActivity {
                     deleteQuizBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            quizzes.remove(j);
+                            for (int k = 0; k < quizzes.size(); k++) {
+                                if(quizzes.get(k).quizName.equals(newQuizBtn.getText().toString())) {
+                                    quizzes.remove(k);
+                                    quizzesBtn.remove(k);
+                                    break;
+                                }
+                            }
+                            relLay.removeView(newQuizBtn);
+
+                            for(int k = 0; k < quizzes.size(); k++) {
+                                RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                                if(k == 0) {
+                                    quizBtnLay.addRule(RelativeLayout.BELOW, R.id.yourQuizzesLabel);
+                                } else {
+                                    quizBtnLay.addRule(RelativeLayout.BELOW, quizzesBtn.get(k - 1).getId());
+                                }
+
+                                quizzesBtn.get(k).setLayoutParams(quizBtnLay);
+                            }
+
+                            saveData();
+
+                            noQuizzesLabel();
+
                             alertDialog.dismiss();
                         }
                     });
@@ -106,11 +141,11 @@ public class Quizzes extends AppCompatActivity {
             relLay.addView(newQuizBtn, quizBtnLay);
         }
 
-        if(quizzes.isEmpty()) {
-            TextView noQuizzesLabel = new TextView(this);
-            noQuizzesLabel.setText("No Quizzes Found!");
-            noQuizzesLabel.setTextSize(15);
+        noQuizzesLabel();
+    }
 
+    public void noQuizzesLabel() {
+        if(quizzes.isEmpty()) {
             RelativeLayout.LayoutParams noQuizLabelLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             noQuizLabelLay.addRule(RelativeLayout.CENTER_IN_PARENT);
             noQuizLabelLay.addRule(RelativeLayout.BELOW, R.id.yourQuizzesLabel);
