@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.LineNumberReader;
 import java.lang.reflect.Type;
 import java.net.Inet4Address;
 import java.util.ArrayList;
@@ -100,7 +101,14 @@ public class Quizzes extends AppCompatActivity {
                     editQuizBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            Intent intent = new Intent(Quizzes.this, EditQuiz.class);
 
+                            for(int i = 0; i < quizzes.size(); i++) {
+                                if(newQuizBtn.getText().toString().equals(quizzes.get(i).quizName)) {
+                                    editQuiz(quizzes.get(i));
+                                }
+                            }
+                            startActivity(intent);
                         }
                     });
 
@@ -144,6 +152,12 @@ public class Quizzes extends AppCompatActivity {
         noQuizzesLabel();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Quizzes.this, MainActivity.class);
+        startActivity(intent);
+    }
+
     public void noQuizzesLabel() {
         if(quizzes.isEmpty()) {
             RelativeLayout.LayoutParams noQuizLabelLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -154,19 +168,28 @@ public class Quizzes extends AppCompatActivity {
         }
     }
 
+    public void editQuiz(QuizInfo quiz) {
+        SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(quiz);
+        editor.putString("EditQuiz", json);
+        editor.apply();
+    }
+
     public void saveData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(quizzes);
-        editor.putString("Quizzes List", json);
+        editor.putString("QuizzesList", json);
         editor.apply();
     }
 
     public void loadData() {
-        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("Quizzes List", null);
+        String json = sharedPreferences.getString("QuizzesList", null);
         Type type = new TypeToken<ArrayList<QuizInfo>>() {}.getType();
         quizzes = gson.fromJson(json, type);
 

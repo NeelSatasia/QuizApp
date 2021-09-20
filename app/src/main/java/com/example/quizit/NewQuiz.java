@@ -88,7 +88,7 @@ public class NewQuiz extends AppCompatActivity {
 
         RelativeLayout.LayoutParams correctAnswerLabelLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         correctAnswerLabelLay.leftMargin = 50;
-        correctAnswerLabelLay.topMargin = 20;
+        correctAnswerLabelLay.topMargin = 30;
         correctAnswerLabelLay.bottomMargin = 30;
         correctAnswerLabelLay.addRule(RelativeLayout.BELOW, options[options.length - 1].getId());
 

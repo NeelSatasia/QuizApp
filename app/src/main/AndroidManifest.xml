@@ -10,11 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Quizit">
         <activity
+            android:name=".EditQuiz"
+            android:exported="true" />
+        <activity
             android:name=".NewQuiz"
             android:exported="true" />
         <activity
             android:name=".Quizzes"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
