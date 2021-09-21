@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,20 +17,19 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.w3c.dom.Text;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class EditQuiz extends AppCompatActivity {
 
-    private RelativeLayout relLay;
-    private QuizInfo editableQuiz;
-    private EditText quizNameLabel;
-    private ArrayList<RelativeLayout> questionsRelLay;
-    //private ArrayList<Question> questions;
-    private Button addQuestionBtn;
-    private Button cancelQuestionBtn;
+    RelativeLayout relLay;
+    QuizInfo editableQuiz;
+    EditText quizNameLabel;
+    ArrayList<RelativeLayout> questionsRelLay;
+    Button addQuestionBtn;
+    Button cancelQuestionBtn;
+    Button editQuizBtn;
+    LinearLayout addCancelLay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,17 @@ public class EditQuiz extends AppCompatActivity {
         cancelQuestionBtn.setId(View.generateViewId());
         cancelQuestionBtn.setText("Cancel");
 
+        addCancelLay = new LinearLayout(this);
+        addCancelLay.setId(View.generateViewId());
+        addCancelLay.setOrientation(LinearLayout.HORIZONTAL);
+
+        addCancelLay.addView(addQuestionBtn);
+        addCancelLay.addView(cancelQuestionBtn);
+
+        editQuizBtn = new Button(this);
+        editQuizBtn.setId(View.generateViewId());
+        editQuizBtn.setText("Edit");
+
         SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("EditQuiz", null);
@@ -57,10 +69,12 @@ public class EditQuiz extends AppCompatActivity {
         quizNameLabel.setText(editableQuiz.quizName);
         quizNameLabel.setHint("Quiz Name");
         quizNameLabel.setTextSize(30);
+        quizNameLabel.setGravity(Gravity.CENTER);
 
         RelativeLayout.LayoutParams quizNameLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         quizNameLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
         quizNameLay.topMargin = 30;
+        quizNameLay.bottomMargin = 20;
         relLay.addView(quizNameLabel, quizNameLay);
 
         for(int i = 0; i < editableQuiz.questionList.size(); i++) {
@@ -71,10 +85,10 @@ public class EditQuiz extends AppCompatActivity {
             question.setId(View.generateViewId());
             question.setText(editableQuiz.questionList.get(i).question);
             question.setHint("Question " + (i + 1));
-            question.setTextSize(20);
+            question.setTextSize(25);
 
             RelativeLayout.LayoutParams questionTextRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            questionTextRelLayParams.leftMargin = 20;
+            questionTextRelLayParams.leftMargin = 10;
             questionTextRelLayParams.rightMargin = 10;
             questionRelLay.addView(question, questionTextRelLayParams);
 
@@ -92,7 +106,7 @@ public class EditQuiz extends AppCompatActivity {
                 } else {
                     optionRelLayParams.addRule(RelativeLayout.BELOW, options[j - 1].getId());
                 }
-                optionRelLayParams.leftMargin = 30;
+                optionRelLayParams.leftMargin = 60;
                 optionRelLayParams.rightMargin = 10;
 
                 questionRelLay.addView(options[j], optionRelLayParams);
@@ -101,25 +115,31 @@ public class EditQuiz extends AppCompatActivity {
             TextView correctAnswerLabel = new TextView(this);
             correctAnswerLabel.setId(View.generateViewId());
             correctAnswerLabel.setText("Correct Answer:");
+            correctAnswerLabel.setTextSize(15);
+            correctAnswerLabel.setPadding(0,5,0,5);
 
-            RelativeLayout.LayoutParams correctAnsLabRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams correctAnsLabRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             correctAnsLabRelLayParams.addRule(RelativeLayout.BELOW, options[options.length - 1].getId());
+            correctAnsLabRelLayParams.addRule(RelativeLayout.ALIGN_LEFT, options[options.length - 1].getId());
             correctAnsLabRelLayParams.topMargin = 25;
             questionRelLay.addView(correctAnswerLabel, correctAnsLabRelLayParams);
 
             RadioButton[] optionRadioBtns = new RadioButton[options.length];
 
             for(int j = 0; j < optionRadioBtns.length; j++) {
-                optionRadioBtns[j] = new RadioButton(this);
+                optionRadioBtns[j] = new RadioButton(EditQuiz.this);
                 optionRadioBtns[j].setId(View.generateViewId());
                 optionRadioBtns[j].setText((j + 1) + "");
 
                 RelativeLayout.LayoutParams optionRadioBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                 if(j == 0) {
-                    optionRadioBtnLayParams.addRule(RelativeLayout.RIGHT_OF, correctAnswerLabel.getId());
+                    optionRadioBtnLayParams.addRule(RelativeLayout.END_OF, correctAnswerLabel.getId());
+                    optionRadioBtnLayParams.leftMargin = 10;
                 } else {
-                    optionRadioBtnLayParams.addRule(RelativeLayout.RIGHT_OF, optionRadioBtns[j - 1].getId());
+                    optionRadioBtnLayParams.addRule(RelativeLayout.END_OF, optionRadioBtns[j - 1].getId());
                 }
+                optionRadioBtnLayParams.addRule(RelativeLayout.ALIGN_TOP, correctAnswerLabel.getId());
+                optionRadioBtnLayParams.addRule(RelativeLayout.ALIGN_BOTTOM, correctAnswerLabel.getId());
 
                 questionRelLay.addView(optionRadioBtns[j], optionRadioBtnLayParams);
             }
@@ -130,17 +150,66 @@ public class EditQuiz extends AppCompatActivity {
             } else {
                 questionRelLayParams.addRule(RelativeLayout.BELOW, questionsRelLay.get(questionsRelLay.size() - 1).getId());
             }
+            questionRelLayParams.bottomMargin = 40;
 
             questionsRelLay.add(questionRelLay);
             relLay.addView(questionsRelLay.get(i), questionRelLayParams);
         }
 
+        RelativeLayout.LayoutParams addCancelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        addCancelLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        if(questionsRelLay.size() == 0) {
+            addCancelLayParams.addRule(RelativeLayout.BELOW, quizNameLabel.getId());
+        } else {
+            addCancelLayParams.addRule(RelativeLayout.BELOW, questionsRelLay.get(questionsRelLay.size() - 1).getId());
+        }
 
+        relLay.addView(addCancelLay, addCancelLayParams);
+
+        RelativeLayout.LayoutParams editQuizBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        editQuizBtnLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        editQuizBtnLayParams.addRule(RelativeLayout.BELOW, addCancelLay.getId());
+        editQuizBtnLayParams.bottomMargin = 100;
+
+        relLay.addView(editQuizBtn, editQuizBtnLayParams);
+
+        addQuestionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alignButtons();
+            }
+        });
+
+        cancelQuestionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alignButtons();
+            }
+        });
     }
 
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(EditQuiz.this, MainActivity.class);
         startActivity(intent);
+    }
+
+    public void alignButtons() {
+        RelativeLayout.LayoutParams addCancelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        addCancelLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        if(questionsRelLay.size() == 0) {
+            addCancelLayParams.addRule(RelativeLayout.BELOW, quizNameLabel.getId());
+        } else {
+            addCancelLayParams.addRule(RelativeLayout.BELOW, questionsRelLay.get(questionsRelLay.size() - 1).getId());
+        }
+
+        addCancelLay.setLayoutParams(addCancelLayParams);
+
+        RelativeLayout.LayoutParams editQuizBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        editQuizBtnLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        editQuizBtnLayParams.addRule(RelativeLayout.BELOW, addCancelLay.getId());
+        editQuizBtnLayParams.bottomMargin = 100;
+
+        editQuizBtn.setLayoutParams(editQuizBtnLayParams);
     }
 }

@@ -58,7 +58,7 @@ public class NewQuiz extends AppCompatActivity {
         newQuestion.setHint("Question " + (questionList_rel_lay.size() + 1));
         newQuestion.setId(View.generateViewId());
         RelativeLayout.LayoutParams newQuestionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        newQuestionLayout.leftMargin = 20;
+        newQuestionLayout.leftMargin = 10;
         newQuestionLayout.bottomMargin = 10;
         newQuestionRelativeLayout.addView(newQuestion, newQuestionLayout);
 
@@ -76,7 +76,7 @@ public class NewQuiz extends AppCompatActivity {
                 optionLayout.addRule(RelativeLayout.BELOW, options[i - 1].getId());
             }
 
-            optionLayout.leftMargin = 50;
+            optionLayout.leftMargin = 60;
             optionLayout.rightMargin = 10;
 
             newQuestionRelativeLayout.addView(options[i], optionLayout);
@@ -85,6 +85,8 @@ public class NewQuiz extends AppCompatActivity {
         TextView correctAnswerLabel = new TextView(this);
         correctAnswerLabel.setText("Correct Answer:");
         correctAnswerLabel.setId(View.generateViewId());
+        correctAnswerLabel.setTextSize(20);
+        correctAnswerLabel.setPadding(0, 5, 0, 5);
 
         RelativeLayout.LayoutParams correctAnswerLabelLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         correctAnswerLabelLay.leftMargin = 50;
@@ -163,7 +165,7 @@ public class NewQuiz extends AppCompatActivity {
         } else {
             newQuestionRelParams.addRule(RelativeLayout.BELOW, R.id.quizNameID);
         }
-        newQuestionRelParams.topMargin = 60;
+        newQuestionRelParams.topMargin = 70;
 
         questionList_rel_lay.add(newQuestionRelativeLayout);
         layout.addView(questionList_rel_lay.get(questionList_rel_lay.size() - 1), newQuestionRelParams);
@@ -172,15 +174,9 @@ public class NewQuiz extends AppCompatActivity {
     }
 
     public void deleteQuestion(View view) {
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.newQuizLay);
-
-        layout.removeView(questionList_rel_lay.get(questionList_rel_lay.size() - 1));
-        questionList_rel_lay.remove(questionList_rel_lay.size() - 1);
-
-        if(questionList_rel_lay.size() == 0) {
-            Intent mainIntent = new Intent(this, MainActivity.class);
-            startActivity(mainIntent);
-        } else {
+        if(questionList_rel_lay.size() > 0) {
+            layout.removeView(questionList_rel_lay.get(questionList_rel_lay.size() - 1));
+            questionList_rel_lay.remove(questionList_rel_lay.size() - 1);
             alignButtons();
         }
     }
@@ -198,8 +194,13 @@ public class NewQuiz extends AppCompatActivity {
 
     public void alignButtons() {
         RelativeLayout.LayoutParams addCancelLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        addCancelLay.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 1).getId());
+        if(questionList_rel_lay.size() > 0) {
+            addCancelLay.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 1).getId());
+        } else {
+            addCancelLay.addRule(RelativeLayout.BELOW, R.id.quizNameID);
+        }
         addCancelLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        addCancelLay.topMargin = 10;
         addCancelLay.bottomMargin = 10;
         addCancelLayout.setLayoutParams(addCancelLay);
 
