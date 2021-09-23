@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -24,6 +25,10 @@ import java.util.ArrayList;
 
 public class EditQuiz extends AppCompatActivity {
 
+    RelativeLayout mainRelLay;
+    HorizontalScrollView btnsScrollView;
+    RelativeLayout btnsRelLay;
+    LinearLayout btnsLay;
     ScrollView scrollView;
     RelativeLayout relLay;
     QuizInfo editableQuiz;
@@ -32,40 +37,62 @@ public class EditQuiz extends AppCompatActivity {
     Button addQuestionBtn;
     Button cancelQuestionBtn;
     Button editQuizBtn;
-    LinearLayout addCancelLay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.edit_quiz);
+
+        mainRelLay = new RelativeLayout(this);
+        mainRelLay.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        mainRelLay.setId(View.generateViewId());
+
+        btnsScrollView = new HorizontalScrollView(this);
+        btnsScrollView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        btnsScrollView.setId(View.generateViewId());
+
+        btnsRelLay = new RelativeLayout(this);
+        btnsRelLay.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        btnsRelLay.setId(View.generateViewId());
+
+        btnsScrollView.addView(btnsRelLay);
+
+        btnsLay = new LinearLayout(this);
+        btnsLay.setId(View.generateViewId());
+        btnsLay.setOrientation(LinearLayout.HORIZONTAL);
+
+        RelativeLayout.LayoutParams btnsLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        btnsLayParams.topMargin = 20;
+        btnsLayParams.bottomMargin = 20;
+        btnsRelLay.addView(btnsLay, btnsLayParams);
 
         scrollView = new ScrollView(this);
         scrollView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        scrollView.setId(View.generateViewId());
 
         relLay = new RelativeLayout(this);
-        relLay.setLayoutParams((new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)));
+        relLay.setLayoutParams((new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)));
         scrollView.addView(relLay);
+
+        mainRelLay.addView(btnsScrollView);
+
+        RelativeLayout.LayoutParams quizRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        quizRelLayParams.addRule(RelativeLayout.BELOW, btnsScrollView.getId());
+
+        mainRelLay.addView(scrollView, quizRelLayParams);
 
         questionsRelLay = new ArrayList<RelativeLayout>();
 
         addQuestionBtn = new Button(this);
         addQuestionBtn.setId(View.generateViewId());
-        addQuestionBtn.setText("Add");
+        addQuestionBtn.setText("Add Question");
 
         cancelQuestionBtn = new Button(this);
         cancelQuestionBtn.setId(View.generateViewId());
-        cancelQuestionBtn.setText("Cancel");
-
-        addCancelLay = new LinearLayout(this);
-        addCancelLay.setId(View.generateViewId());
-        addCancelLay.setOrientation(LinearLayout.HORIZONTAL);
-
-        addCancelLay.addView(addQuestionBtn);
-        addCancelLay.addView(cancelQuestionBtn);
+        cancelQuestionBtn.setText("Cancel Question");
 
         editQuizBtn = new Button(this);
         editQuizBtn.setId(View.generateViewId());
-        editQuizBtn.setText("Edit");
+        editQuizBtn.setText("Edit Quiz");
 
         SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
         Gson gson = new Gson();
@@ -90,35 +117,29 @@ public class EditQuiz extends AppCompatActivity {
             addQuestionLayout(i);
         }
 
-        RelativeLayout.LayoutParams addCancelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        addCancelLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        if(questionsRelLay.size() == 0) {
-            addCancelLayParams.addRule(RelativeLayout.BELOW, quizNameLabel.getId());
-        } else {
-            addCancelLayParams.addRule(RelativeLayout.BELOW, questionsRelLay.get(questionsRelLay.size() - 1).getId());
-        }
+        btnsLay.addView(addQuestionBtn);
 
-        relLay.addView(addCancelLay, addCancelLayParams);
+        RelativeLayout.LayoutParams cancelBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        cancelBtnLayParams.leftMargin = 10;
+        btnsLay.addView(cancelQuestionBtn, cancelBtnLayParams);
 
         RelativeLayout.LayoutParams editQuizBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        editQuizBtnLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        editQuizBtnLayParams.addRule(RelativeLayout.BELOW, addCancelLay.getId());
-        editQuizBtnLayParams.bottomMargin = 100;
+        editQuizBtnLayParams.leftMargin = 10;
 
-        relLay.addView(editQuizBtn, editQuizBtnLayParams);
+        btnsLay.addView(editQuizBtn, editQuizBtnLayParams);
 
         addQuestionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addQuestionLayout(-1);
-                alignButtons();
+                //alignButtons();
             }
         });
 
         cancelQuestionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alignButtons();
+                //alignButtons();
             }
         });
 
@@ -129,7 +150,7 @@ public class EditQuiz extends AppCompatActivity {
             }
         });
 
-        setContentView(scrollView);
+        setContentView(mainRelLay);
     }
 
     @Override
@@ -237,7 +258,7 @@ public class EditQuiz extends AppCompatActivity {
         }
     }
 
-    public void alignButtons() {
+    /*public void alignButtons() {
         RelativeLayout.LayoutParams addCancelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         addCancelLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         if(questionsRelLay.size() == 0) {
@@ -254,5 +275,5 @@ public class EditQuiz extends AppCompatActivity {
         editQuizBtnLayParams.bottomMargin = 100;
 
         editQuizBtn.setLayoutParams(editQuizBtnLayParams);
-    }
+    }*/
 }
