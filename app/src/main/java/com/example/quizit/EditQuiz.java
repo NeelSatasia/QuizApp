@@ -4,11 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -25,6 +29,7 @@ import java.util.ArrayList;
 
 public class EditQuiz extends AppCompatActivity {
 
+    ArrayList<QuizInfo> quizzes;
     RelativeLayout mainRelLay;
     HorizontalScrollView btnsScrollView;
     RelativeLayout btnsRelLay;
@@ -41,6 +46,8 @@ public class EditQuiz extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        loadData();
 
         mainRelLay = new RelativeLayout(this);
         mainRelLay.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
@@ -89,6 +96,7 @@ public class EditQuiz extends AppCompatActivity {
         cancelQuestionBtn = new Button(this);
         cancelQuestionBtn.setId(View.generateViewId());
         cancelQuestionBtn.setText("Cancel Question");
+        cancelQuestionBtn.setTextColor(Color.parseColor("#000000"));
 
         editQuizBtn = new Button(this);
         editQuizBtn.setId(View.generateViewId());
@@ -96,7 +104,8 @@ public class EditQuiz extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("EditQuiz", null);
+        String json = sharedPreferences.getString("Quiz", null);
+        int quizId = sharedPreferences.getInt("QuizID", -1);
         Type type = new TypeToken<QuizInfo>() {}.getType();
         editableQuiz = gson.fromJson(json, type);
 
@@ -132,21 +141,30 @@ public class EditQuiz extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addQuestionLayout(-1);
-                //alignButtons();
             }
         });
 
         cancelQuestionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //alignButtons();
+                deleteQuestion();
             }
         });
 
         editQuizBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                for(int i = 0; i < quizzes.size(); i++) {
+                    if(i == quizId) {
+                        quizzes.remove(i);
+                        quizzes.add(i, editableQuiz);
+                    }
+                }
 
+                saveData();
+
+                Intent intent = new Intent(EditQuiz.this, Quizzes.class);
+                startActivity(intent);
             }
         });
 
@@ -163,6 +181,10 @@ public class EditQuiz extends AppCompatActivity {
         RelativeLayout questionRelLay = new RelativeLayout(this);
         questionRelLay.setId(View.generateViewId());
 
+        if(index < 0) {
+            editableQuiz.questionList.add(new Question("", new String[4], ""));
+        }
+
         EditText question = new EditText(this);
         question.setId(View.generateViewId());
         if(index >= 0) {
@@ -171,7 +193,7 @@ public class EditQuiz extends AppCompatActivity {
         if(index >= 0) {
             question.setHint("Question " + (index + 1));
         } else {
-            question.setHint("Question " + (editableQuiz.questionList.size() + 1));
+            question.setHint("Question " + (editableQuiz.questionList.size()));
         }
         question.setTextSize(25);
 
@@ -180,7 +202,25 @@ public class EditQuiz extends AppCompatActivity {
         questionTextRelLayParams.rightMargin = 10;
         questionRelLay.addView(question, questionTextRelLayParams);
 
+        question.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                editableQuiz.questionList.get(editableQuiz.questionList.size() - 1).question = question.getText().toString();
+            }
+        });
+
         int optionLen = 0;
+
         if(index >= 0) {
             optionLen = editableQuiz.questionList.get(index).options.length;
         } else {
@@ -240,6 +280,57 @@ public class EditQuiz extends AppCompatActivity {
             optionRadioBtnLayParams.addRule(RelativeLayout.ALIGN_BOTTOM, correctAnswerLabel.getId());
 
             questionRelLay.addView(optionRadioBtns[j], optionRadioBtnLayParams);
+
+            if(index >= 0) {
+                if(editableQuiz.questionList.get(index).correctAnswers.equals(options[j].getText().toString())) {
+                    optionRadioBtns[j].setChecked(true);
+                }
+            }
+
+            int k = j;
+            optionRadioBtns[j].setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if(optionRadioBtns[k].isChecked() == false) {
+                        if (index < 0) {
+                            editableQuiz.questionList.get(editableQuiz.questionList.size() - 1).correctAnswers = options[k].getText().toString();
+                        } else {
+                            editableQuiz.questionList.get(index).correctAnswers = options[k].getText().toString();
+                        }
+                    } else {
+                        optionRadioBtns[k].setChecked(false);
+                    }
+                }
+            });
+
+            options[j].addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if(index < 0) {
+                        editableQuiz.questionList.get(editableQuiz.questionList.size() - 1).options[k] = options[k].getText().toString();
+                    } else {
+                        editableQuiz.questionList.get(index).options[k] = options[k].getText().toString();
+                    }
+
+                    if(optionRadioBtns[k].isChecked()) {
+                        if(index < 0) {
+                            editableQuiz.questionList.get(editableQuiz.questionList.size() - 1).correctAnswers = options[k].getText().toString();
+                        } else {
+                            editableQuiz.questionList.get(index).correctAnswers = options[k].getText().toString();
+                        }
+                    }
+                }
+            });
         }
 
         RelativeLayout.LayoutParams questionRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -252,28 +343,34 @@ public class EditQuiz extends AppCompatActivity {
 
         questionsRelLay.add(questionRelLay);
         relLay.addView(questionsRelLay.get(questionsRelLay.size() - 1), questionRelLayParams);
+    }
 
-        if(index == -1) {
-            editableQuiz.questionList.add(new Question("", new String[optionLen], ""));
+    public void deleteQuestion() {
+        if(questionsRelLay.size() > 0) {
+            editableQuiz.questionList.remove(editableQuiz.questionList.size() - 1);
+            relLay.removeView(questionsRelLay.get(questionsRelLay.size() - 1));
+            questionsRelLay.remove(questionsRelLay.size() - 1);
+
+            if(questionsRelLay.size() == 0) {
+                editQuizBtn.setEnabled(false);
+            }
         }
     }
 
-    /*public void alignButtons() {
-        RelativeLayout.LayoutParams addCancelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        addCancelLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        if(questionsRelLay.size() == 0) {
-            addCancelLayParams.addRule(RelativeLayout.BELOW, quizNameLabel.getId());
-        } else {
-            addCancelLayParams.addRule(RelativeLayout.BELOW, questionsRelLay.get(questionsRelLay.size() - 1).getId());
-        }
+    public void saveData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(quizzes);
+        editor.putString("QuizzesList", json);
+        editor.apply();
+    }
 
-        addCancelLay.setLayoutParams(addCancelLayParams);
-
-        RelativeLayout.LayoutParams editQuizBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        editQuizBtnLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        editQuizBtnLayParams.addRule(RelativeLayout.BELOW, addCancelLay.getId());
-        editQuizBtnLayParams.bottomMargin = 100;
-
-        editQuizBtn.setLayoutParams(editQuizBtnLayParams);
-    }*/
+    public void loadData() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("QuizzesList", null);
+        Type type = new TypeToken<ArrayList<QuizInfo>>() {}.getType();
+        quizzes = gson.fromJson(json, type);
+    }
 }

@@ -19,13 +19,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //instance = this;
     }
-
-    /*public static MainActivity getInstance() {
-        return instance;
-    }*/
 
     public void createNewQuiz(View view) {
         Intent intent = new Intent(this, NewQuiz.class);
@@ -35,18 +29,7 @@ public class MainActivity extends AppCompatActivity {
     public void goToUserQuizzes(View view) {
         ArrayList<String> list = new ArrayList<String>();
         Intent intent = new Intent(this, Quizzes.class);
-        //intent.putExtra("")
         startActivity(intent);
 
     }
-
-    /*public void addNewQuiz(String quizName, ArrayList<Question> questionList) {
-        Quiz newQuiz = new Quiz(quizName, questionList);
-        quizzes.add(newQuiz);
-
-    }
-
-    public ArrayList<Quiz> getQuizzes() {
-        return quizzes;
-    }*/
 }

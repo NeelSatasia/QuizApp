@@ -105,7 +105,7 @@ public class Quizzes extends AppCompatActivity {
 
                             for(int i = 0; i < quizzes.size(); i++) {
                                 if(newQuizBtn.getText().toString().equals(quizzes.get(i).quizName)) {
-                                    editQuiz(quizzes.get(i));
+                                    editQuiz(quizzes.get(i), i);
                                 }
                             }
                             startActivity(intent);
@@ -168,12 +168,13 @@ public class Quizzes extends AppCompatActivity {
         }
     }
 
-    public void editQuiz(QuizInfo quiz) {
+    public void editQuiz(QuizInfo quiz, int index) {
         SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(quiz);
-        editor.putString("EditQuiz", json);
+        editor.putString("Quiz", json);
+        editor.putInt("QuizID", index);
         editor.apply();
     }
 

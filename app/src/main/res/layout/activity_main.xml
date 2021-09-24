@@ -12,26 +12,30 @@
         android:orientation="vertical"
         android:layout_centerInParent="true"
         android:gravity="center_horizontal">
+
         <Button
             android:id="@+id/addQuizbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/quizzesPagebtn"
+            android:onClick="createNewQuiz"
             android:text="Create New Quiz"
-            android:onClick="createNewQuiz" />
+            app:backgroundTint="#48D1CC" />
 
         <Button
             android:id="@+id/quizzesPagebtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="goToUserQuizzes"
             android:text="Your Quizzes"
-            android:onClick="goToUserQuizzes"/>
+            app:backgroundTint="#48D1CC" />
 
         <Button
             android:id="@+id/settingsbtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/quizzesPagebtn"
-            android:text="Settings" />
+            android:text="Settings"
+            app:backgroundTint="#48D1CC" />
     </LinearLayout>
 </RelativeLayout>

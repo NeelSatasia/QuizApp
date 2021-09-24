@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/newQuizScrollLay"
@@ -7,60 +7,73 @@
     android:layout_height="match_parent"
     tools:context=".NewQuiz">
 
-    <RelativeLayout
-        android:id="@+id/newQuizLay"
+    <HorizontalScrollView
+        android:id="@+id/btns"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <EditText
-            android:id="@+id/quizNameID"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:hint="Quiz Name"
-            android:inputType="text"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textSize="25dp" />
+        android:layout_height="wrap_content"
+        android:verticalScrollbarPosition="left">
 
         <LinearLayout
-            android:id="@+id/addCancelLay"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/quizNameID"
-            android:layout_centerHorizontal="true"
+
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
+            android:layout_marginBottom="20dp">
 
             <Button
                 android:id="@+id/newQuestionbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:onClick="createNewQuestion"
-                android:text="Add" />
+                android:text="Add Question"
+                app:backgroundTint="#2196F3" />
 
             <Button
                 android:id="@+id/cancelQuestionbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="Cancel"
+                android:onClick="deleteQuestion"
+                android:text="Cancel Question"
                 android:textColor="@color/black"
-                app:backgroundTint="#FFFFFF"
-                android:onClick="deleteQuestion"/>
-        </LinearLayout>
+                app:backgroundTint="#FFFFFF" />
 
-        <Button
-            android:id="@+id/createQuizBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Create Quiz"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/addCancelLay"
-            android:layout_marginBottom="100dp"
-            android:onClick="createNewQuiz"/>
-    </RelativeLayout>
-</ScrollView>
+            <Button
+                android:id="@+id/createQuizBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:onClick="createNewQuiz"
+                android:text="Create Quiz"
+                app:backgroundTint="#2196F3" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/btns">
+
+        <RelativeLayout
+            android:id="@+id/newQuizLay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <EditText
+                android:id="@+id/quizNameID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:hint="Quiz Name"
+                android:inputType="text"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textSize="25dp" />
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>
