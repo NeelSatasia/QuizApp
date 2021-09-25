@@ -62,6 +62,7 @@ public class NewQuiz extends AppCompatActivity {
         EditText newQuestion = new EditText(this);
         newQuestion.setHint("Question " + (questionList_rel_lay.size() + 1));
         newQuestion.setId(View.generateViewId());
+
         RelativeLayout.LayoutParams newQuestionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         newQuestionLayout.leftMargin = 10;
         newQuestionLayout.bottomMargin = 10;
@@ -179,7 +180,7 @@ public class NewQuiz extends AppCompatActivity {
         } else {
             newQuestionRelParams.addRule(RelativeLayout.BELOW, R.id.quizNameID);
         }
-        newQuestionRelParams.topMargin = 70;
+        newQuestionRelParams.bottomMargin = 100;
 
         questionList_rel_lay.add(newQuestionRelativeLayout);
         layout.addView(questionList_rel_lay.get(questionList_rel_lay.size() - 1), newQuestionRelParams);

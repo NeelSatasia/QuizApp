@@ -7,6 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".NewQuiz">
 
+    <Button
+        android:id="@+id/createQuizBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:onClick="createNewQuiz"/>
+
     <HorizontalScrollView
         android:id="@+id/btns"
         android:layout_width="match_parent"
@@ -26,28 +37,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:onClick="createNewQuestion"
-                android:text="Add Question"
-                app:backgroundTint="#2196F3" />
+                android:text="Add Question" />
 
             <Button
                 android:id="@+id/cancelQuestionbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:onClick="deleteQuestion"
-                android:text="Cancel Question"
-                android:textColor="@color/black"
-                app:backgroundTint="#FFFFFF" />
+                android:text="Cancel Question"/>
 
             <Button
-                android:id="@+id/createQuizBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:onClick="createNewQuiz"
-                android:text="Create Quiz"
-                app:backgroundTint="#2196F3" />
+                android:text="Set Timer"
+                android:layout_marginRight="10dp"/>
+
         </LinearLayout>
     </HorizontalScrollView>
 
@@ -67,6 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:gravity="center"
                 android:hint="Quiz Name"
                 android:inputType="text"

@@ -117,6 +117,23 @@ public class EditQuiz extends AppCompatActivity {
         quizNameLabel.setTextSize(30);
         quizNameLabel.setGravity(Gravity.CENTER);
 
+        quizNameLabel.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                editableQuiz.quizName = quizNameLabel.getText().toString();
+            }
+        });
+
         RelativeLayout.LayoutParams quizNameLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         quizNameLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
         quizNameLay.topMargin = 30;
