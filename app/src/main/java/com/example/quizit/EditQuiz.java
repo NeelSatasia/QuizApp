@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -262,6 +263,9 @@ public class EditQuiz extends AppCompatActivity {
         correctAnsLabRelLayParams.topMargin = 25;
         questionRelLay.addView(correctAnswerLabel, correctAnsLabRelLayParams);
 
+        RadioGroup radioGroup = new RadioGroup(this);
+        radioGroup.setOrientation(RadioGroup.HORIZONTAL);
+
         RadioButton[] optionRadioBtns = new RadioButton[optionLen];
 
         for(int j = 0; j < optionRadioBtns.length; j++) {
@@ -269,17 +273,7 @@ public class EditQuiz extends AppCompatActivity {
             optionRadioBtns[j].setId(View.generateViewId());
             optionRadioBtns[j].setText((j + 1) + "");
 
-            RelativeLayout.LayoutParams optionRadioBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            if(j == 0) {
-                optionRadioBtnLayParams.addRule(RelativeLayout.END_OF, correctAnswerLabel.getId());
-                optionRadioBtnLayParams.leftMargin = 10;
-            } else {
-                optionRadioBtnLayParams.addRule(RelativeLayout.END_OF, optionRadioBtns[j - 1].getId());
-            }
-            optionRadioBtnLayParams.addRule(RelativeLayout.ALIGN_TOP, correctAnswerLabel.getId());
-            optionRadioBtnLayParams.addRule(RelativeLayout.ALIGN_BOTTOM, correctAnswerLabel.getId());
-
-            questionRelLay.addView(optionRadioBtns[j], optionRadioBtnLayParams);
+            radioGroup.addView(optionRadioBtns[j]);
 
             if(index >= 0) {
                 if(editableQuiz.questionList.get(index).correctAnswers.equals(options[j].getText().toString())) {
@@ -291,14 +285,10 @@ public class EditQuiz extends AppCompatActivity {
             optionRadioBtns[j].setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if(optionRadioBtns[k].isChecked() == false) {
-                        if (index < 0) {
-                            editableQuiz.questionList.get(editableQuiz.questionList.size() - 1).correctAnswers = options[k].getText().toString();
-                        } else {
-                            editableQuiz.questionList.get(index).correctAnswers = options[k].getText().toString();
-                        }
+                    if (index < 0) {
+                        editableQuiz.questionList.get(editableQuiz.questionList.size() - 1).correctAnswers = options[k].getText().toString();
                     } else {
-                        optionRadioBtns[k].setChecked(false);
+                        editableQuiz.questionList.get(index).correctAnswers = options[k].getText().toString();
                     }
                 }
             });
@@ -332,6 +322,28 @@ public class EditQuiz extends AppCompatActivity {
                 }
             });
         }
+
+        RelativeLayout.LayoutParams optionRadioBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        optionRadioBtnLayParams.addRule(RelativeLayout.END_OF, correctAnswerLabel.getId());
+        optionRadioBtnLayParams.leftMargin = 10;
+        optionRadioBtnLayParams.addRule(RelativeLayout.ALIGN_TOP, correctAnswerLabel.getId());
+        optionRadioBtnLayParams.addRule(RelativeLayout.ALIGN_BOTTOM, correctAnswerLabel.getId());
+
+        questionRelLay.addView(radioGroup, optionRadioBtnLayParams);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton selectedRadBtn = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+                int optionNum = Integer.parseInt(selectedRadBtn.getText().toString());
+                if (index < 0) {
+                    editableQuiz.questionList.get(editableQuiz.questionList.size() - 1).correctAnswers = options[optionNum - 1].getText().toString();
+                } else {
+                    editableQuiz.questionList.get(index).correctAnswers = options[optionNum - 1].getText().toString();
+                }
+            }
+        });
 
         RelativeLayout.LayoutParams questionRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         if(index == 0) {

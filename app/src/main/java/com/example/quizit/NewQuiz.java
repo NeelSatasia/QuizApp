@@ -117,34 +117,24 @@ public class NewQuiz extends AppCompatActivity {
 
         newQuestionRelativeLayout.addView(correctAnswerLabel, correctAnswerLabelLay);
 
+        RadioGroup radioGroup = new RadioGroup(this);
+        radioGroup.setOrientation(RadioGroup.HORIZONTAL);
+
         RadioButton[] optionsCheckBoxes = new RadioButton[options.length];
 
         for(int i = 0; i < optionsCheckBoxes.length; i++) {
             optionsCheckBoxes[i] = new RadioButton(this);
             optionsCheckBoxes[i].setText((i + 1) + "");
             optionsCheckBoxes[i].setId(View.generateViewId());
-
+            radioGroup.addView(optionsCheckBoxes[i]);
             int j = i;
+
             optionsCheckBoxes[i].setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    //optionsCheckBoxes[j].setSelected(true);
                     questionsList.get(questionsList.size() - 1).correctAnswers = options[j].getText().toString();
                 }
             });
-
-            RelativeLayout.LayoutParams optionCheckBoxLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-            if(i == 0) {
-                optionCheckBoxLay.addRule(RelativeLayout.END_OF, correctAnswerLabel.getId());
-                optionCheckBoxLay.leftMargin = 20;
-            } else {
-                optionCheckBoxLay.addRule(RelativeLayout.END_OF, optionsCheckBoxes[i - 1].getId());
-                optionCheckBoxLay.leftMargin = 10;
-            }
-            optionCheckBoxLay.addRule(RelativeLayout.ALIGN_TOP, correctAnswerLabel.getId());
-            optionCheckBoxLay.addRule(RelativeLayout.ALIGN_BOTTOM, correctAnswerLabel.getId());
-            newQuestionRelativeLayout.addView(optionsCheckBoxes[i], optionCheckBoxLay);
 
             options[i].addTextChangedListener(new TextWatcher() {
                 @Override
@@ -166,6 +156,23 @@ public class NewQuiz extends AppCompatActivity {
                 }
             });
         }
+
+        RelativeLayout.LayoutParams optionCheckBoxLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        optionCheckBoxLay.addRule(RelativeLayout.END_OF, correctAnswerLabel.getId());optionCheckBoxLay.leftMargin = 20;
+        optionCheckBoxLay.addRule(RelativeLayout.ALIGN_TOP, correctAnswerLabel.getId());
+        optionCheckBoxLay.addRule(RelativeLayout.ALIGN_BOTTOM, correctAnswerLabel.getId());
+
+        newQuestionRelativeLayout.addView(radioGroup, optionCheckBoxLay);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton selectedRadBtn = (RadioButton) findViewById(radioGroup.getCheckedRadioButtonId());
+                int optionNum = Integer.parseInt(selectedRadBtn.getText().toString());
+                questionsList.get(questionsList.size() - 1).correctAnswers = options[optionNum - 1].getText().toString();
+            }
+        });
 
         if(questionList_rel_lay.size() > 0) {
             newQuestionRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 1).getId());
