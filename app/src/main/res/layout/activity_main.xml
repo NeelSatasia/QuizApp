@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E0FFFF"
+    android:background="#7FFFD4"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -21,7 +21,7 @@
             android:layout_above="@+id/quizzesPagebtn"
             android:onClick="createNewQuiz"
             android:text="Create New Quiz"
-            app:backgroundTint="#48D1CC" />
+            app:backgroundTint="#008080" />
 
         <Button
             android:id="@+id/quizzesPagebtn"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:onClick="goToUserQuizzes"
             android:text="Your Quizzes"
-            app:backgroundTint="#48D1CC" />
+            app:backgroundTint="#008080" />
 
         <Button
             android:id="@+id/settingsbtn"
@@ -37,6 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/quizzesPagebtn"
             android:text="Settings"
-            app:backgroundTint="#48D1CC" />
+            app:backgroundTint="#008080" />
     </LinearLayout>
 </RelativeLayout>

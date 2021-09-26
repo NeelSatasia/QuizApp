@@ -3,6 +3,7 @@ package com.example.quizit;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -10,6 +11,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -22,7 +25,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createNewQuiz(View view) {
-        Intent intent = new Intent(this, NewQuiz.class);
+        SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        editor.putString("Quiz", null);
+        editor.putInt("QuizID", -1);
+        editor.apply();
+
+        Intent intent = new Intent(this, SaveQuiz.class);
         startActivity(intent);
     }
 

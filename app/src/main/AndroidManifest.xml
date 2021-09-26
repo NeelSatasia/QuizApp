@@ -10,10 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Quizit">
         <activity
-            android:name=".EditQuiz"
+            android:name=".Settings"
             android:exported="true" />
         <activity
-            android:name=".NewQuiz"
+            android:name=".SaveQuiz"
             android:exported="true" />
         <activity
             android:name=".Quizzes"

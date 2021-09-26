@@ -101,7 +101,7 @@ public class Quizzes extends AppCompatActivity {
                     editQuizBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent intent = new Intent(Quizzes.this, EditQuiz.class);
+                            Intent intent = new Intent(Quizzes.this, SaveQuiz.class);
 
                             for(int i = 0; i < quizzes.size(); i++) {
                                 if(newQuizBtn.getText().toString().equals(quizzes.get(i).quizName)) {

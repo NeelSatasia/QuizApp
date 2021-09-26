@@ -1,7 +1,5 @@
 package com.example.quizit;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.DrawableCompat;
 
@@ -13,28 +11,24 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
 
-public class NewQuiz extends AppCompatActivity {
+public class SaveQuiz extends AppCompatActivity {
 
+    ArrayList<QuizInfo> quizzes;
     ArrayList<RelativeLayout> questionList_rel_lay;
     ArrayList<EditText> viewsInQuestions;
     ArrayList<Question> questionsList;
@@ -42,11 +36,15 @@ public class NewQuiz extends AppCompatActivity {
     TextView quizName;
     Button addBtn;
     Button cancelBtn;
+    Button setTimer;
     Button createQuizBtn;
 
     ArrayList<CheckBox> deleteQuesCheckBoxArr;
 
+    int totalDeleteQuestSelected = 0;
     boolean cancelBtnSelected = false;
+
+    int editQuizID = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,21 +58,54 @@ public class NewQuiz extends AppCompatActivity {
         quizName = findViewById(R.id.quizNameID);
         addBtn = findViewById(R.id.newQuestionbtn);
         cancelBtn = findViewById(R.id.cancelQuestionbtn);
+        setTimer = findViewById(R.id.quizTimer);
         createQuizBtn = findViewById(R.id.createQuizBtn);
 
         cancelBtn.setEnabled(false);
         createQuizBtn.setEnabled(false);
+
+        loadQuizzes();
+        getEditQuiz();
+
+        if(editQuizID > -1) {
+            quizName.setText(quizzes.get(editQuizID).quizName);
+            questionsList = quizzes.get(editQuizID).questionList;
+            createQuizBtn.setText("Save");
+            setTimer.setText("Change Timer");
+
+            uploadQuiz();
+        } else {
+            questionsList = new ArrayList<Question>();
+        }
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                createNewQuestion(-1);
+            }
+        });
     }
 
-    public void createNewQuestion(View view) {
+    public void uploadQuiz() {
+        for(int i = 0; i < quizzes.get(editQuizID).questionList.size(); i++) {
+            createNewQuestion(i);
+        }
+    }
+
+    public void createNewQuestion(int k) {
         RelativeLayout newQuestionRelativeLayout = new RelativeLayout(this);
         newQuestionRelativeLayout.setId(View.generateViewId());
 
-        questionsList.add(new Question("", new String[4], ""));
+        if(k < 0) {
+            questionsList.add(new Question("", new String[4], ""));
+        }
 
-        RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
         EditText newQuestion = new EditText(this);
+        if(k >= 0) {
+            newQuestion.setText(questionsList.get(k).question);
+        }
         newQuestion.setHint("Question " + (questionList_rel_lay.size() + 1));
         newQuestion.setId(View.generateViewId());
         viewsInQuestions.add(newQuestion);
@@ -96,7 +127,11 @@ public class NewQuiz extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                questionsList.get(questionsList.size() - 1).question = newQuestion.getText().toString();
+                if(k < 0) {
+                    questionsList.get(questionsList.size() - 1).question = newQuestion.getText().toString();
+                } else {
+                    questionsList.get(k).question = newQuestion.getText().toString();
+                }
             }
         });
 
@@ -106,6 +141,10 @@ public class NewQuiz extends AppCompatActivity {
             options[i] = new EditText(this);
             options[i].setHint("Option " + (i + 1));
             options[i].setId(View.generateViewId());
+
+            if(k >= 0) {
+                options[i].setText(questionsList.get(k).options[i]);
+            }
 
             RelativeLayout.LayoutParams optionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             if(i - 1 < 0) {
@@ -144,12 +183,22 @@ public class NewQuiz extends AppCompatActivity {
             optionsCheckBoxes[i].setText((i + 1) + "");
             optionsCheckBoxes[i].setId(View.generateViewId());
             radioGroup.addView(optionsCheckBoxes[i]);
-            int j = i;
 
+            if(k >= 0) {
+                if(questionsList.get(k).correctAnswers.equals(options[i].getText().toString())) {
+                    optionsCheckBoxes[i].setChecked(true);
+                }
+            }
+
+            int j = i;
             optionsCheckBoxes[i].setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    questionsList.get(questionsList.size() - 1).correctAnswers = options[j].getText().toString();
+                    if(k < 0) {
+                        questionsList.get(questionsList.size() - 1).correctAnswers = options[j].getText().toString();
+                    } else {
+                        questionsList.get(k).correctAnswers = options[j].getText().toString();
+                    }
                 }
             });
 
@@ -165,7 +214,11 @@ public class NewQuiz extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    questionsList.get(questionsList.size() - 1).options[j] = options[j].getText().toString();
+                    if(k < 0) {
+                        questionsList.get(questionsList.size() - 1).options[j] = options[j].getText().toString();
+                    } else {
+                        questionsList.get(k).options[j] = options[j].getText().toString();
+                    }
 
                     if(optionsCheckBoxes[j].isChecked()) {
                         questionsList.get(questionsList.size() - 1).correctAnswers = options[j].getText().toString();
@@ -191,16 +244,18 @@ public class NewQuiz extends AppCompatActivity {
             }
         });
 
-        RelativeLayout.LayoutParams previousQuestRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        previousQuestRelParams.bottomMargin = 70;
-        if(questionList_rel_lay.size() >= 1) {
-            if(questionList_rel_lay.size() == 1) {
-                previousQuestRelParams.addRule(RelativeLayout.BELOW, quizName.getId());
-            } else {
-                previousQuestRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 2).getId());
-            }
+        if(k < 0) {
+            RelativeLayout.LayoutParams previousQuestRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            previousQuestRelParams.bottomMargin = 70;
+            if (questionList_rel_lay.size() >= 1) {
+                if (questionList_rel_lay.size() == 1) {
+                    previousQuestRelParams.addRule(RelativeLayout.BELOW, quizName.getId());
+                } else {
+                    previousQuestRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 2).getId());
+                }
 
-            questionList_rel_lay.get(questionList_rel_lay.size() - 1).setLayoutParams(previousQuestRelParams);
+                questionList_rel_lay.get(questionList_rel_lay.size() - 1).setLayoutParams(previousQuestRelParams);
+            }
         }
 
         if(questionList_rel_lay.size() > 0) {
@@ -208,7 +263,15 @@ public class NewQuiz extends AppCompatActivity {
         } else {
             newQuestionRelParams.addRule(RelativeLayout.BELOW, R.id.quizNameID);
         }
-        newQuestionRelParams.bottomMargin = 230;
+        if(k >= 0) {
+            if(k < questionsList.size() - 1) {
+                newQuestionRelParams.bottomMargin = 70;
+            } else if(k == questionsList.size() - 1) {
+                newQuestionRelParams.bottomMargin = 230;
+            }
+        } else {
+            newQuestionRelParams.bottomMargin = 230;
+        }
 
         questionList_rel_lay.add(newQuestionRelativeLayout);
         layout.addView(questionList_rel_lay.get(questionList_rel_lay.size() - 1), newQuestionRelParams);
@@ -236,6 +299,13 @@ public class NewQuiz extends AppCompatActivity {
                 deleteQuesCheckBoxParams.addRule(RelativeLayout.ABOVE, questionList_rel_lay.get(i).getId());
 
                 layout.addView(deleteQuesCheckBoxArr.get(i), deleteQuesCheckBoxParams);
+
+                deleteQuesCheckBoxArr.get(i).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        totalDeleteQuestSelected++;
+                    }
+                });
             }
 
             cancelBtnSelected = true;
@@ -246,17 +316,43 @@ public class NewQuiz extends AppCompatActivity {
             buttonDrawable = DrawableCompat.wrap(buttonDrawable);
             DrawableCompat.setTint(buttonDrawable, Color.RED);
             cancelBtn.setBackground(buttonDrawable);
+
+            addBtn.setEnabled(false);
+
         } else {
-            int j = 0;
-            while(j < deleteQuesCheckBoxArr.size()) {
-                if(deleteQuesCheckBoxArr.get(j).isChecked()) {
-                    layout.removeView(questionList_rel_lay.get(j));
-                    questionList_rel_lay.remove(j);
-                    layout.removeView(deleteQuesCheckBoxArr.get(j));
-                    deleteQuesCheckBoxArr.remove(j);
-                    viewsInQuestions.remove(j);
-                } else {
-                    j++;
+            if(totalDeleteQuestSelected > 0) {
+                int j = 0;
+                while (j < deleteQuesCheckBoxArr.size()) {
+                    if (deleteQuesCheckBoxArr.get(j).isChecked()) {
+                        layout.removeView(questionList_rel_lay.get(j));
+                        questionList_rel_lay.remove(j);
+                        layout.removeView(deleteQuesCheckBoxArr.get(j));
+                        deleteQuesCheckBoxArr.remove(j);
+                        viewsInQuestions.remove(j);
+                        questionsList.remove(j);
+                    } else {
+                        j++;
+                    }
+                }
+
+                for (int i = 0; i < questionList_rel_lay.size(); i++) {
+                    viewsInQuestions.get(i).setHint("Question " + (i + 1));
+
+                    RelativeLayout.LayoutParams quesRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                    if (i == 0) {
+                        quesRelLayParams.addRule(RelativeLayout.BELOW, quizName.getId());
+                    } else {
+                        quesRelLayParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(i - 1).getId());
+                    }
+
+                    if (i == questionList_rel_lay.size() - 1) {
+                        quesRelLayParams.bottomMargin = 220;
+                    } else {
+                        quesRelLayParams.bottomMargin = 70;
+                    }
+
+                    questionList_rel_lay.get(i).setLayoutParams(quesRelLayParams);
                 }
             }
 
@@ -265,26 +361,7 @@ public class NewQuiz extends AppCompatActivity {
             }
 
             deleteQuesCheckBoxArr.clear();
-
-            for(int i = 0; i < questionList_rel_lay.size(); i++) {
-                viewsInQuestions.get(i).setHint("Question " + (i + 1));
-
-                RelativeLayout.LayoutParams quesRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                if(i == 0) {
-                    quesRelLayParams.addRule(RelativeLayout.BELOW, quizName.getId());
-                } else {
-                    quesRelLayParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(i - 1).getId());
-                }
-
-                if(i == questionList_rel_lay.size() - 1) {
-                    quesRelLayParams.bottomMargin = 220;
-                } else {
-                    quesRelLayParams.bottomMargin = 70;
-                }
-
-                questionList_rel_lay.get(i).setLayoutParams(quesRelLayParams);
-            }
+            totalDeleteQuestSelected = 0;
 
             cancelBtnSelected = false;
 
@@ -298,13 +375,49 @@ public class NewQuiz extends AppCompatActivity {
     }
 
     public void createNewQuiz(View view) {
-        QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList);
-
         Intent intent = new Intent(this, Quizzes.class);
+        QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList);
+        if(editQuizID < 0) {
+
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("QuizzesList", newQuiz);
         intent.putExtras(bundle);
+        } else {
+            quizzes.remove(editQuizID);
+            quizzes.add(editQuizID, newQuiz);
+
+            saveQuizzes();
+        }
+
         startActivity(intent);
+    }
+
+    public void getEditQuiz() {
+        SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("Quiz", null);
+        editQuizID = sharedPreferences.getInt("QuizID", -1);
+    }
+
+    public void loadQuizzes() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("QuizzesList", null);
+        Type type = new TypeToken<ArrayList<QuizInfo>>() {}.getType();
+        quizzes = gson.fromJson(json, type);
+
+        if(quizzes == null) {
+            quizzes = new ArrayList<QuizInfo>();
+        }
+    }
+
+    public void saveQuizzes() {
+        SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(quizzes);
+        editor.putString("QuizzesList", json);
+        editor.apply();
     }
 }

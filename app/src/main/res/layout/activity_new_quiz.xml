@@ -5,7 +5,7 @@
     android:id="@+id/newQuizScrollLay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewQuiz">
+    tools:context=".SaveQuiz">
 
     <Button
         android:id="@+id/createQuizBtn"
@@ -38,7 +38,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:onClick="createNewQuestion"
                 android:text="Add Question" />
 
             <Button
@@ -51,9 +50,24 @@
                 android:text="Delete Question"/>
 
             <Button
+                android:id="@+id/quizTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Set Timer"
+                android:layout_marginRight="10dp"/>
+
+            <Button
+                android:id="@+id/addToFoldr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add To Folder(s)"
+                android:layout_marginRight="10dp"/>
+
+            <Button
+                android:id="@+id/setPasswrd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set Password"
                 android:layout_marginRight="10dp"/>
 
         </LinearLayout>
