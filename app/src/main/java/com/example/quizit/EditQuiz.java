@@ -103,6 +103,14 @@ public class EditQuiz extends AppCompatActivity {
         editQuizBtn.setId(View.generateViewId());
         editQuizBtn.setText("Edit Quiz");
 
+        RelativeLayout.LayoutParams editQuizBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        editQuizBtnLayParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        editQuizBtnLayParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        editQuizBtnLayParams.rightMargin = 20;
+        editQuizBtnLayParams.bottomMargin = 20;
+
+        mainRelLay.addView(editQuizBtn, editQuizBtnLayParams);
+
         SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("Quiz", null);
@@ -149,11 +157,6 @@ public class EditQuiz extends AppCompatActivity {
         RelativeLayout.LayoutParams cancelBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         cancelBtnLayParams.leftMargin = 10;
         btnsLay.addView(cancelQuestionBtn, cancelBtnLayParams);
-
-        RelativeLayout.LayoutParams editQuizBtnLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        editQuizBtnLayParams.leftMargin = 10;
-
-        btnsLay.addView(editQuizBtn, editQuizBtnLayParams);
 
         addQuestionBtn.setOnClickListener(new View.OnClickListener() {
             @Override

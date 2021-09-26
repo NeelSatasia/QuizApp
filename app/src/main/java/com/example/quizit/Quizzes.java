@@ -23,19 +23,19 @@ import java.util.ArrayList;
 
 public class Quizzes extends AppCompatActivity {
 
-    private RelativeLayout relLay;
-    private TextView yourQuizzesLabel;
-    private ArrayList<Button> quizzesBtn;
-    private ArrayList<QuizInfo> quizzes;
+    RelativeLayout relLay;
+    TextView yourQuizzesLabel;
+    ArrayList<Button> quizzesBtn;
+    ArrayList<QuizInfo> quizzes;
 
-    private AlertDialog.Builder alertDialogBuilder;
-    private AlertDialog alertDialog;
+    AlertDialog.Builder alertDialogBuilder;
+    AlertDialog alertDialog;
 
-    private Button takeQuizBtn;
-    private Button editQuizBtn;
-    private Button deleteQuizBtn;
+    Button takeQuizBtn;
+    Button editQuizBtn;
+    Button deleteQuizBtn;
 
-    private TextView noQuizzesLabel;
+    TextView noQuizzesLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

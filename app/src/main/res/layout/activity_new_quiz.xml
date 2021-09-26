@@ -11,12 +11,14 @@
         android:id="@+id/createQuizBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Create"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="10dp"
-        android:onClick="createNewQuiz"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="createNewQuiz"
+        android:text="Create"
+        app:backgroundTint="#4CAF50" />
 
     <HorizontalScrollView
         android:id="@+id/btns"
@@ -46,7 +48,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:onClick="deleteQuestion"
-                android:text="Cancel Question"/>
+                android:text="Delete Question"/>
 
             <Button
                 android:layout_width="wrap_content"

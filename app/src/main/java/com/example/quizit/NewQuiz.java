@@ -1,21 +1,29 @@
 package com.example.quizit;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +36,7 @@ import java.util.Set;
 public class NewQuiz extends AppCompatActivity {
 
     ArrayList<RelativeLayout> questionList_rel_lay;
+    ArrayList<EditText> viewsInQuestions;
     ArrayList<Question> questionsList;
     RelativeLayout layout;
     TextView quizName;
@@ -35,12 +44,17 @@ public class NewQuiz extends AppCompatActivity {
     Button cancelBtn;
     Button createQuizBtn;
 
+    ArrayList<CheckBox> deleteQuesCheckBoxArr;
+
+    boolean cancelBtnSelected = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_quiz);
 
         questionList_rel_lay = new ArrayList<RelativeLayout>();
+        viewsInQuestions = new ArrayList<EditText>();
         questionsList = new ArrayList<Question>();
         layout = findViewById(R.id.newQuizLay);
         quizName = findViewById(R.id.quizNameID);
@@ -58,10 +72,12 @@ public class NewQuiz extends AppCompatActivity {
 
         questionsList.add(new Question("", new String[4], ""));
 
-        RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
         EditText newQuestion = new EditText(this);
         newQuestion.setHint("Question " + (questionList_rel_lay.size() + 1));
         newQuestion.setId(View.generateViewId());
+        viewsInQuestions.add(newQuestion);
 
         RelativeLayout.LayoutParams newQuestionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         newQuestionLayout.leftMargin = 10;
@@ -175,15 +191,31 @@ public class NewQuiz extends AppCompatActivity {
             }
         });
 
+        RelativeLayout.LayoutParams previousQuestRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        previousQuestRelParams.bottomMargin = 70;
+        if(questionList_rel_lay.size() >= 1) {
+            if(questionList_rel_lay.size() == 1) {
+                previousQuestRelParams.addRule(RelativeLayout.BELOW, quizName.getId());
+            } else {
+                previousQuestRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 2).getId());
+            }
+
+            questionList_rel_lay.get(questionList_rel_lay.size() - 1).setLayoutParams(previousQuestRelParams);
+        }
+
         if(questionList_rel_lay.size() > 0) {
             newQuestionRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 1).getId());
         } else {
             newQuestionRelParams.addRule(RelativeLayout.BELOW, R.id.quizNameID);
         }
-        newQuestionRelParams.bottomMargin = 100;
+        newQuestionRelParams.bottomMargin = 230;
 
         questionList_rel_lay.add(newQuestionRelativeLayout);
         layout.addView(questionList_rel_lay.get(questionList_rel_lay.size() - 1), newQuestionRelParams);
+
+        if(cancelBtn.isEnabled() == false) {
+            cancelBtn.setEnabled(true);
+        }
 
         if(createQuizBtn.isEnabled() == false) {
             createQuizBtn.setEnabled(true);
@@ -191,14 +223,77 @@ public class NewQuiz extends AppCompatActivity {
     }
 
     public void deleteQuestion(View view) {
-        if(questionList_rel_lay.size() > 0) {
-            questionsList.remove(questionsList.size() - 1);
-            layout.removeView(questionList_rel_lay.get(questionList_rel_lay.size() - 1));
-            questionList_rel_lay.remove(questionList_rel_lay.size() - 1);
 
-            if(questionList_rel_lay.size() == 0) {
-                createQuizBtn.setEnabled(false);
+        if(cancelBtnSelected == false) {
+            deleteQuesCheckBoxArr = new ArrayList<CheckBox>();
+
+            for (int i = 0; i < questionList_rel_lay.size(); i++) {
+                deleteQuesCheckBoxArr.add(new CheckBox(this));
+                deleteQuesCheckBoxArr.get(i).setText("Question " + (i + 1) + ":");
+                deleteQuesCheckBoxArr.get(i).setTextColor(Color.parseColor("#ff0000"));
+
+                RelativeLayout.LayoutParams deleteQuesCheckBoxParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                deleteQuesCheckBoxParams.addRule(RelativeLayout.ABOVE, questionList_rel_lay.get(i).getId());
+
+                layout.addView(deleteQuesCheckBoxArr.get(i), deleteQuesCheckBoxParams);
             }
+
+            cancelBtnSelected = true;
+
+            cancelBtn.setText("Delete");
+
+            Drawable buttonDrawable = cancelBtn.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.RED);
+            cancelBtn.setBackground(buttonDrawable);
+        } else {
+            int j = 0;
+            while(j < deleteQuesCheckBoxArr.size()) {
+                if(deleteQuesCheckBoxArr.get(j).isChecked()) {
+                    layout.removeView(questionList_rel_lay.get(j));
+                    questionList_rel_lay.remove(j);
+                    layout.removeView(deleteQuesCheckBoxArr.get(j));
+                    deleteQuesCheckBoxArr.remove(j);
+                    viewsInQuestions.remove(j);
+                } else {
+                    j++;
+                }
+            }
+
+            for(int i = 0; i < deleteQuesCheckBoxArr.size(); i++) {
+                layout.removeView(deleteQuesCheckBoxArr.get(i));
+            }
+
+            deleteQuesCheckBoxArr.clear();
+
+            for(int i = 0; i < questionList_rel_lay.size(); i++) {
+                viewsInQuestions.get(i).setHint("Question " + (i + 1));
+
+                RelativeLayout.LayoutParams quesRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                if(i == 0) {
+                    quesRelLayParams.addRule(RelativeLayout.BELOW, quizName.getId());
+                } else {
+                    quesRelLayParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(i - 1).getId());
+                }
+
+                if(i == questionList_rel_lay.size() - 1) {
+                    quesRelLayParams.bottomMargin = 220;
+                } else {
+                    quesRelLayParams.bottomMargin = 70;
+                }
+
+                questionList_rel_lay.get(i).setLayoutParams(quesRelLayParams);
+            }
+
+            cancelBtnSelected = false;
+
+            cancelBtn.setText("Delete Question");
+
+            Drawable buttonDrawable = cancelBtn.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.rgb(30, 144, 255));
+            cancelBtn.setBackground(buttonDrawable);
         }
     }
 
