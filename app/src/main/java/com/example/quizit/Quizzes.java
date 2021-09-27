@@ -64,7 +64,6 @@ public class Quizzes extends AppCompatActivity {
             Button newQuizBtn = new Button(this);
             newQuizBtn.setText(quizzes.get(i).quizName);
 
-
             RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             if(quizzesBtn.size() == 0) {
                 quizBtnLay.addRule(RelativeLayout.BELOW, R.id.yourQuizzesLabel);
@@ -94,7 +93,16 @@ public class Quizzes extends AppCompatActivity {
                     takeQuizBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            Intent intent = new Intent(Quizzes.this, TakeQuiz.class);
 
+                            for(int i = 0; i < quizzes.size(); i++) {
+                                if(newQuizBtn.getText().toString().equals(quizzes.get(i).quizName)) {
+                                    takeQuiz(quizzes.get(i));
+                                    break;
+                                }
+                            }
+
+                            startActivity(intent);
                         }
                     });
 
@@ -106,6 +114,7 @@ public class Quizzes extends AppCompatActivity {
                             for(int i = 0; i < quizzes.size(); i++) {
                                 if(newQuizBtn.getText().toString().equals(quizzes.get(i).quizName)) {
                                     editQuiz(quizzes.get(i), i);
+                                    break;
                                 }
                             }
                             startActivity(intent);
@@ -166,6 +175,15 @@ public class Quizzes extends AppCompatActivity {
 
             relLay.addView(noQuizzesLabel, noQuizLabelLay);
         }
+    }
+
+    public void takeQuiz(QuizInfo quiz) {
+        SharedPreferences sharedPreferences = getSharedPreferences("TakeQuiz", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(quiz);
+        editor.putString("Quiz", json);
+        editor.apply();
     }
 
     public void editQuiz(QuizInfo quiz, int index) {
