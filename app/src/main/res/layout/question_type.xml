@@ -10,10 +10,11 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <RadioGroup
+         <RadioGroup
             android:id="@+id/answerType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:orientation="horizontal">
 
             <RadioButton
@@ -28,13 +29,15 @@
                 android:id="@+id/fr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Free Response"/>
-        </RadioGroup>
+                android:text="Free Response"
+                android:layout_toRightOf="@+id/mc"/>
+         </RadioGroup>
 
         <EditText
             android:id="@+id/num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="4"
             android:textSize="25dp"
             android:hint="Total Answers"
             android:inputType="number"
@@ -46,7 +49,7 @@
 
         <Button
             android:id="@+id/okBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ok"
             android:layout_below="@+id/num"
