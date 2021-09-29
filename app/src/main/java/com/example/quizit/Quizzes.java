@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -22,6 +23,8 @@ import java.net.Inet4Address;
 import java.util.ArrayList;
 
 public class Quizzes extends AppCompatActivity {
+
+    ScrollView scrlView;
 
     RelativeLayout relLay;
     TextView yourQuizzesLabel;
@@ -40,10 +43,26 @@ public class Quizzes extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_quizzes);
 
-        relLay = findViewById(R.id.userQuizzesRelLay);
-        yourQuizzesLabel = findViewById(R.id.yourQuizzesLabel);
+        scrlView = new ScrollView(this);
+        scrlView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
+        relLay = new RelativeLayout(this);
+        relLay.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
+        scrlView.addView(relLay);
+
+        yourQuizzesLabel = new TextView(this);
+        yourQuizzesLabel.setText("Your Quizzes");
+        yourQuizzesLabel.setTextSize(30);
+        yourQuizzesLabel.setId(View.generateViewId());
+
+        RelativeLayout.LayoutParams titleLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        titleLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        titleLayParams.topMargin = 75;
+        titleLayParams.bottomMargin = 50;
+
+        relLay.addView(yourQuizzesLabel, titleLayParams);
 
         noQuizzesLabel = new TextView(this);
         noQuizzesLabel.setText("No Quizzes Found!");
@@ -66,7 +85,7 @@ public class Quizzes extends AppCompatActivity {
 
             RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             if(quizzesBtn.size() == 0) {
-                quizBtnLay.addRule(RelativeLayout.BELOW, R.id.yourQuizzesLabel);
+                quizBtnLay.addRule(RelativeLayout.BELOW, yourQuizzesLabel.getId());
             } else {
                 quizBtnLay.addRule(RelativeLayout.BELOW, quizzesBtn.get(quizzesBtn.size() - 1).getId());
             }
@@ -137,7 +156,7 @@ public class Quizzes extends AppCompatActivity {
                                 RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                                 quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
                                 if(k == 0) {
-                                    quizBtnLay.addRule(RelativeLayout.BELOW, R.id.yourQuizzesLabel);
+                                    quizBtnLay.addRule(RelativeLayout.BELOW, yourQuizzesLabel.getId());
                                 } else {
                                     quizBtnLay.addRule(RelativeLayout.BELOW, quizzesBtn.get(k - 1).getId());
                                 }
@@ -159,6 +178,8 @@ public class Quizzes extends AppCompatActivity {
         }
 
         noQuizzesLabel();
+
+        setContentView(scrlView);
     }
 
     @Override
@@ -171,7 +192,7 @@ public class Quizzes extends AppCompatActivity {
         if(quizzes.isEmpty()) {
             RelativeLayout.LayoutParams noQuizLabelLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             noQuizLabelLay.addRule(RelativeLayout.CENTER_IN_PARENT);
-            noQuizLabelLay.addRule(RelativeLayout.BELOW, R.id.yourQuizzesLabel);
+            noQuizLabelLay.addRule(RelativeLayout.BELOW, yourQuizzesLabel.getId());
 
             relLay.addView(noQuizzesLabel, noQuizLabelLay);
         }

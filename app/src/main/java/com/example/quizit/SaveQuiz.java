@@ -20,6 +20,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -68,7 +69,6 @@ public class SaveQuiz extends AppCompatActivity {
         createQuizBtn = findViewById(R.id.createQuizBtn);
 
         cancelBtn.setEnabled(false);
-        createQuizBtn.setEnabled(false);
 
         loadQuizzes();
         getEditQuiz();
@@ -95,13 +95,41 @@ public class SaveQuiz extends AppCompatActivity {
                 addQuesAD.show();
 
                 RadioButton mcRadBtn = addQuesPopup.findViewById(R.id.mc);
+                RadioButton frRadBtn = addQuesPopup.findViewById(R.id.fr);
 
                 EditText totalAnswers = addQuesPopup.findViewById(R.id.num);
 
                 Button okBtn = addQuesPopup.findViewById(R.id.okBtn);
-                okBtn.setEnabled(false);
 
                 selectedMC = true;
+
+                mcRadBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(mcRadBtn.isChecked()) {
+                            selectedMC = true;
+                            if(totalAnswers.isEnabled() == false) {
+                                totalAnswers.setEnabled(true);
+                                totalAnswers.setText("2");
+                            }
+                        }
+                    }
+                });
+
+                frRadBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(frRadBtn.isChecked()) {
+                            totalAnswers.setText("1");
+                            totalAnswers.setEnabled(false);
+                            selectedMC = false;
+
+                            if(okBtn.isEnabled() == false) {
+                                okBtn.setEnabled(true);
+                            }
+                        }
+                    }
+                });
 
                 totalAnswers.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -116,10 +144,12 @@ public class SaveQuiz extends AppCompatActivity {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-                        if (totalAnswers.getText().toString().equals("")) {
-                            okBtn.setEnabled(false);
-                        } else if (okBtn.isEnabled() == false) {
-                            okBtn.setEnabled(true);
+                        if(mcRadBtn.isChecked()) {
+                            if (totalAnswers.getText().toString().equals("") || totalAnswers.getText().toString().equals("1")) {
+                                okBtn.setEnabled(false);
+                            } else if (okBtn.isEnabled() == false) {
+                                okBtn.setEnabled(true);
+                            }
                         }
                     }
                 });
@@ -127,12 +157,6 @@ public class SaveQuiz extends AppCompatActivity {
                 okBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(mcRadBtn.isChecked()) {
-                            selectedMC = true;
-                        } else {
-                            selectedMC = false;
-                        }
-
                         int totalOptions = Integer.parseInt(totalAnswers.getText().toString());
                         addQuesAD.dismiss();
 
@@ -212,6 +236,7 @@ public class SaveQuiz extends AppCompatActivity {
                 for (int i = 0; i < options.length; i++) {
                     optionsCheckBoxes[i] = new CheckBox(SaveQuiz.this);
                     optionsCheckBoxes[i].setText("");
+                    optionsCheckBoxes[i].setTextSize(20);
                     optionsCheckBoxes[i].setId(View.generateViewId());
 
                     options[i] = new EditText(SaveQuiz.this);
@@ -240,6 +265,7 @@ public class SaveQuiz extends AppCompatActivity {
 
                     RelativeLayout.LayoutParams optionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     optionLayout.addRule(RelativeLayout.END_OF, optionsCheckBoxes[i].getId());
+                    optionLayout.addRule(RelativeLayout.ALIGN_BOTTOM, optionsCheckBoxes[i].getId());
 
                     if(i == 0) {
                         optionLayout.addRule(RelativeLayout.BELOW, correctAnswerLabel.getId());
@@ -249,7 +275,6 @@ public class SaveQuiz extends AppCompatActivity {
 
                     optionLayout.leftMargin = 5;
                     optionLayout.rightMargin = 10;
-
 
                     newQuestionRelativeLayout.addView(options[i], optionLayout);
 
@@ -373,10 +398,6 @@ public class SaveQuiz extends AppCompatActivity {
             if(cancelBtn.isEnabled() == false) {
                 cancelBtn.setEnabled(true);
             }
-
-            if(createQuizBtn.isEnabled() == false) {
-                createQuizBtn.setEnabled(true);
-            }
     }
 
     public void deleteQuestion(View view) {
@@ -471,22 +492,49 @@ public class SaveQuiz extends AppCompatActivity {
     }
 
     public void createNewQuiz(View view) {
-        Intent intent = new Intent(this, Quizzes.class);
-        QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList);
-        if(editQuizID < 0) {
 
+        boolean isQuizReadyToBeCreated = true;
 
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("QuizzesList", newQuiz);
-        intent.putExtras(bundle);
+        if(quizName.getText().toString().isEmpty() == false && questionsList.size() > 0) {
+            for(int i = 0; i < questionsList.size(); i++) {
+                if(questionsList.get(i).question.isEmpty()) {
+                    isQuizReadyToBeCreated = false;
+                    break;
+                }
+
+                if(questionsList.get(i).mcQuestion) {
+                    for (int j = 0; j < questionsList.get(i).options.length; j++) {
+                        if (questionsList.get(i).options[j].isEmpty()) {
+                            isQuizReadyToBeCreated = false;
+                            break;
+                        }
+                    }
+                }
+            }
         } else {
-            quizzes.remove(editQuizID);
-            quizzes.add(editQuizID, newQuiz);
-
-            saveQuizzes();
+            isQuizReadyToBeCreated = false;
         }
 
-        startActivity(intent);
+        if(isQuizReadyToBeCreated) {
+            Intent intent = new Intent(this, Quizzes.class);
+            QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList);
+            if (editQuizID < 0) {
+
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("QuizzesList", newQuiz);
+                intent.putExtras(bundle);
+            } else {
+                quizzes.remove(editQuizID);
+                quizzes.add(editQuizID, newQuiz);
+
+                saveQuizzes();
+            }
+
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Missing Field(s) !", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void getEditQuiz() {

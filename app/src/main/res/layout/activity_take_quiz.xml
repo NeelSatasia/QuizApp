@@ -14,63 +14,44 @@
         android:textSize="40dp"
         android:gravity="center"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="30dp"/>
+
+    <TextView
+        android:id="@+id/quesNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1."
+        android:textSize="30dp"
+        android:layout_below="@+id/quizTitleLabel"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_marginLeft="5dp"/>
+
+    <TextView
+        android:id="@+id/questionLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Question"
+        android:textSize="30dp"
+        android:layout_toEndOf="@+id/quesNum"
+        android:layout_alignTop="@+id/quesNum"
+        android:layout_alignBottom="@+id/quesNum"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"/>
 
     <ScrollView
         android:id="@+id/mainScrlView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/quizTitleLabel">
+        android:layout_below="@+id/questionLabel"
+        android:layout_alignLeft="@+id/questionLabel"
+        android:layout_alignParentBottom="true">
 
         <RelativeLayout
             android:id="@+id/mainRelLay"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/questionLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Question"
-                android:textSize="30dp"
-                android:gravity="center"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:layout_marginBottom="20dp"/>
-
-            <Button
-                android:id="@+id/option1Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Option 1"
-                android:layout_below="@+id/questionLabel"
-                android:layout_marginBottom="10dp" />
-
-            <Button
-                android:id="@+id/option2Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Option 2"
-                android:layout_below="@+id/option1Btn"
-                android:layout_marginBottom="10dp"/>
-
-            <Button
-                android:id="@+id/option3Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Option 3"
-                android:layout_below="@+id/option2Btn"
-                android:layout_marginBottom="10dp"/>
-
-            <Button
-                android:id="@+id/option4Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Option 4"
-                android:layout_below="@+id/option3Btn"
-                android:layout_marginBottom="10dp"/>
         </RelativeLayout>
     </ScrollView>
 
@@ -78,8 +59,9 @@
         android:id="@+id/btns"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/mainScrlView"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="5dp">
 
         <Button
             android:id="@+id/backQuesBtn"

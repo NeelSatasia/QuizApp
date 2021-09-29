@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="4"
             android:textSize="25dp"
-            android:hint="Total Answers"
+            android:hint="Total Options"
             android:inputType="number"
             android:gravity="center"
             android:layout_below="@+id/answerType"
