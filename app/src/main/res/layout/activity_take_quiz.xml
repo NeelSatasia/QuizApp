@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".TakeQuiz">
 
+    <Button
+        android:id="@+id/sbtBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"/>
+
     <TextView
         android:id="@+id/quizTitleLabel"
         android:layout_width="match_parent"
@@ -13,26 +23,36 @@
         android:text="Quiz Title"
         android:textSize="40dp"
         android:gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="30dp"/>
+        android:layout_below="@+id/sbtBtn"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/questTracker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Question Tracker"
+        android:textSize="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/quizTitleLabel"
+        android:layout_marginBottom="10dp"/>
 
     <TextView
         android:id="@+id/quesNum"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1."
-        android:textSize="30dp"
-        android:layout_below="@+id/quizTitleLabel"
+        android:textSize="25dp"
+        android:layout_below="@+id/questTracker"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:layout_marginLeft="5dp"/>
+        android:layout_marginLeft="10dp"/>
 
     <TextView
         android:id="@+id/questionLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Question"
-        android:textSize="30dp"
+        android:textSize="25dp"
         android:layout_toEndOf="@+id/quesNum"
         android:layout_alignTop="@+id/quesNum"
         android:layout_alignBottom="@+id/quesNum"

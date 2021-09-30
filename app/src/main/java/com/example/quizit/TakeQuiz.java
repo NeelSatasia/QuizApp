@@ -24,12 +24,16 @@ public class TakeQuiz extends AppCompatActivity {
 
     QuizInfo quiz;
 
+    ArrayList<Object>[] userAnswers;
+
     TextView quizNameLabel;
     TextView questionLabel;
     TextView questionNumber;
+    TextView questionTracker;
     RelativeLayout questionRelLay;
     Button nextQues;
     Button backQues;
+    Button submitQuizBtn;
 
     int currentQuestionIndex = 0;
 
@@ -40,6 +44,16 @@ public class TakeQuiz extends AppCompatActivity {
 
         loadQuiz();
 
+        userAnswers = new ArrayList[quiz.questionList.size()];
+
+        for(int i = 0; i < userAnswers.length; i++) {
+            userAnswers[i] = new ArrayList<Object>();
+
+            if(quiz.questionList.get(i).mcQuestion == false) {
+                userAnswers[i].add((String) "");
+            }
+        }
+
         quizNameLabel = findViewById(R.id.quizTitleLabel);
         quizNameLabel.setText(quiz.quizName);
 
@@ -47,11 +61,13 @@ public class TakeQuiz extends AppCompatActivity {
         questionLabel.setText(quiz.questionList.get(0).question);
 
         questionNumber = findViewById(R.id.quesNum);
+        questionTracker = findViewById(R.id.questTracker);
 
         questionRelLay = findViewById(R.id.mainRelLay);
 
         nextQues = findViewById(R.id.nextQuesBtn);
         backQues = findViewById(R.id.backQuesBtn);
+        submitQuizBtn = findViewById(R.id.sbtBtn);
 
         displayQuestion(currentQuestionIndex);
 
@@ -74,6 +90,13 @@ public class TakeQuiz extends AppCompatActivity {
                 }
             }
         });
+
+        submitQuizBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkAnswers();
+            }
+        });
     }
 
     public void loadQuiz() {
@@ -88,6 +111,7 @@ public class TakeQuiz extends AppCompatActivity {
         questionRelLay.removeAllViews();
 
         questionNumber.setText((index + 1) + ".");
+        questionTracker.setText((index + 1) + " of " + quiz.questionList.size());
         questionLabel.setText(quiz.questionList.get(index).question);
 
         if(quiz.questionList.get(index).mcQuestion) {
@@ -112,10 +136,19 @@ public class TakeQuiz extends AppCompatActivity {
 
                 questionRelLay.addView(optionsCB[i], optionLayParams);
 
+                if(userAnswers[index].contains(i)) {
+                    optionsCB[i].setChecked(true);
+                }
+
+                int j = i;
                 optionsCB[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
+                        if(optionsCB[j].isChecked()) {
+                            userAnswers[index].add((Integer) j);
+                        } else if(userAnswers[index].contains((Integer) j)){
+                            userAnswers[index].remove((Integer) j);
+                        }
                     }
                 });
             }
@@ -127,6 +160,8 @@ public class TakeQuiz extends AppCompatActivity {
             frLayParams.leftMargin = 20;
 
             questionRelLay.addView(frAns, frLayParams);
+
+            frAns.setText((String) userAnswers[index].get(0));
 
             frAns.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -141,9 +176,27 @@ public class TakeQuiz extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-
+                    userAnswers[index].set(0, frAns.getText().toString());
                 }
             });
+        }
+    }
+
+    public void checkAnswers() {
+        for(int i = 0; i < userAnswers.length; i++) {
+            if(quiz.questionList.get(i).mcQuestion) {
+                for(int j = 0; j < userAnswers[i].size(); j++) {
+                    if(quiz.questionList.get(i).correctAnswers.contains(userAnswers[i].get(j))) {
+
+                    } else {
+
+                    }
+                }
+            } else {
+                if(userAnswers[i].get(0).equals(quiz.questionList.get(i).frCorrectAnswer) == false) {
+
+                }
+            }
         }
     }
 }
