@@ -1,21 +1,29 @@
 package com.example.quizit;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -25,6 +33,7 @@ public class TakeQuiz extends AppCompatActivity {
     QuizInfo quiz;
 
     ArrayList<Object>[] userAnswers;
+    Boolean[] userAnswersCorrect;
 
     TextView quizNameLabel;
     TextView questionLabel;
@@ -37,6 +46,8 @@ public class TakeQuiz extends AppCompatActivity {
 
     int currentQuestionIndex = 0;
 
+    boolean finishedQuiz = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +56,7 @@ public class TakeQuiz extends AppCompatActivity {
         loadQuiz();
 
         userAnswers = new ArrayList[quiz.questionList.size()];
+        userAnswersCorrect = new Boolean[userAnswers.length];
 
         for(int i = 0; i < userAnswers.length; i++) {
             userAnswers[i] = new ArrayList<Object>();
@@ -94,7 +106,162 @@ public class TakeQuiz extends AppCompatActivity {
         submitQuizBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                finishedQuiz = true;
                 checkAnswers();
+
+                ScrollView resultScrlView = new ScrollView(TakeQuiz.this);
+                resultScrlView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
+                RelativeLayout resultLay = new RelativeLayout(TakeQuiz.this);
+                resultLay.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
+                resultScrlView.addView(resultLay);
+
+                TextView resultLabel = new TextView(TakeQuiz.this);
+                resultLabel.setText("Result");
+                resultLabel.setTextSize(40);
+                resultLabel.setId(View.generateViewId());
+
+                RelativeLayout.LayoutParams resultLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                resultLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                resultLabelParams.topMargin = 75;
+                resultLabelParams.bottomMargin = 10;
+
+                resultLay.addView(resultLabel, resultLabelParams);
+
+                TextView scoreLabel = new TextView(TakeQuiz.this);
+
+                int totalCorrectAnswers = 0;
+
+                for(int i = 0; i < userAnswersCorrect.length; i++) {
+                    if(userAnswersCorrect[i]) {
+                        totalCorrectAnswers++;
+                    }
+                }
+
+                scoreLabel.setText("Score: " + totalCorrectAnswers + " of " + quiz.questionList.size());
+                scoreLabel.setTextSize(25);
+                scoreLabel.setId(View.generateViewId());
+
+                RelativeLayout.LayoutParams scoreLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                scoreLabelParams.addRule(RelativeLayout.BELOW, resultLabel.getId());
+                scoreLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                scoreLabelParams.bottomMargin = 50;
+
+                resultLay.addView(scoreLabel, scoreLabelParams);
+
+                Button[] questionsButtons = new Button[quiz.questionList.size()];
+
+                for(int i = 0; i < questionsButtons.length; i++) {
+                    questionsButtons[i] = new Button(TakeQuiz.this);
+                    questionsButtons[i].setText("Question " + (i + 1));
+                    questionsButtons[i].setId(View.generateViewId());
+
+                    Drawable buttonDrawable = questionsButtons[i].getBackground();
+                    buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+
+                    if(userAnswersCorrect[i]) {
+                        DrawableCompat.setTint(buttonDrawable, Color.GREEN);
+                    } else {
+                        DrawableCompat.setTint(buttonDrawable, Color.RED);
+                    }
+
+                    questionsButtons[i].setBackground(buttonDrawable);
+
+                    RelativeLayout.LayoutParams questBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    questBtnParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+                    if(i == 0) {
+                        questBtnParams.addRule(RelativeLayout.BELOW, scoreLabel.getId());
+                    } else {
+                        questBtnParams.addRule(RelativeLayout.BELOW, questionsButtons[i - 1].getId());
+                    }
+
+                    questBtnParams.bottomMargin = 10;
+
+                    resultLay.addView(questionsButtons[i], questBtnParams);
+
+                    int j = i;
+                    questionsButtons[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ScrollView mainQuestScrlView = new ScrollView(TakeQuiz.this);
+                            mainQuestScrlView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
+                            RelativeLayout mainQuesRelLay = new RelativeLayout(TakeQuiz.this);
+                            mainQuesRelLay.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
+                            mainQuestScrlView.addView(mainQuesRelLay);
+
+                            TextView questNumLabel = new TextView(TakeQuiz.this);
+                            questNumLabel.setText("Question " + (j + 1));
+                            questNumLabel.setTextSize(20);
+                            questNumLabel.setId(View.generateViewId());
+
+                            RelativeLayout.LayoutParams questNumLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            questNumLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                            questNumLabelParams.topMargin = 25;
+                            questNumLabelParams.bottomMargin = 30;
+
+                            mainQuesRelLay.addView(questNumLabel, questNumLabelParams);
+
+                            TextView questionLabel = new TextView(TakeQuiz.this);
+                            questionLabel.setText(quiz.questionList.get(j).question);
+                            questionLabel.setTextSize(25);
+                            questionLabel.setId(View.generateViewId());
+
+                            RelativeLayout.LayoutParams questionLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            questionLabelParams.addRule(RelativeLayout.BELOW, questNumLabel.getId());
+                            questionLabelParams.leftMargin = 10;
+                            questionLabelParams.rightMargin = 10;
+                            questionLabelParams.bottomMargin = 20;
+
+                            mainQuesRelLay.addView(questionLabel, questionLabelParams);
+
+                            ScrollView answersScrlView = new ScrollView(TakeQuiz.this);
+                            answersScrlView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
+                            RelativeLayout.LayoutParams ansScrlViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                            ansScrlViewParams.addRule(RelativeLayout.BELOW, questionLabel.getId());
+
+                            mainQuesRelLay.addView(answersScrlView, ansScrlViewParams);
+
+                            RelativeLayout answersRelLay = new RelativeLayout(TakeQuiz.this);
+                            answersRelLay.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
+                            answersScrlView.addView(answersRelLay);
+
+                            if(quiz.questionList.get(j).mcQuestion) {
+                                CheckBox[] optionsCB = new CheckBox[quiz.questionList.get(j).options.length];
+
+                                for(int i = 0; i < optionsCB.length; i++) {
+                                    optionsCB[i] = new CheckBox(TakeQuiz.this);
+                                    optionsCB[i].setText(quiz.questionList.get(j).options[i]);
+                                    optionsCB[i].setId(View.generateViewId());
+                                    optionsCB[i].setClickable(false);
+                                    optionsCB[i].setFocusable(false);
+
+                                    RelativeLayout.LayoutParams optionParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                                    if(i > 0) {
+                                        optionParams.addRule(RelativeLayout.BELOW, optionsCB[i - 1].getId());
+                                    }
+
+                                    optionParams.leftMargin = 20;
+                                    optionParams.rightMargin = 10;
+                                    optionParams.bottomMargin = 10;
+
+                                    answersRelLay.addView(optionsCB[i], optionParams);
+                                }
+                            }
+
+                            setContentView(mainQuestScrlView);
+                        }
+                    });
+                }
+
+
+                setContentView(resultScrlView);
             }
         });
     }
@@ -122,7 +289,7 @@ public class TakeQuiz extends AppCompatActivity {
                 optionsCB[i].setText(quiz.questionList.get(index).options[i]);
                 optionsCB[i].setId(View.generateViewId());
 
-                RelativeLayout.LayoutParams optionLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams optionLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
                 if(i < optionsCB.length - 1) {
                     optionLayParams.bottomMargin = 20;
@@ -187,14 +354,17 @@ public class TakeQuiz extends AppCompatActivity {
             if(quiz.questionList.get(i).mcQuestion) {
                 for(int j = 0; j < userAnswers[i].size(); j++) {
                     if(quiz.questionList.get(i).correctAnswers.contains(userAnswers[i].get(j))) {
-
+                        userAnswersCorrect[i] = true;
                     } else {
-
+                        userAnswersCorrect[i] = false;
+                        break;
                     }
                 }
             } else {
-                if(userAnswers[i].get(0).equals(quiz.questionList.get(i).frCorrectAnswer) == false) {
-
+                if(userAnswers[i].get(0).equals(quiz.questionList.get(i).frCorrectAnswer)) {
+                    userAnswersCorrect[i] = true;
+                } else {
+                    userAnswersCorrect[i] = false;
                 }
             }
         }

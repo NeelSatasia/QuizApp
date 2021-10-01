@@ -328,7 +328,7 @@ public class SaveQuiz extends AppCompatActivity {
                 }
             } else {
                 EditText frCorrectAnswers = new EditText(this);
-                frCorrectAnswers.setHint("Write the correct answer or leave blank to check after taking this quiz");
+                frCorrectAnswers.setHint("Type the correct answer");
                 frCorrectAnswers.setId(View.generateViewId());
 
                 if(k >= 0) {
@@ -508,6 +508,11 @@ public class SaveQuiz extends AppCompatActivity {
                             isQuizReadyToBeCreated = false;
                             break;
                         }
+                    }
+                } else {
+                    if(questionsList.get(i).frCorrectAnswer.isEmpty()) {
+                        isQuizReadyToBeCreated = false;
+                        break;
                     }
                 }
             }
