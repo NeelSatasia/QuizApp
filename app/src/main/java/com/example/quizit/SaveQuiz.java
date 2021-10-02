@@ -53,6 +53,8 @@ public class SaveQuiz extends AppCompatActivity {
 
     boolean selectedMC;
 
+    String userError;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -496,49 +498,60 @@ public class SaveQuiz extends AppCompatActivity {
         boolean isQuizReadyToBeCreated = true;
 
         if(quizName.getText().toString().isEmpty() == false && questionsList.size() > 0) {
-            for(int i = 0; i < questionsList.size(); i++) {
-                if(questionsList.get(i).question.isEmpty()) {
+            for(int i = 0; i < quizzes.size(); i++) {
+                if(quizzes.get(i).quizName.equals(quizName)) {
                     isQuizReadyToBeCreated = false;
+                    userError = "Quiz name already exists!";
                     break;
                 }
+            }
 
-                if(questionsList.get(i).mcQuestion) {
-                    for (int j = 0; j < questionsList.get(i).options.length; j++) {
-                        if (questionsList.get(i).options[j].isEmpty()) {
+            if(isQuizReadyToBeCreated) {
+                for (int i = 0; i < questionsList.size(); i++) {
+                    if (questionsList.get(i).question.isEmpty()) {
+                        isQuizReadyToBeCreated = false;
+                        userError = "Contains empty field(s)!";
+                        break;
+                    }
+
+                    if (questionsList.get(i).mcQuestion) {
+                        for (int j = 0; j < questionsList.get(i).options.length; j++) {
+                            if (questionsList.get(i).options[j].isEmpty()) {
+                                isQuizReadyToBeCreated = false;
+                                userError = "Contains empty field(s)!";
+                                break;
+                            }
+                        }
+                    } else {
+                        if (questionsList.get(i).frCorrectAnswer.isEmpty()) {
                             isQuizReadyToBeCreated = false;
+                            userError = "Contains empty field(s)!";
                             break;
                         }
-                    }
-                } else {
-                    if(questionsList.get(i).frCorrectAnswer.isEmpty()) {
-                        isQuizReadyToBeCreated = false;
-                        break;
                     }
                 }
             }
         } else {
             isQuizReadyToBeCreated = false;
+            userError =  "Missing requirements!";
         }
 
         if(isQuizReadyToBeCreated) {
             Intent intent = new Intent(this, Quizzes.class);
             QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList);
             if (editQuizID < 0) {
-
-
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("QuizzesList", newQuiz);
                 intent.putExtras(bundle);
             } else {
-                quizzes.remove(editQuizID);
-                quizzes.add(editQuizID, newQuiz);
+                quizzes.set(editQuizID, newQuiz);
 
                 saveQuizzes();
             }
 
             startActivity(intent);
         } else {
-            Toast.makeText(this, "Missing Field(s) !", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, userError, Toast.LENGTH_LONG).show();
         }
     }
 
