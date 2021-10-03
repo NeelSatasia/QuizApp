@@ -3,6 +3,7 @@ package com.example.quizit;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -46,7 +47,10 @@ public class TakeQuiz extends AppCompatActivity {
 
     int currentQuestionIndex = 0;
 
+    ScrollView resultScrlView;
+
     boolean finishedQuiz = false;
+    boolean reviewingQuestionAfterQuiz = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +115,7 @@ public class TakeQuiz extends AppCompatActivity {
                 finishedQuiz = true;
                 checkAnswers();
 
-                ScrollView resultScrlView = new ScrollView(TakeQuiz.this);
+                resultScrlView = new ScrollView(TakeQuiz.this);
                 resultScrlView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 
                 RelativeLayout resultLay = new RelativeLayout(TakeQuiz.this);
@@ -264,12 +268,60 @@ public class TakeQuiz extends AppCompatActivity {
 
                             answersRelLay.addView(optionsCB[k], optionParams);
                         }
+                    } else {
+                        TextView yourAnsLabel = new TextView(TakeQuiz.this);
+                        yourAnsLabel.setText("Your Answer:");
+                        yourAnsLabel.setTextSize(20);
+                        yourAnsLabel.setId(View.generateViewId());
+
+                        RelativeLayout.LayoutParams yourAnsLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        yourAnsLabelParams.leftMargin = 10;
+                        yourAnsLabelParams.bottomMargin = 25;
+
+                        answersRelLay.addView(yourAnsLabel, yourAnsLabelParams);
+
+                        TextView userFrAnswer = new TextView(TakeQuiz.this);
+                        userFrAnswer.setText((String) userAnswers[i].get(0));
+                        userFrAnswer.setTextSize(20);
+                        userFrAnswer.setHint("No response");
+                        userFrAnswer.setId(View.generateViewId());
+
+                        RelativeLayout.LayoutParams userFrAnswerLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        userFrAnswerLayParams.addRule(RelativeLayout.BELOW, yourAnsLabel.getId());
+                        userFrAnswerLayParams.leftMargin = 10;
+                        userFrAnswerLayParams.bottomMargin = 30;
+
+                        answersRelLay.addView(userFrAnswer, userFrAnswerLayParams);
+
+                        TextView corrAnsLabel = new TextView(TakeQuiz.this);
+                        corrAnsLabel.setText("Correct Answer:");
+                        corrAnsLabel.setTextSize(20);
+                        corrAnsLabel.setId(View.generateViewId());
+
+                        RelativeLayout.LayoutParams corrAnsLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        corrAnsLayParams.addRule(RelativeLayout.BELOW, userFrAnswer.getId());
+                        corrAnsLayParams.leftMargin = 10;
+                        corrAnsLayParams.bottomMargin = 20;
+
+                        answersRelLay.addView(corrAnsLabel, corrAnsLayParams);
+
+                        TextView corrfrAns = new TextView(TakeQuiz.this);
+                        corrfrAns.setText(quiz.questionList.get(i).frCorrectAnswer);
+                        corrfrAns.setTextSize(20);
+
+                        RelativeLayout.LayoutParams corrfrAnsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        corrfrAnsParams.addRule(RelativeLayout.BELOW, corrAnsLabel.getId());
+                        corrfrAnsParams.leftMargin = 10;
+                        corrfrAnsParams.bottomMargin = 20;
+
+                        answersRelLay.addView(corrfrAns, corrfrAnsParams);
                     }
 
                     int j = i;
                     questionsButtons[i].setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            reviewingQuestionAfterQuiz = true;
                             setContentView(questionsResScrlView[j]);
                         }
                     });
@@ -381,6 +433,17 @@ public class TakeQuiz extends AppCompatActivity {
                     userAnswersCorrect[i] = true;
                 }
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(reviewingQuestionAfterQuiz) {
+            reviewingQuestionAfterQuiz = false;
+            setContentView(resultScrlView);
+        } else {
+            Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
+            startActivity(intent);
         }
     }
 }
