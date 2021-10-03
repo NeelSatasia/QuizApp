@@ -76,7 +76,6 @@ public class TakeQuiz extends AppCompatActivity {
         quizNameLabel.setText(quiz.quizName);
 
         questionLabel = findViewById(R.id.questionLabel);
-        questionLabel.setText(quiz.questionList.get(0).question);
 
         questionNumber = findViewById(R.id.quesNum);
         questionTracker = findViewById(R.id.questTracker);
@@ -162,20 +161,21 @@ public class TakeQuiz extends AppCompatActivity {
                 for(int i = 0; i < questionsButtons.length; i++) {
                     questionsButtons[i] = new Button(TakeQuiz.this);
                     questionsButtons[i].setText("Question " + (i + 1));
+                    questionsButtons[i].setTextColor(Color.WHITE);
                     questionsButtons[i].setId(View.generateViewId());
 
                     Drawable buttonDrawable = questionsButtons[i].getBackground();
                     buttonDrawable = DrawableCompat.wrap(buttonDrawable);
 
                     if(userAnswersCorrect[i]) {
-                        DrawableCompat.setTint(buttonDrawable, Color.GREEN);
+                        DrawableCompat.setTint(buttonDrawable, Color.rgb(60, 179, 113));
                     } else {
-                        DrawableCompat.setTint(buttonDrawable, Color.RED);
+                        DrawableCompat.setTint(buttonDrawable, Color.rgb(178, 34, 34));
                     }
 
                     questionsButtons[i].setBackground(buttonDrawable);
 
-                    RelativeLayout.LayoutParams questBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    RelativeLayout.LayoutParams questBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     questBtnParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
                     if(i == 0) {
@@ -184,6 +184,8 @@ public class TakeQuiz extends AppCompatActivity {
                         questBtnParams.addRule(RelativeLayout.BELOW, questionsButtons[i - 1].getId());
                     }
 
+                    questBtnParams.leftMargin = 10;
+                    questBtnParams.rightMargin = 10;
                     questBtnParams.bottomMargin = 10;
 
                     resultLay.addView(questionsButtons[i], questBtnParams);
@@ -213,18 +215,27 @@ public class TakeQuiz extends AppCompatActivity {
                     TextView questionLabel = new TextView(TakeQuiz.this);
                     questionLabel.setText(quiz.questionList.get(i).question);
                     questionLabel.setTextSize(25);
+                    questionLabel.setTextColor(Color.WHITE);
                     questionLabel.setId(View.generateViewId());
+                    questionLabel.setPadding(15, 0, 10, 0);
+
+                    if(userAnswersCorrect[i]) {
+                        questionLabel.setBackgroundColor(Color.rgb(60, 179, 113));
+                    } else {
+                        questionLabel.setBackgroundColor(Color.rgb(178, 34, 34));
+                    }
 
                     RelativeLayout.LayoutParams questionLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                     questionLabelParams.addRule(RelativeLayout.BELOW, questNumLabel.getId());
-                    questionLabelParams.leftMargin = 10;
+                    questionLabelParams.leftMargin = 20;
                     questionLabelParams.rightMargin = 10;
-                    questionLabelParams.bottomMargin = 20;
+                    questionLabelParams.bottomMargin = 30;
 
                     mainQuesRelLay.addView(questionLabel, questionLabelParams);
 
                     ScrollView answersScrlView = new ScrollView(TakeQuiz.this);
                     answersScrlView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+                    answersScrlView.setBackgroundColor(Color.rgb(245, 245, 245));
 
                     RelativeLayout.LayoutParams ansScrlViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     ansScrlViewParams.addRule(RelativeLayout.BELOW, questionLabel.getId());
@@ -272,10 +283,11 @@ public class TakeQuiz extends AppCompatActivity {
                         TextView yourAnsLabel = new TextView(TakeQuiz.this);
                         yourAnsLabel.setText("Your Answer:");
                         yourAnsLabel.setTextSize(20);
+                        yourAnsLabel.setTextColor(Color.rgb(0, 128, 0));
                         yourAnsLabel.setId(View.generateViewId());
 
                         RelativeLayout.LayoutParams yourAnsLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        yourAnsLabelParams.leftMargin = 10;
+                        yourAnsLabelParams.leftMargin = 35;
                         yourAnsLabelParams.bottomMargin = 25;
 
                         answersRelLay.addView(yourAnsLabel, yourAnsLabelParams);
@@ -288,33 +300,37 @@ public class TakeQuiz extends AppCompatActivity {
 
                         RelativeLayout.LayoutParams userFrAnswerLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                         userFrAnswerLayParams.addRule(RelativeLayout.BELOW, yourAnsLabel.getId());
-                        userFrAnswerLayParams.leftMargin = 10;
-                        userFrAnswerLayParams.bottomMargin = 30;
+                        userFrAnswerLayParams.leftMargin = 65;
+                        userFrAnswerLayParams.bottomMargin = 50;
 
                         answersRelLay.addView(userFrAnswer, userFrAnswerLayParams);
 
-                        TextView corrAnsLabel = new TextView(TakeQuiz.this);
-                        corrAnsLabel.setText("Correct Answer:");
-                        corrAnsLabel.setTextSize(20);
-                        corrAnsLabel.setId(View.generateViewId());
+                        if(userAnswersCorrect[i] == false) {
+                            TextView corrAnsLabel = new TextView(TakeQuiz.this);
+                            corrAnsLabel.setText("Correct Answer:");
+                            corrAnsLabel.setTextSize(20);
+                            corrAnsLabel.setId(View.generateViewId());
+                            corrAnsLabel.setTextColor(Color.rgb(0, 128, 0));
+                            yourAnsLabel.setTextColor(Color.RED);
 
-                        RelativeLayout.LayoutParams corrAnsLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        corrAnsLayParams.addRule(RelativeLayout.BELOW, userFrAnswer.getId());
-                        corrAnsLayParams.leftMargin = 10;
-                        corrAnsLayParams.bottomMargin = 20;
+                            RelativeLayout.LayoutParams corrAnsLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            corrAnsLayParams.addRule(RelativeLayout.BELOW, userFrAnswer.getId());
+                            corrAnsLayParams.leftMargin = 35;
+                            corrAnsLayParams.bottomMargin = 20;
 
-                        answersRelLay.addView(corrAnsLabel, corrAnsLayParams);
+                            answersRelLay.addView(corrAnsLabel, corrAnsLayParams);
 
-                        TextView corrfrAns = new TextView(TakeQuiz.this);
-                        corrfrAns.setText(quiz.questionList.get(i).frCorrectAnswer);
-                        corrfrAns.setTextSize(20);
+                            TextView corrfrAns = new TextView(TakeQuiz.this);
+                            corrfrAns.setText(quiz.questionList.get(i).frCorrectAnswer);
+                            corrfrAns.setTextSize(20);
 
-                        RelativeLayout.LayoutParams corrfrAnsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        corrfrAnsParams.addRule(RelativeLayout.BELOW, corrAnsLabel.getId());
-                        corrfrAnsParams.leftMargin = 10;
-                        corrfrAnsParams.bottomMargin = 20;
+                            RelativeLayout.LayoutParams corrfrAnsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                            corrfrAnsParams.addRule(RelativeLayout.BELOW, corrAnsLabel.getId());
+                            corrfrAnsParams.leftMargin = 65;
+                            corrfrAnsParams.bottomMargin = 20;
 
-                        answersRelLay.addView(corrfrAns, corrfrAnsParams);
+                            answersRelLay.addView(corrfrAns, corrfrAnsParams);
+                        }
                     }
 
                     int j = i;

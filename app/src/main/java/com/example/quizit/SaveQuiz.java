@@ -499,7 +499,7 @@ public class SaveQuiz extends AppCompatActivity {
 
         if(quizName.getText().toString().isEmpty() == false && questionsList.size() > 0) {
             for(int i = 0; i < quizzes.size(); i++) {
-                if(quizzes.get(i).quizName.equals(quizName)) {
+                if(i != editQuizID && quizzes.get(i).quizName.equals(quizName.getText().toString())) {
                     isQuizReadyToBeCreated = false;
                     userError = "Quiz name already exists!";
                     break;

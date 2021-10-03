@@ -95,7 +95,8 @@
                 android:inputType="text"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:textSize="25dp" />
+                android:textSize="25dp"
+                android:maxLength="25"/>
 
         </RelativeLayout>
     </ScrollView>

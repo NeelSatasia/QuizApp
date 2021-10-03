@@ -2,6 +2,8 @@ package com.example.quizit;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -82,14 +85,22 @@ public class Quizzes extends AppCompatActivity {
         for(int i = 0; i < quizzes.size(); i++) {
             Button newQuizBtn = new Button(this);
             newQuizBtn.setText(quizzes.get(i).quizName);
+            newQuizBtn.setTextColor(Color.WHITE);
 
-            RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            Drawable buttonDrawable = newQuizBtn.getBackground();
+            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+            DrawableCompat.setTint(buttonDrawable, Color.rgb(70, 130, 180));
+            newQuizBtn.setBackground(buttonDrawable);
+
+            RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             if(quizzesBtn.size() == 0) {
                 quizBtnLay.addRule(RelativeLayout.BELOW, yourQuizzesLabel.getId());
             } else {
                 quizBtnLay.addRule(RelativeLayout.BELOW, quizzesBtn.get(quizzesBtn.size() - 1).getId());
             }
             quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            quizBtnLay.leftMargin = 10;
+            quizBtnLay.rightMargin = 10;
             quizBtnLay.bottomMargin = 10;
 
             quizzesBtn.add(newQuizBtn);
