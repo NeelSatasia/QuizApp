@@ -10,11 +10,12 @@
         android:id="@+id/sbtBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"/>
+        android:text="Submit"
+        app:backgroundTint="#FF9800" />
 
     <TextView
         android:id="@+id/quizTitleLabel"
@@ -46,7 +47,7 @@
         android:paddingTop="10dp"
         android:paddingLeft="5dp"
         android:paddingBottom="10dp"
-        android:background="#60E6E6"
+
         android:layout_alignParentLeft="true"
         android:textStyle="bold"/>
 
@@ -56,15 +57,15 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/quesNum"
         android:layout_alignBottom="@+id/quesNum"
+        android:layout_alignParentRight="true"
         android:layout_toEndOf="@+id/quesNum"
-        android:background="#60E6E6"
+
         android:gravity="center_vertical"
         android:paddingLeft="10dp"
         android:paddingRight="5dp"
         android:text="Question"
         android:textSize="25dp"
-        android:layout_alignParentRight="true"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <ScrollView
         android:id="@+id/mainScrlView"
@@ -77,10 +78,9 @@
             android:id="@+id/mainRelLay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#F5F5F5"
+            android:paddingLeft="40dp"
             android:paddingTop="10dp"
-            android:paddingLeft="40dp">
-        </RelativeLayout>
+            android:paddingBottom="75dp"></RelativeLayout>
     </ScrollView>
 
     <LinearLayout
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
             android:text="Back"
-            app:backgroundTint="#CF3131" />
+            app:backgroundTint="#615F5F" />
 
         <Button
             android:id="@+id/nextQuesBtn"

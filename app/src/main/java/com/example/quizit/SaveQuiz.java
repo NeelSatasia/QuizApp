@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -79,7 +81,6 @@ public class SaveQuiz extends AppCompatActivity {
             quizName.setText(quizzes.get(editQuizID).quizName);
             questionsList = quizzes.get(editQuizID).questionList;
             createQuizBtn.setText("Save");
-            setTimer.setText("Change Timer");
 
             uploadQuiz();
         } else {

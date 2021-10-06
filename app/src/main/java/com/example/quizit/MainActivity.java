@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     public void createNewQuiz(View view) {
         SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
         editor.putString("Quiz", null);
         editor.putInt("QuizID", -1);
         editor.apply();
@@ -37,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToUserQuizzes(View view) {
-        ArrayList<String> list = new ArrayList<String>();
         Intent intent = new Intent(this, Quizzes.class);
         startActivity(intent);
 

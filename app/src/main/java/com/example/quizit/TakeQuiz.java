@@ -33,6 +33,7 @@ public class TakeQuiz extends AppCompatActivity {
 
     QuizInfo quiz;
 
+    RelativeLayout[] questionsOptionsRelLays;
     ArrayList<Object>[] userAnswers;
     Boolean[] userAnswersCorrect;
 
@@ -59,10 +60,12 @@ public class TakeQuiz extends AppCompatActivity {
 
         loadQuiz();
 
+        questionsOptionsRelLays = new RelativeLayout[quiz.questionList.size()];
+
         userAnswers = new ArrayList[quiz.questionList.size()];
         userAnswersCorrect = new Boolean[userAnswers.length];
 
-        for(int i = 0; i < userAnswers.length; i++) {
+        for(int i = 0; i < quiz.questionList.size(); i++) {
             userAnswers[i] = new ArrayList<Object>();
 
             if(quiz.questionList.get(i).mcQuestion == false) {
@@ -70,6 +73,68 @@ public class TakeQuiz extends AppCompatActivity {
             }
 
             userAnswersCorrect[i] = false;
+
+            questionsOptionsRelLays[i] = new RelativeLayout(this);
+            questionsOptionsRelLays[i].setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+
+            if(quiz.questionList.get(i).mcQuestion) {
+                CheckBox[] optionsCB = new CheckBox[quiz.questionList.get(i).options.length];
+
+                for(int k = 0; k < optionsCB.length; k++) {
+                    optionsCB[k] = new CheckBox(this);
+                    optionsCB[k].setText(quiz.questionList.get(i).options[k]);
+                    optionsCB[k].setId(View.generateViewId());
+
+                    RelativeLayout.LayoutParams optionLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    optionLayParams.bottomMargin = 20;
+
+                    if(k > 0) {
+                        optionLayParams.addRule(RelativeLayout.BELOW, optionsCB[k - 1].getId());
+                    }
+
+                    questionsOptionsRelLays[i].addView(optionsCB[k], optionLayParams);
+
+                    int h = i;
+                    int j = k;
+                    optionsCB[k].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                            if(optionsCB[j].isChecked()) {
+                                userAnswers[h].add((Integer) j);
+                            } else if(userAnswers[h].contains((Integer) j)){
+                                userAnswers[h].remove((Integer) j);
+                            }
+                        }
+                    });
+                }
+            } else {
+                EditText frAns = new EditText(this);
+                frAns.setHint("Type your answer here");
+
+                RelativeLayout.LayoutParams frLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                frLayParams.leftMargin = 20;
+                frLayParams.rightMargin = 10;
+
+                questionsOptionsRelLays[i].addView(frAns, frLayParams);
+
+                int h = i;
+                frAns.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        userAnswers[h].set(0, frAns.getText().toString());
+                    }
+                });
+            }
         }
 
         quizNameLabel = findViewById(R.id.quizTitleLabel);
@@ -217,7 +282,7 @@ public class TakeQuiz extends AppCompatActivity {
                     questionLabel.setTextSize(25);
                     questionLabel.setTextColor(Color.WHITE);
                     questionLabel.setId(View.generateViewId());
-                    questionLabel.setPadding(15, 0, 10, 0);
+                    questionLabel.setPadding(15, 10, 10, 10);
 
                     if(userAnswersCorrect[i]) {
                         questionLabel.setBackgroundColor(Color.rgb(60, 179, 113));
@@ -363,72 +428,7 @@ public class TakeQuiz extends AppCompatActivity {
         questionTracker.setText((index + 1) + " of " + quiz.questionList.size());
         questionLabel.setText(quiz.questionList.get(index).question);
 
-        if(quiz.questionList.get(index).mcQuestion) {
-            CheckBox[] optionsCB = new CheckBox[quiz.questionList.get(index).options.length];
-
-            for(int i = 0; i < optionsCB.length; i++) {
-                optionsCB[i] = new CheckBox(this);
-                optionsCB[i].setText(quiz.questionList.get(index).options[i]);
-                optionsCB[i].setId(View.generateViewId());
-
-                RelativeLayout.LayoutParams optionLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                if(i < optionsCB.length - 1) {
-                    optionLayParams.bottomMargin = 20;
-                } else {
-                    optionLayParams.bottomMargin = 200;
-                }
-
-                if(i > 0) {
-                    optionLayParams.addRule(RelativeLayout.BELOW, optionsCB[i - 1].getId());
-                }
-
-                questionRelLay.addView(optionsCB[i], optionLayParams);
-
-                if(userAnswers[index].contains(i)) {
-                    optionsCB[i].setChecked(true);
-                }
-
-                int j = i;
-                optionsCB[i].setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if(optionsCB[j].isChecked()) {
-                            userAnswers[index].add((Integer) j);
-                        } else if(userAnswers[index].contains((Integer) j)){
-                            userAnswers[index].remove((Integer) j);
-                        }
-                    }
-                });
-            }
-        } else {
-            EditText frAns = new EditText(this);
-            frAns.setHint("Type your answer here");
-
-            RelativeLayout.LayoutParams frLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            frLayParams.leftMargin = 20;
-
-            questionRelLay.addView(frAns, frLayParams);
-
-            frAns.setText((String) userAnswers[index].get(0));
-
-            frAns.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    userAnswers[index].set(0, frAns.getText().toString());
-                }
-            });
-        }
+        questionRelLay.addView(questionsOptionsRelLays[index]);
     }
 
     public void checkAnswers() {

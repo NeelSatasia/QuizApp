@@ -9,7 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:gravity="center">
 
         <Button
             android:id="@+id/takeQuizBtn"
@@ -21,14 +22,18 @@
             android:id="@+id/editQuizBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit"
-            android:layout_below="@+id/takeQuizBtn"/>
+            android:text="Edit"/>
+
+        <Button
+            android:id="@+id/histBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="History"/>
 
         <Button
             android:id="@+id/deleteQuizBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/editQuizBtn"
             android:text="Delete"
             app:backgroundTint="#E41212" />
     </LinearLayout>
