@@ -110,10 +110,12 @@ public class TakeQuiz extends AppCompatActivity {
             } else {
                 EditText frAns = new EditText(this);
                 frAns.setHint("Type your answer here");
+                frAns.setBackgroundResource(R.drawable.custom_input_answer);
+                frAns.setPadding(15, 15, 15, 15);
 
                 RelativeLayout.LayoutParams frLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                frLayParams.leftMargin = 20;
-                frLayParams.rightMargin = 10;
+                //frLayParams.leftMargin = 20;
+                frLayParams.rightMargin = 40;
 
                 questionsOptionsRelLays[i].addView(frAns, frLayParams);
 

@@ -81,7 +81,9 @@
         <RelativeLayout
             android:id="@+id/newQuizLay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <EditText
                 android:id="@+id/quizNameID"
@@ -90,13 +92,16 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
+                android:background="@drawable/custom_input"
                 android:gravity="center"
                 android:hint="Quiz Name"
                 android:inputType="text"
+                android:maxLength="25"
                 android:paddingLeft="10dp"
+                android:paddingTop="5dp"
                 android:paddingRight="10dp"
-                android:textSize="25dp"
-                android:maxLength="25"/>
+                android:paddingBottom="5dp"
+                android:textSize="25dp" />
 
         </RelativeLayout>
     </ScrollView>

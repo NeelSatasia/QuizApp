@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -177,174 +179,147 @@ public class SaveQuiz extends AppCompatActivity {
     }
 
     public void createNewQuestion(int k, int totalOptions, boolean mcQues) {
-            RelativeLayout newQuestionRelativeLayout = new RelativeLayout(SaveQuiz.this);
-            newQuestionRelativeLayout.setId(View.generateViewId());
+        RelativeLayout newQuestionRelativeLayout = new RelativeLayout(SaveQuiz.this);
+        newQuestionRelativeLayout.setId(View.generateViewId());
+        newQuestionRelativeLayout.setBackgroundColor(Color.rgb(242, 242, 242));
+        newQuestionRelativeLayout.setPadding(20, 20, 20, 10);
+        newQuestionRelativeLayout.setBackgroundResource(R.drawable.custom_input_question);
 
-            if(k < 0) {
-                questionsList.add(new Question("", new String[totalOptions], new ArrayList<Integer>(), "", mcQues));
+        if(k < 0) {
+            questionsList.add(new Question("", new String[totalOptions], new ArrayList<Integer>(), "", mcQues));
+        }
+
+        RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+        EditText newQuestion = new EditText(SaveQuiz.this);
+        if(k >= 0) {
+            newQuestion.setText(questionsList.get(k).question);
+        }
+        newQuestion.setHint("Question " + (questionList_rel_lay.size() + 1));
+        newQuestion.setId(View.generateViewId());
+        newQuestion.setBackgroundResource(R.drawable.custom_question_textview);
+        newQuestion.setPadding(15, 15, 15, 15);
+        viewsInQuestions.add(newQuestion);
+
+        RelativeLayout.LayoutParams newQuestionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        newQuestionLayout.leftMargin = 10;
+        newQuestionLayout.bottomMargin = 10;
+        newQuestionRelativeLayout.addView(newQuestion, newQuestionLayout);
+
+        newQuestion.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
-            RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-            EditText newQuestion = new EditText(SaveQuiz.this);
-            if(k >= 0) {
-                newQuestion.setText(questionsList.get(k).question);
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
-            newQuestion.setHint("Question " + (questionList_rel_lay.size() + 1));
-            newQuestion.setId(View.generateViewId());
-            viewsInQuestions.add(newQuestion);
 
-            RelativeLayout.LayoutParams newQuestionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            newQuestionLayout.leftMargin = 10;
-            newQuestionLayout.bottomMargin = 10;
-            newQuestionRelativeLayout.addView(newQuestion, newQuestionLayout);
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(k < 0) {
+                    questionsList.get(questionsList.size() - 1).question = newQuestion.getText().toString();
+                } else {
+                    questionsList.get(k).question = newQuestion.getText().toString();
+                }
+            }
+        });
 
-            newQuestion.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        if(mcQues) {
+            TextView correctAnswerLabel = new TextView(SaveQuiz.this);
+            correctAnswerLabel.setText("Choose Correct Answer:");
+            correctAnswerLabel.setId(View.generateViewId());
+            correctAnswerLabel.setTextSize(15);
+            correctAnswerLabel.setPadding(0, 5, 0, 5);
 
+            RelativeLayout.LayoutParams correctAnswerLabelLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            correctAnswerLabelLay.leftMargin = 20;
+            correctAnswerLabelLay.bottomMargin = 10;
+            correctAnswerLabelLay.addRule(RelativeLayout.BELOW, newQuestion.getId());
+
+            newQuestionRelativeLayout.addView(correctAnswerLabel, correctAnswerLabelLay);
+
+            EditText[] options = new EditText[totalOptions];
+            CheckBox[] optionsCheckBoxes = new CheckBox[totalOptions];
+
+            for (int i = 0; i < options.length; i++) {
+                optionsCheckBoxes[i] = new CheckBox(SaveQuiz.this);
+                optionsCheckBoxes[i].setText("");
+                optionsCheckBoxes[i].setTextSize(20);
+                optionsCheckBoxes[i].setId(View.generateViewId());
+
+                options[i] = new EditText(SaveQuiz.this);
+                options[i].setHint("Option " + (i + 1));
+                options[i].setId(View.generateViewId());
+                options[i].setMaxLines(1);
+                options[i].setHorizontallyScrolling(true);
+                options[i].setBackgroundResource(R.drawable.custom_input_answer);
+                options[i].setPadding(15, 15, 15, 15);
+
+                if (k >= 0) {
+                    options[i].setText(questionsList.get(k).options[i]);
                 }
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                RelativeLayout.LayoutParams checkBoxLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+                if(i == 0) {
+                    checkBoxLayParams.addRule(RelativeLayout.BELOW, correctAnswerLabel.getId());
+                } else {
+                    checkBoxLayParams.addRule(RelativeLayout.BELOW, optionsCheckBoxes[i- 1].getId());
                 }
 
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if(k < 0) {
-                        questionsList.get(questionsList.size() - 1).question = newQuestion.getText().toString();
-                    } else {
-                        questionsList.get(k).question = newQuestion.getText().toString();
-                    }
+                newQuestionRelativeLayout.addView(optionsCheckBoxes[i], checkBoxLayParams);
+
+                RelativeLayout.LayoutParams optionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                optionLayout.addRule(RelativeLayout.END_OF, optionsCheckBoxes[i].getId());
+
+                if(i == 0) {
+                    optionLayout.addRule(RelativeLayout.BELOW, correctAnswerLabel.getId());
+                } else {
+                    optionLayout.addRule(RelativeLayout.BELOW, options[i - 1].getId());
                 }
-            });
 
-            if(mcQues) {
-                TextView correctAnswerLabel = new TextView(SaveQuiz.this);
-                correctAnswerLabel.setText("Choose Correct Answer:");
-                correctAnswerLabel.setId(View.generateViewId());
-                correctAnswerLabel.setTextSize(15);
-                correctAnswerLabel.setPadding(0, 5, 0, 5);
+                optionLayout.leftMargin = 20;
+                optionLayout.bottomMargin = 20;
 
-                RelativeLayout.LayoutParams correctAnswerLabelLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                correctAnswerLabelLay.leftMargin = 20;
-                correctAnswerLabelLay.bottomMargin = 10;
-                correctAnswerLabelLay.addRule(RelativeLayout.BELOW, newQuestion.getId());
+                newQuestionRelativeLayout.addView(options[i], optionLayout);
 
-                newQuestionRelativeLayout.addView(correctAnswerLabel, correctAnswerLabelLay);
+                RelativeLayout.LayoutParams reCheckBoxLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                reCheckBoxLayParams.addRule(RelativeLayout.ALIGN_TOP, options[i].getId());
+                reCheckBoxLayParams.addRule(RelativeLayout.ALIGN_BOTTOM, options[i].getId());
 
-                EditText[] options = new EditText[totalOptions];
-                CheckBox[] optionsCheckBoxes = new CheckBox[totalOptions];
+                optionsCheckBoxes[i].setLayoutParams(reCheckBoxLayParams);
 
-                for (int i = 0; i < options.length; i++) {
-                    optionsCheckBoxes[i] = new CheckBox(SaveQuiz.this);
-                    optionsCheckBoxes[i].setText("");
-                    optionsCheckBoxes[i].setTextSize(20);
-                    optionsCheckBoxes[i].setId(View.generateViewId());
-
-                    options[i] = new EditText(SaveQuiz.this);
-                    options[i].setHint("Option " + (i + 1));
-                    options[i].setId(View.generateViewId());
-                    options[i].setMaxLines(1);
-                    options[i].setHorizontallyScrolling(true);
-
-                    if (k >= 0) {
-                        options[i].setText(questionsList.get(k).options[i]);
-                    }
-
-                    RelativeLayout.LayoutParams checkBoxLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                    if(i == 0) {
-                        checkBoxLayParams.addRule(RelativeLayout.BELOW, correctAnswerLabel.getId());
-                    } else {
-                        checkBoxLayParams.addRule(RelativeLayout.BELOW, optionsCheckBoxes[i- 1].getId());
-                    }
-
-                    checkBoxLayParams.leftMargin = 20;
-                    checkBoxLayParams.topMargin = 20;
-                    checkBoxLayParams.bottomMargin = 20;
-
-                    newQuestionRelativeLayout.addView(optionsCheckBoxes[i], checkBoxLayParams);
-
-                    RelativeLayout.LayoutParams optionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    optionLayout.addRule(RelativeLayout.END_OF, optionsCheckBoxes[i].getId());
-                    optionLayout.addRule(RelativeLayout.ALIGN_BOTTOM, optionsCheckBoxes[i].getId());
-
-                    if(i == 0) {
-                        optionLayout.addRule(RelativeLayout.BELOW, correctAnswerLabel.getId());
-                    } else {
-                        optionLayout.addRule(RelativeLayout.BELOW, options[i - 1].getId());
-                    }
-
-                    optionLayout.leftMargin = 5;
-                    optionLayout.rightMargin = 10;
-
-                    newQuestionRelativeLayout.addView(options[i], optionLayout);
-
-                    if (k >= 0) {
-                        for(int h = 0; h < questionsList.get(k).correctAnswers.size(); h++) {
-                            if(questionsList.get(k).correctAnswers.get(h) == i) {
-                                optionsCheckBoxes[i].setChecked(true);
-                            }
+                if (k >= 0) {
+                    for(int h = 0; h < questionsList.get(k).correctAnswers.size(); h++) {
+                        if(questionsList.get(k).correctAnswers.get(h) == i) {
+                            optionsCheckBoxes[i].setChecked(true);
                         }
                     }
+                }
 
-                    int j = i;
-                    optionsCheckBoxes[i].setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
-                        @Override
-                        public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                            if(optionsCheckBoxes[j].isChecked()) {
-                                if(k < 0) {
-                                    questionsList.get(questionsList.size() - 1).correctAnswers.add(j);
-                                } else {
-                                    questionsList.get(k).correctAnswers.add(j);
-                                }
+                int j = i;
+                optionsCheckBoxes[i].setOnCheckedChangeListener(new RadioButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                        if(optionsCheckBoxes[j].isChecked()) {
+                            if(k < 0) {
+                                questionsList.get(questionsList.size() - 1).correctAnswers.add(j);
                             } else {
-                                if(k < 0) {
-                                    questionsList.get(questionsList.size() - 1).correctAnswers.remove((Integer) j);
-                                } else {
-                                    questionsList.get(k).correctAnswers.remove((Integer) j);
-                                }
+                                questionsList.get(k).correctAnswers.add(j);
                             }
-                        }
-                    });
-
-                    options[i].addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable editable) {
-                            if (k < 0) {
-                                questionsList.get(questionsList.size() - 1).options[j] = options[j].getText().toString();
+                        } else {
+                            if(k < 0) {
+                                questionsList.get(questionsList.size() - 1).correctAnswers.remove((Integer) j);
                             } else {
-                                questionsList.get(k).options[j] = options[j].getText().toString();
+                                questionsList.get(k).correctAnswers.remove((Integer) j);
                             }
                         }
-                    });
-                }
-            } else {
-                EditText frCorrectAnswers = new EditText(this);
-                frCorrectAnswers.setHint("Type the correct answer");
-                frCorrectAnswers.setId(View.generateViewId());
+                    }
+                });
 
-                if(k >= 0) {
-                    frCorrectAnswers.setText(questionsList.get(k).frCorrectAnswer);
-                }
-
-                RelativeLayout.LayoutParams frCorrectAnsLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                frCorrectAnsLayParams.addRule(RelativeLayout.BELOW, newQuestion.getId());
-                frCorrectAnsLayParams.leftMargin = 30;
-
-                newQuestionRelativeLayout.addView(frCorrectAnswers, frCorrectAnsLayParams);
-
-                frCorrectAnswers.addTextChangedListener(new TextWatcher() {
+                options[i].addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -352,55 +327,94 @@ public class SaveQuiz extends AppCompatActivity {
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                     }
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-                        if(k < 0) {
-                            questionsList.get(questionsList.size() - 1).frCorrectAnswer = frCorrectAnswers.getText().toString();
-                        } else  {
-                            questionsList.get(k).frCorrectAnswer = frCorrectAnswers.getText().toString();
+                        if (k < 0) {
+                            questionsList.get(questionsList.size() - 1).options[j] = options[j].getText().toString();
+                        } else {
+                            questionsList.get(k).options[j] = options[j].getText().toString();
                         }
                     }
                 });
             }
+        } else {
+            EditText frCorrectAnswers = new EditText(this);
+            frCorrectAnswers.setHint("Type the correct answer");
+            frCorrectAnswers.setId(View.generateViewId());
+            frCorrectAnswers.setBackgroundResource(R.drawable.custom_input_answer);
+            frCorrectAnswers.setPadding(15, 15, 15, 15);
 
-            if(k < 0) {
-                RelativeLayout.LayoutParams previousQuestRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                previousQuestRelParams.bottomMargin = 70;
-                if (questionList_rel_lay.size() >= 1) {
-                    if (questionList_rel_lay.size() == 1) {
-                        previousQuestRelParams.addRule(RelativeLayout.BELOW, quizName.getId());
-                    } else {
-                        previousQuestRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 2).getId());
-                    }
-
-                    questionList_rel_lay.get(questionList_rel_lay.size() - 1).setLayoutParams(previousQuestRelParams);
-                }
-            }
-
-            if(questionList_rel_lay.size() > 0) {
-                newQuestionRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 1).getId());
-            } else {
-                newQuestionRelParams.addRule(RelativeLayout.BELOW, R.id.quizNameID);
-            }
             if(k >= 0) {
-                if(k < questionsList.size() - 1) {
-                    newQuestionRelParams.bottomMargin = 70;
-                } else if(k == questionsList.size() - 1) {
-                    newQuestionRelParams.bottomMargin = 230;
+                frCorrectAnswers.setText(questionsList.get(k).frCorrectAnswer);
+            }
+
+            RelativeLayout.LayoutParams frCorrectAnsLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            frCorrectAnsLayParams.addRule(RelativeLayout.BELOW, newQuestion.getId());
+            frCorrectAnsLayParams.leftMargin = 30;
+            frCorrectAnsLayParams.topMargin = 20;
+
+            newQuestionRelativeLayout.addView(frCorrectAnswers, frCorrectAnsLayParams);
+
+            frCorrectAnswers.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
                 }
-            } else {
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if(k < 0) {
+                        questionsList.get(questionsList.size() - 1).frCorrectAnswer = frCorrectAnswers.getText().toString();
+                    } else  {
+                        questionsList.get(k).frCorrectAnswer = frCorrectAnswers.getText().toString();
+                    }
+                }
+            });
+        }
+
+        if(k < 0) {
+            RelativeLayout.LayoutParams previousQuestRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            previousQuestRelParams.bottomMargin = 70;
+            if (questionList_rel_lay.size() >= 1) {
+                if (questionList_rel_lay.size() == 1) {
+                    previousQuestRelParams.addRule(RelativeLayout.BELOW, quizName.getId());
+                } else {
+                    previousQuestRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 2).getId());
+                }
+
+                questionList_rel_lay.get(questionList_rel_lay.size() - 1).setLayoutParams(previousQuestRelParams);
+            }
+        }
+
+        if(questionList_rel_lay.size() > 0) {
+            newQuestionRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 1).getId());
+        } else {
+            newQuestionRelParams.addRule(RelativeLayout.BELOW, R.id.quizNameID);
+        }
+
+        if(k >= 0) {
+            if(k < questionsList.size() - 1) {
+                newQuestionRelParams.bottomMargin = 70;
+            } else if(k == questionsList.size() - 1) {
                 newQuestionRelParams.bottomMargin = 230;
             }
+        } else {
+            newQuestionRelParams.bottomMargin = 230;
+        }
 
-            questionList_rel_lay.add(newQuestionRelativeLayout);
-            layout.addView(questionList_rel_lay.get(questionList_rel_lay.size() - 1), newQuestionRelParams);
+        questionList_rel_lay.add(newQuestionRelativeLayout);
+        layout.addView(questionList_rel_lay.get(questionList_rel_lay.size() - 1), newQuestionRelParams);
 
-            if(cancelBtn.isEnabled() == false) {
-                cancelBtn.setEnabled(true);
-            }
+        if(cancelBtn.isEnabled() == false) {
+            cancelBtn.setEnabled(true);
+        }
     }
 
     public void deleteQuestion(View view) {
