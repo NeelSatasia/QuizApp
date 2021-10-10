@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/quizTimerLay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+
+        <EditText
+            android:id="@+id/hrs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="35dp"
+            android:maxLength="2"
+            android:hint="00"
+            android:layout_marginRight="5dp" />
+
+        <TextView
+            android:id="@+id/semicol1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textSize="32dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignTop="@+id/hrs"
+            android:layout_alignBottom="@+id/hrs"
+            android:layout_toRightOf="@+id/hrs"
+            android:gravity="center"/>
+
+        <EditText
+            android:id="@+id/mins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="35dp"
+            android:maxLength="2"
+            android:hint="00"
+            android:layout_marginRight="5dp"
+            android:layout_toRightOf="@+id/semicol1"/>
+
+        <TextView
+            android:id="@+id/semicol2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textSize="32dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignTop="@+id/mins"
+            android:layout_alignBottom="@+id/mins"
+            android:layout_toRightOf="@id/mins"
+            android:gravity="center"/>
+
+        <EditText
+            android:id="@+id/secs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="35dp"
+            android:maxLength="2"
+            android:hint="00"
+            android:layout_toRightOf="@+id/semicol2"/>
+
+
+        <TextView
+            android:id="@+id/hrsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HRS"
+            android:gravity="center"
+            android:layout_below="@+id/hrs"
+            android:layout_alignLeft="@+id/hrs"
+            android:layout_alignRight="@+id/hrs"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/minsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MINS"
+            android:gravity="center"
+            android:layout_below="@+id/mins"
+            android:layout_alignLeft="@+id/mins"
+            android:layout_alignRight="@+id/mins"
+            android:layout_marginBottom="10dp"/>
+
+        <TextView
+            android:id="@+id/secsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SECS"
+            android:gravity="center"
+            android:layout_below="@+id/secs"
+            android:layout_alignLeft="@+id/secs"
+            android:layout_alignRight="@+id/secs"
+            android:layout_marginBottom="10dp"/>
+
+        <Button
+            android:id="@+id/setTimerBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set Timer"
+            android:layout_below="@+id/hrsLabel"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+</RelativeLayout>

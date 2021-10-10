@@ -48,6 +48,9 @@ public class SaveQuiz extends AppCompatActivity {
     AlertDialog.Builder addQuesADB;
     AlertDialog addQuesAD;
 
+    AlertDialog.Builder setTimerADB;
+    AlertDialog setTimerAD;
+
     ArrayList<CheckBox> deleteQuesCheckBoxArr;
 
     int totalDeleteQuestSelected = 0;
@@ -166,6 +169,79 @@ public class SaveQuiz extends AppCompatActivity {
                         addQuesAD.dismiss();
 
                         createNewQuestion(-1, totalOptions, selectedMC);
+                    }
+                });
+            }
+        });
+
+        setTimer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setTimerADB = new AlertDialog.Builder(SaveQuiz.this);
+                View timerPopup = getLayoutInflater().inflate(R.layout.quiz_timer_layout, null);
+
+                setTimerADB.setView(timerPopup);
+                setTimerAD = setTimerADB.create();
+                setTimerAD.show();
+
+                EditText hrs = timerPopup.findViewById(R.id.hrs);
+                EditText mins = timerPopup.findViewById(R.id.mins);
+                EditText secs = timerPopup.findViewById(R.id.secs);
+
+                hrs.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        if(hrs.length() == 2) {
+                            hrs.clearFocus();
+                            mins.requestFocus();
+                        }
+                    }
+                });
+
+                mins.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        if(mins.length() == 2) {
+                            mins.clearFocus();
+                            secs.requestFocus();
+                        }
+                    }
+                });
+
+                secs.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
                     }
                 });
             }

@@ -114,7 +114,6 @@ public class TakeQuiz extends AppCompatActivity {
                 frAns.setPadding(15, 15, 15, 15);
 
                 RelativeLayout.LayoutParams frLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                //frLayParams.leftMargin = 20;
                 frLayParams.rightMargin = 40;
 
                 questionsOptionsRelLays[i].addView(frAns, frLayParams);
