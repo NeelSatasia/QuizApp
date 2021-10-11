@@ -14,6 +14,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -21,6 +23,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +41,8 @@ public class SaveQuiz extends AppCompatActivity {
     ArrayList<RelativeLayout> questionList_rel_lay;
     ArrayList<EditText> viewsInQuestions;
     ArrayList<Question> questionsList;
+    String[] timer = new String[3];
+    boolean passwordProtected = false;
     RelativeLayout layout;
     TextView quizName;
     Button addBtn;
@@ -82,9 +87,14 @@ public class SaveQuiz extends AppCompatActivity {
         loadQuizzes();
         getEditQuiz();
 
+        for(int i = 0; i < timer.length; i++) {
+            timer[i] = "00";
+        }
+
         if(editQuizID > -1) {
             quizName.setText(quizzes.get(editQuizID).quizName);
             questionsList = quizzes.get(editQuizID).questionList;
+            timer = quizzes.get(editQuizID).timer;
             createQuizBtn.setText("Save");
 
             uploadQuiz();
@@ -184,64 +194,118 @@ public class SaveQuiz extends AppCompatActivity {
                 setTimerAD = setTimerADB.create();
                 setTimerAD.show();
 
-                EditText hrs = timerPopup.findViewById(R.id.hrs);
-                EditText mins = timerPopup.findViewById(R.id.mins);
-                EditText secs = timerPopup.findViewById(R.id.secs);
+                Spinner hrs = timerPopup.findViewById(R.id.hrs);
+                Spinner mins = timerPopup.findViewById(R.id.mins);
+                Spinner secs = timerPopup.findViewById(R.id.secs);
 
-                hrs.addTextChangedListener(new TextWatcher() {
+                String[] hours = new String[25];
+                int defaultHrIndex = 0;
+
+                for(int i = 0; i < hours.length; i++) {
+                    if(i < 10) {
+                        hours[i] = "0" + i;
+                    } else {
+                        hours[i] = i + "";
+                    }
+
+                    if(timer[0].equals(hours[i])) {
+                        defaultHrIndex = i;
+                    }
+                }
+
+                ArrayAdapter<String> hrsAdapter = new ArrayAdapter<String>(SaveQuiz.this, android.R.layout.simple_spinner_dropdown_item, hours);
+                hrs.setAdapter(hrsAdapter);
+                hrs.setSelection(defaultHrIndex);
+
+                hrs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        String hrsStr = adapterView.getSelectedItem().toString();
+                        timer[0] = hrsStr;
                     }
 
                     @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    public void onNothingSelected(AdapterView<?> adapterView) {
 
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        if(hrs.length() == 2) {
-                            hrs.clearFocus();
-                            mins.requestFocus();
-                        }
-                    }
-                });
-
-                mins.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        if(mins.length() == 2) {
-                            mins.clearFocus();
-                            secs.requestFocus();
-                        }
                     }
                 });
 
-                secs.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String[] minutes = new String[61];
+                int defaultMinIndex = 0;
 
+                for(int i = 0; i < minutes.length; i++) {
+                    if(i < 10) {
+                        minutes[i] = "0" + i;
+                    } else {
+                        minutes[i] = i + "";
+                    }
+
+                    if(timer[1].equals(minutes[i])) {
+                        defaultMinIndex = i;
+                    }
+                }
+
+                ArrayAdapter<String> minsAdapter = new ArrayAdapter<String>(SaveQuiz.this, android.R.layout.simple_spinner_dropdown_item, minutes);
+                mins.setAdapter(minsAdapter);
+                mins.setSelection(defaultMinIndex);
+
+                mins.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        String minsStr = adapterView.getSelectedItem().toString();
+                        timer[1] = minsStr;
                     }
 
                     @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    public void onNothingSelected(AdapterView<?> adapterView) {
 
+                    }
+                });
+
+                String[] seconds = new String[61];
+                int defaultSecIndex = 0;
+
+                for(int i = 0; i < seconds.length; i++) {
+                    if(i < 10) {
+                        seconds[i] = "0" + i;
+                    } else {
+                        seconds[i] = i + "";
+                    }
+
+                    if(timer[2].equals(seconds[i])) {
+                        defaultSecIndex = i;
+                    }
+                }
+
+                ArrayAdapter<String> secsAdapter = new ArrayAdapter<String>(SaveQuiz.this, android.R.layout.simple_spinner_dropdown_item, seconds);
+                secs.setAdapter(secsAdapter);
+                secs.setSelection(defaultSecIndex);
+
+                secs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        String secsStr = adapterView.getSelectedItem().toString();
+                        timer[2] = secsStr;
                     }
 
                     @Override
-                    public void afterTextChanged(Editable editable) {
+                    public void onNothingSelected(AdapterView<?> adapterView) {
 
+                    }
+                });
+
+                Button resetBtn = timerPopup.findViewById(R.id.resetBtn);
+
+                resetBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        hrs.setSelection(0);
+                        mins.setSelection(0);
+                        secs.setSelection(0);
+
+                        for(int i = 0; i < timer.length; i++) {
+                            timer[i] = "00";
+                        }
                     }
                 });
             }
@@ -629,7 +693,7 @@ public class SaveQuiz extends AppCompatActivity {
 
         if(isQuizReadyToBeCreated) {
             Intent intent = new Intent(this, Quizzes.class);
-            QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList);
+            QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList, timer, passwordProtected);
             if (editQuizID < 0) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("QuizzesList", newQuiz);

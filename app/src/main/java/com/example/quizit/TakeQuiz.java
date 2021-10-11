@@ -8,23 +8,20 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -41,6 +38,7 @@ public class TakeQuiz extends AppCompatActivity {
     TextView questionLabel;
     TextView questionNumber;
     TextView questionTracker;
+    TextView quizTimerLabel;
     RelativeLayout questionRelLay;
     Button nextQues;
     Button backQues;
@@ -52,6 +50,9 @@ public class TakeQuiz extends AppCompatActivity {
 
     boolean finishedQuiz = false;
     boolean reviewingQuestionAfterQuiz = false;
+
+    CountDownTimer quizTimer;
+    long totalTimeInMillis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +152,8 @@ public class TakeQuiz extends AppCompatActivity {
         nextQues = findViewById(R.id.nextQuesBtn);
         backQues = findViewById(R.id.backQuesBtn);
         submitQuizBtn = findViewById(R.id.sbtBtn);
+
+        quizTimerLabel = findViewById(R.id.timr);
 
         displayQuestion(currentQuestionIndex);
 
@@ -413,6 +416,32 @@ public class TakeQuiz extends AppCompatActivity {
                 setContentView(resultScrlView);
             }
         });
+
+        long hrInMillis = Integer.parseInt(quiz.timer[0]) * 60 * 60 * 1000;
+        long mins = Integer.parseInt(quiz.timer[1]) * 60 * 1000;
+        long secs = Integer.parseInt(quiz.timer[2]) * 1000;
+
+        totalTimeInMillis = hrInMillis + mins + secs;
+
+        if(totalTimeInMillis > 0) {
+            quizTimer = new CountDownTimer(totalTimeInMillis, 1000) {
+                @Override
+                public void onTick(long l) {
+                    totalTimeInMillis = l;
+
+                    int hours = (int) (totalTimeInMillis / (1000 * 60 * 60)) % 24;
+                    int minutes = (int) (totalTimeInMillis / (1000 * 60)) % 60;
+                    int seconds = (int) (totalTimeInMillis / 1000) % 60;
+
+                    quizTimerLabel.setText(hours + ":" + minutes);
+                }
+
+                @Override
+                public void onFinish() {
+
+                }
+            }.start();
+        }
     }
 
     public void loadQuiz() {

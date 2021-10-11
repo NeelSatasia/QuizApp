@@ -10,14 +10,12 @@
         android:layout_centerInParent="true">
 
 
-        <EditText
+        <Spinner
             android:id="@+id/hrs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="35dp"
-            android:maxLength="2"
-            android:hint="00"
-            android:layout_marginRight="5dp" />
+            android:spinnerMode="dropdown"
+            android:layout_marginRight="5dp"/>
 
         <TextView
             android:id="@+id/semicol1"
@@ -27,17 +25,15 @@
             android:textSize="32dp"
             android:layout_marginRight="5dp"
             android:layout_alignTop="@+id/hrs"
-            android:layout_alignBottom="@+id/hrs"
+            android:layout_alignBottom="@+id/hrsLabel"
             android:layout_toRightOf="@+id/hrs"
             android:gravity="center"/>
 
-        <EditText
+        <Spinner
             android:id="@+id/mins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="35dp"
-            android:maxLength="2"
-            android:hint="00"
+            android:spinnerMode="dropdown"
             android:layout_marginRight="5dp"
             android:layout_toRightOf="@+id/semicol1"/>
 
@@ -49,17 +45,15 @@
             android:textSize="32dp"
             android:layout_marginRight="5dp"
             android:layout_alignTop="@+id/mins"
-            android:layout_alignBottom="@+id/mins"
+            android:layout_alignBottom="@+id/minsLabel"
             android:layout_toRightOf="@id/mins"
             android:gravity="center"/>
 
-        <EditText
+        <Spinner
             android:id="@+id/secs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="35dp"
-            android:maxLength="2"
-            android:hint="00"
+            android:spinnerMode="dropdown"
             android:layout_toRightOf="@+id/semicol2"/>
 
 
@@ -97,10 +91,10 @@
             android:layout_marginBottom="10dp"/>
 
         <Button
-            android:id="@+id/setTimerBtn"
+            android:id="@+id/resetBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Set Timer"
+            android:text="Reset"
             android:layout_below="@+id/hrsLabel"
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>
