@@ -3,10 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/custom_answer_result.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_input.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_input_answer.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_input_question.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable/custom_options_in_quiz.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable/custom_question_in_quiz_textview.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable/custom_question_result.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_question_textview.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable/custom_right_answer.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.36186594202898553" />
         <entry key="app/src/main/res/layout/activity_new_quiz.xml" value="0.36186594202898553" />
         <entry key="app/src/main/res/layout/activity_take_quiz.xml" value="0.4036458333333333" />

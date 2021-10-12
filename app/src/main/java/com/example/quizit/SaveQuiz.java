@@ -308,6 +308,15 @@ public class SaveQuiz extends AppCompatActivity {
                         }
                     }
                 });
+
+                Button setTimerBtn = timerPopup.findViewById(R.id.setTimrBtn);
+
+                setTimerBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setTimerAD.dismiss();
+                    }
+                });
             }
         });
     }
@@ -394,7 +403,7 @@ public class SaveQuiz extends AppCompatActivity {
                 options[i].setId(View.generateViewId());
                 options[i].setMaxLines(1);
                 options[i].setHorizontallyScrolling(true);
-                options[i].setBackgroundResource(R.drawable.custom_input_answer);
+                options[i].setBackgroundResource(R.drawable.custom_input);
                 options[i].setPadding(15, 15, 15, 15);
 
                 if (k >= 0) {
@@ -483,7 +492,7 @@ public class SaveQuiz extends AppCompatActivity {
             EditText frCorrectAnswers = new EditText(this);
             frCorrectAnswers.setHint("Type the correct answer");
             frCorrectAnswers.setId(View.generateViewId());
-            frCorrectAnswers.setBackgroundResource(R.drawable.custom_input_answer);
+            frCorrectAnswers.setBackgroundResource(R.drawable.custom_input);
             frCorrectAnswers.setPadding(15, 15, 15, 15);
 
             if(k >= 0) {

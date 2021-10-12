@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/quizTimerLay"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -90,12 +91,27 @@
             android:layout_alignRight="@+id/secs"
             android:layout_marginBottom="10dp"/>
 
-        <Button
-            android:id="@+id/resetBtn"
+        <LinearLayout
+            android:id="@+id/btns"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reset"
-            android:layout_below="@+id/hrsLabel"
-            android:layout_centerHorizontal="true"/>
+            android:orientation="horizontal"
+            android:layout_below="@+id/hrsLabel">
+
+            <Button
+                android:id="@+id/resetBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reset"
+                android:layout_below="@+id/hrsLabel"
+                android:layout_marginRight="10dp"/>
+
+            <Button
+                android:id="@+id/setTimrBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Set"
+                app:backgroundTint="#4CAF50" />
+        </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

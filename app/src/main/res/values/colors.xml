@@ -15,4 +15,6 @@
     <color name="paleTurquoise">#AFEEEE</color>
     <color name="lightCyan">#F0FFFF</color>
     <color name="lightBlue">#e6f9ff</color>
+    <color name="red">#ff0000</color>
+    <color name="mediumSeaGreen">#3CB371</color>
 </resources>

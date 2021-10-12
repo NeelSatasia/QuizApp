@@ -21,12 +21,14 @@
         android:id="@+id/timr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Timer"
-        android:textSize="30dp"
+        android:text=""
+        android:textSize="20dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/sbtBtn"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"/>
+        android:layout_marginLeft="20dp"
+        android:gravity="center"/>
 
     <TextView
         android:id="@+id/quizTitleLabel"
@@ -41,74 +43,67 @@
         android:padding="2dp"/>
 
     <TextView
-        android:id="@+id/questTracker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Question Tracker"
-        android:textSize="20dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/quizTitleLabel"
-        android:layout_marginBottom="10dp"/>
-
-    <TextView
-        android:id="@+id/quesNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1."
-        android:textSize="25dp"
-        android:layout_below="@+id/questTracker"
-        android:paddingTop="10dp"
-        android:paddingLeft="10dp"
-        android:paddingBottom="10dp"
-        android:layout_alignParentLeft="true"
-        android:textStyle="bold"/>
-
-    <TextView
         android:id="@+id/questionLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/quesNum"
-        android:layout_alignBottom="@+id/quesNum"
-        android:layout_alignParentRight="true"
-        android:layout_toEndOf="@+id/quesNum"
+        android:layout_below="@+id/btns"
         android:gravity="center_vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:text="Question"
         android:textSize="25dp"
-        android:textStyle="bold" />
+        android:textColor="@color/white"
+        android:background="@drawable/custom_question_in_quiz_textview"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"/>
 
     <ScrollView
         android:id="@+id/mainScrlView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/questionLabel"
-        android:layout_alignParentBottom="true">
+        android:layout_alignLeft="@+id/questionLabel"
+        android:layout_alignRight="@+id/questionLabel"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/custom_options_in_quiz">
 
         <RelativeLayout
             android:id="@+id/mainRelLay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="40dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="75dp"></RelativeLayout>
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+            android:layout_marginBottom="15dp">
+        </RelativeLayout>
     </ScrollView>
 
     <LinearLayout
         android:id="@+id/btns"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:layout_below="@+id/quizTitleLabel">
 
         <Button
             android:id="@+id/backQuesBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="10dp"
             android:text="Back"
             app:backgroundTint="#615F5F" />
+
+        <TextView
+            android:id="@+id/questTracker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Question Tracker"
+            android:textSize="20dp"
+            android:layout_marginRight="10dp"/>
 
         <Button
             android:id="@+id/nextQuesBtn"
