@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:text="Back"
-            app:backgroundTint="#615F5F" />
+            app:backgroundTint="#999999"/>
 
         <TextView
             android:id="@+id/questTracker"

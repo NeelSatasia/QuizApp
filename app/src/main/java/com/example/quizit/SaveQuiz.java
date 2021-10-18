@@ -39,7 +39,7 @@ public class SaveQuiz extends AppCompatActivity {
 
     ArrayList<QuizInfo> quizzes;
     ArrayList<RelativeLayout> questionList_rel_lay;
-    ArrayList<EditText> viewsInQuestions;
+    ArrayList<TextView> viewsInQuestions;
     ArrayList<Question> questionsList;
     String[] timer = new String[3];
     boolean passwordProtected = false;
@@ -57,9 +57,7 @@ public class SaveQuiz extends AppCompatActivity {
     AlertDialog setTimerAD;
 
     ArrayList<CheckBox> deleteQuesCheckBoxArr;
-
-    int totalDeleteQuestSelected = 0;
-    boolean cancelBtnSelected = false;
+    int selectedDeleteQuests;
 
     int editQuizID = -1;
 
@@ -73,7 +71,8 @@ public class SaveQuiz extends AppCompatActivity {
         setContentView(R.layout.activity_new_quiz);
 
         questionList_rel_lay = new ArrayList<RelativeLayout>();
-        viewsInQuestions = new ArrayList<EditText>();
+        viewsInQuestions = new ArrayList<TextView>();
+        deleteQuesCheckBoxArr = new ArrayList<CheckBox>();
         questionsList = new ArrayList<Question>();
         layout = findViewById(R.id.newQuizLay);
         quizName = findViewById(R.id.quizNameID);
@@ -83,6 +82,12 @@ public class SaveQuiz extends AppCompatActivity {
         createQuizBtn = findViewById(R.id.createQuizBtn);
 
         cancelBtn.setEnabled(false);
+
+        Drawable buttonDrawable = cancelBtn.getBackground();
+        buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+        DrawableCompat.setTint(buttonDrawable, Color.rgb(230, 230, 230));
+        cancelBtn.setBackground(buttonDrawable);
+        cancelBtn.setTextColor(Color.rgb(166, 166, 166));
 
         loadQuizzes();
         getEditQuiz();
@@ -181,6 +186,13 @@ public class SaveQuiz extends AppCompatActivity {
                         createNewQuestion(-1, totalOptions, selectedMC);
                     }
                 });
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteQuestion();
             }
         });
 
@@ -331,7 +343,7 @@ public class SaveQuiz extends AppCompatActivity {
         RelativeLayout newQuestionRelativeLayout = new RelativeLayout(SaveQuiz.this);
         newQuestionRelativeLayout.setId(View.generateViewId());
         newQuestionRelativeLayout.setBackgroundColor(Color.rgb(242, 242, 242));
-        newQuestionRelativeLayout.setPadding(20, 20, 20, 10);
+        newQuestionRelativeLayout.setPadding(20, 20, 20, 20);
         newQuestionRelativeLayout.setBackgroundResource(R.drawable.custom_input_question);
 
         if(k < 0) {
@@ -340,17 +352,27 @@ public class SaveQuiz extends AppCompatActivity {
 
         RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
+        CheckBox questionCheckBox = new CheckBox(this);
+        questionCheckBox.setText("Question " + (questionList_rel_lay.size() + 1));
+        questionCheckBox.setId(View.generateViewId());
+
+        RelativeLayout.LayoutParams questionCBParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        questionCBParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+        questionCBParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        questionCBParams.bottomMargin = 10;
+
+        newQuestionRelativeLayout.addView(questionCheckBox, questionCBParams);
+
         EditText newQuestion = new EditText(SaveQuiz.this);
         if(k >= 0) {
             newQuestion.setText(questionsList.get(k).question);
         }
-        newQuestion.setHint("Question " + (questionList_rel_lay.size() + 1));
         newQuestion.setId(View.generateViewId());
         newQuestion.setBackgroundResource(R.drawable.custom_question_textview);
         newQuestion.setPadding(15, 15, 15, 15);
-        viewsInQuestions.add(newQuestion);
 
         RelativeLayout.LayoutParams newQuestionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        newQuestionLayout.addRule(RelativeLayout.BELOW, questionCheckBox.getId());
         newQuestionLayout.leftMargin = 10;
         newQuestionLayout.bottomMargin = 10;
         newQuestionRelativeLayout.addView(newQuestion, newQuestionLayout);
@@ -430,7 +452,9 @@ public class SaveQuiz extends AppCompatActivity {
                 }
 
                 optionLayout.leftMargin = 20;
-                optionLayout.bottomMargin = 20;
+                if(i < optionsCheckBoxes.length - 1) {
+                    optionLayout.bottomMargin = 20;
+                }
 
                 newQuestionRelativeLayout.addView(options[i], optionLayout);
 
@@ -561,100 +585,110 @@ public class SaveQuiz extends AppCompatActivity {
         questionList_rel_lay.add(newQuestionRelativeLayout);
         layout.addView(questionList_rel_lay.get(questionList_rel_lay.size() - 1), newQuestionRelParams);
 
-        if(cancelBtn.isEnabled() == false) {
-            cancelBtn.setEnabled(true);
-        }
+        questionCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(questionCheckBox.isChecked()) {
+                    if(addBtn.isEnabled()) {
+                        Drawable buttonDrawable = addBtn.getBackground();
+                        buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+                        DrawableCompat.setTint(buttonDrawable, Color.rgb(230, 230, 230));
+                        addBtn.setBackground(buttonDrawable);
+                        addBtn.setTextColor(Color.rgb(166, 166, 166));
+
+                        addBtn.setEnabled(false);
+                    }
+                    if(cancelBtn.isEnabled() == false) {
+                        Drawable buttonDrawable = cancelBtn.getBackground();
+                        buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+                        DrawableCompat.setTint(buttonDrawable, Color.RED);
+                        cancelBtn.setBackground(buttonDrawable);
+                        cancelBtn.setTextColor(Color.WHITE);
+
+                        cancelBtn.setEnabled(true);
+                    }
+
+                    selectedDeleteQuests++;
+                } else {
+                    selectedDeleteQuests--;
+
+                    if(selectedDeleteQuests == 0) {
+                        if (addBtn.isEnabled() == false) {
+                            Drawable buttonDrawable = addBtn.getBackground();
+                            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+                            DrawableCompat.setTint(buttonDrawable, Color.rgb(30, 144, 255));
+                            addBtn.setBackground(buttonDrawable);
+                            addBtn.setTextColor(Color.WHITE);
+
+                            addBtn.setEnabled(true);
+                        }
+
+                        if(cancelBtn.isEnabled()) {
+                            Drawable buttonDrawable = cancelBtn.getBackground();
+                            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+                            DrawableCompat.setTint(buttonDrawable, Color.rgb(230, 230, 230));
+                            cancelBtn.setBackground(buttonDrawable);
+                            cancelBtn.setTextColor(Color.rgb(166, 166, 166));
+
+                            cancelBtn.setEnabled(false);
+                        }
+                    }
+                }
+            }
+        });
+
+        deleteQuesCheckBoxArr.add(questionCheckBox);
     }
 
-    public void deleteQuestion(View view) {
-
-        if(cancelBtnSelected == false) {
-            deleteQuesCheckBoxArr = new ArrayList<CheckBox>();
-
-            for (int i = 0; i < questionList_rel_lay.size(); i++) {
-                deleteQuesCheckBoxArr.add(new CheckBox(this));
-                deleteQuesCheckBoxArr.get(i).setText("Question " + (i + 1) + ":");
-                deleteQuesCheckBoxArr.get(i).setTextColor(Color.parseColor("#ff0000"));
-
-                RelativeLayout.LayoutParams deleteQuesCheckBoxParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                deleteQuesCheckBoxParams.addRule(RelativeLayout.ABOVE, questionList_rel_lay.get(i).getId());
-
-                layout.addView(deleteQuesCheckBoxArr.get(i), deleteQuesCheckBoxParams);
-
-                deleteQuesCheckBoxArr.get(i).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        totalDeleteQuestSelected++;
-                    }
-                });
+    public void deleteQuestion() {
+        int j = 0;
+        while (j < deleteQuesCheckBoxArr.size()) {
+            if(deleteQuesCheckBoxArr.get(j).isChecked()) {
+                layout.removeView(questionList_rel_lay.get(j));
+                questionList_rel_lay.remove(j);
+                questionsList.remove(j);
+                deleteQuesCheckBoxArr.remove(j);
+            } else {
+                j++;
             }
-
-            cancelBtnSelected = true;
-
-            cancelBtn.setText("Delete");
-
-            Drawable buttonDrawable = cancelBtn.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.RED);
-            cancelBtn.setBackground(buttonDrawable);
-
-            addBtn.setEnabled(false);
-
-        } else {
-            if(totalDeleteQuestSelected > 0) {
-                int j = 0;
-                while (j < deleteQuesCheckBoxArr.size()) {
-                    if (deleteQuesCheckBoxArr.get(j).isChecked()) {
-                        layout.removeView(questionList_rel_lay.get(j));
-                        questionList_rel_lay.remove(j);
-                        layout.removeView(deleteQuesCheckBoxArr.get(j));
-                        deleteQuesCheckBoxArr.remove(j);
-                        viewsInQuestions.remove(j);
-                        questionsList.remove(j);
-                    } else {
-                        j++;
-                    }
-                }
-
-                for (int i = 0; i < questionList_rel_lay.size(); i++) {
-                    viewsInQuestions.get(i).setHint("Question " + (i + 1));
-
-                    RelativeLayout.LayoutParams quesRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-                    if (i == 0) {
-                        quesRelLayParams.addRule(RelativeLayout.BELOW, quizName.getId());
-                    } else {
-                        quesRelLayParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(i - 1).getId());
-                    }
-
-                    if (i == questionList_rel_lay.size() - 1) {
-                        quesRelLayParams.bottomMargin = 220;
-                    } else {
-                        quesRelLayParams.bottomMargin = 70;
-                    }
-
-                    questionList_rel_lay.get(i).setLayoutParams(quesRelLayParams);
-                }
-            }
-
-            for(int i = 0; i < deleteQuesCheckBoxArr.size(); i++) {
-                layout.removeView(deleteQuesCheckBoxArr.get(i));
-            }
-
-            deleteQuesCheckBoxArr.clear();
-            totalDeleteQuestSelected = 0;
-
-            cancelBtnSelected = false;
-
-            cancelBtn.setText("Delete Question");
-
-            Drawable buttonDrawable = cancelBtn.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.rgb(30, 144, 255));
-            cancelBtn.setBackground(buttonDrawable);
-
-            addBtn.setEnabled(true);
         }
+
+        selectedDeleteQuests = 0;
+
+        for (int i = 0; i < questionList_rel_lay.size(); i++) {
+            deleteQuesCheckBoxArr.get(i).setText("Question " + (i + 1));
+
+            RelativeLayout.LayoutParams quesRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            if (i == 0) {
+                quesRelLayParams.addRule(RelativeLayout.BELOW, quizName.getId());
+            } else {
+                quesRelLayParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(i - 1).getId());
+            }
+
+            if (i == questionList_rel_lay.size() - 1) {
+                quesRelLayParams.bottomMargin = 220;
+            } else {
+                quesRelLayParams.bottomMargin = 70;
+            }
+
+            questionList_rel_lay.get(i).setLayoutParams(quesRelLayParams);
+        }
+
+        Drawable buttonDrawable = cancelBtn.getBackground();
+        buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+        DrawableCompat.setTint(buttonDrawable, Color.rgb(230, 230, 230));
+        cancelBtn.setBackground(buttonDrawable);
+
+        cancelBtn.setEnabled(false);
+
+        Drawable addbuttonDrawable = addBtn.getBackground();
+        addbuttonDrawable = DrawableCompat.wrap(addbuttonDrawable);
+        DrawableCompat.setTint(addbuttonDrawable, Color.rgb(30, 144, 255));
+        addBtn.setBackground(addbuttonDrawable);
+        addBtn.setTextColor(Color.WHITE);
+
+        addBtn.setEnabled(true);
     }
 
     public void createNewQuiz(View view) {
