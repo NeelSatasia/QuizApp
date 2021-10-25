@@ -713,6 +713,12 @@ public class SaveQuiz extends AppCompatActivity {
                     }
 
                     if (questionsList.get(i).mcQuestion) {
+                        if(questionsList.get(i).correctAnswers.isEmpty()) {
+                            isQuizReadyToBeCreated = false;
+                            userError = "Missing requirements!";
+                            break;
+                        }
+
                         for (int j = 0; j < questionsList.get(i).options.length; j++) {
                             if (questionsList.get(i).options[j].isEmpty()) {
                                 isQuizReadyToBeCreated = false;
@@ -720,12 +726,10 @@ public class SaveQuiz extends AppCompatActivity {
                                 break;
                             }
                         }
-                    } else {
-                        if (questionsList.get(i).frCorrectAnswer.isEmpty()) {
+                    } else if (questionsList.get(i).frCorrectAnswer.isEmpty()) {
                             isQuizReadyToBeCreated = false;
                             userError = "Contains empty field(s)!";
                             break;
-                        }
                     }
                 }
             }

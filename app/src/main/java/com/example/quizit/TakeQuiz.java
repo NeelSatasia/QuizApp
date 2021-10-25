@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -295,6 +296,7 @@ public class TakeQuiz extends AppCompatActivity {
         }
 
         finishedQuiz = true;
+        reviewingQuestionAfterQuiz = true;
         checkAnswers();
 
         resultScrlView = new ScrollView(TakeQuiz.this);
@@ -305,19 +307,23 @@ public class TakeQuiz extends AppCompatActivity {
 
         resultScrlView.addView(resultLay);
 
-        TextView resultLabel = new TextView(TakeQuiz.this);
-        resultLabel.setText("Result");
-        resultLabel.setTextSize(40);
-        resultLabel.setId(View.generateViewId());
+        LinearLayout topLay = new LinearLayout(TakeQuiz.this);
 
-        RelativeLayout.LayoutParams resultLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        resultLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        resultLabelParams.topMargin = 75;
-        resultLabelParams.bottomMargin = 10;
+        RelativeLayout.LayoutParams topLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        topLayParams.topMargin = 15;
+        topLayParams.leftMargin = 10;
+        topLayParams.rightMargin = 10;
 
-        resultLay.addView(resultLabel, resultLabelParams);
+        resultScrlView.addView(topLay, topLayParams);
 
-        TextView scoreLabel = new TextView(TakeQuiz.this);
+        Button backBtn = new Button(TakeQuiz.this);
+        backBtn.setText("Back");
+        backBtn.setId(View.generateViewId());
+
+        LinearLayout.LayoutParams backBtnParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        backBtnParams.rightMargin = 10;
+
+        topLay.addView(backBtn, backBtnParams);
 
         int totalCorrectAnswers = 0;
 
@@ -327,53 +333,26 @@ public class TakeQuiz extends AppCompatActivity {
             }
         }
 
-        scoreLabel.setText("Score: " + totalCorrectAnswers + " of " + quiz.questionList.size());
-        scoreLabel.setTextSize(25);
-        scoreLabel.setId(View.generateViewId());
+        TextView resultLabel = new TextView(TakeQuiz.this);
+        resultLabel.setText("Result: " + totalCorrectAnswers + " of " + quiz.questionList.size());
+        resultLabel.setTextSize(40);
+        resultLabel.setId(View.generateViewId());
 
-        RelativeLayout.LayoutParams scoreLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        scoreLabelParams.addRule(RelativeLayout.BELOW, resultLabel.getId());
-        scoreLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        scoreLabelParams.bottomMargin = 50;
+        LinearLayout.LayoutParams resultLabelParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        resultLabelParams.rightMargin = 10;
 
-        resultLay.addView(scoreLabel, scoreLabelParams);
+        topLay.addView(resultLabel, resultLabelParams);
 
-        Button[] questionsButtons = new Button[quiz.questionList.size()];
-        ScrollView[] questionsResScrlView = new ScrollView[questionsButtons.length];
+        Button nextBtn = new Button(TakeQuiz.this);
+        nextBtn.setText("Next");
+        nextBtn.setId(View.generateViewId());
 
-        for(int i = 0; i < questionsButtons.length; i++) {
-            questionsButtons[i] = new Button(TakeQuiz.this);
-            questionsButtons[i].setText("Question " + (i + 1));
-            questionsButtons[i].setTextColor(Color.WHITE);
-            questionsButtons[i].setId(View.generateViewId());
+        topLay.addView(nextBtn);
 
-            Drawable buttonDrawable = questionsButtons[i].getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
+        int currentQuest = 0;
+        ScrollView[] questionsResScrlView = new ScrollView[quiz.questionList.size()];
 
-            if(userAnswersCorrect[i]) {
-                DrawableCompat.setTint(buttonDrawable, Color.rgb(60, 179, 113));
-            } else {
-                DrawableCompat.setTint(buttonDrawable, Color.rgb(178, 34, 34));
-            }
-
-            questionsButtons[i].setBackground(buttonDrawable);
-
-            RelativeLayout.LayoutParams questBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            questBtnParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-
-            if(i == 0) {
-                questBtnParams.addRule(RelativeLayout.BELOW, scoreLabel.getId());
-            } else {
-                questBtnParams.addRule(RelativeLayout.BELOW, questionsButtons[i - 1].getId());
-            }
-
-            questBtnParams.leftMargin = 10;
-            questBtnParams.rightMargin = 10;
-            questBtnParams.bottomMargin = 10;
-
-            resultLay.addView(questionsButtons[i], questBtnParams);
-
-
+        for(int i = 0; i < questionsResScrlView.length; i++) {
             //question view
             questionsResScrlView[i] = new ScrollView(TakeQuiz.this);
             questionsResScrlView[i].setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
@@ -518,17 +497,23 @@ public class TakeQuiz extends AppCompatActivity {
                     answersRelLay.addView(corrfrAns, corrfrAnsParams);
                 }
             }
-
-            int j = i;
-            questionsButtons[i].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    reviewingQuestionAfterQuiz = true;
-                    setContentView(questionsResScrlView[j]);
-                }
-            });
         }
 
+        nextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(currentQuest + 1 < questionsResScrlView.length) {
+                    setContentView(questionsResScrlView[currentQuest]);
+                }
+            }
+        });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setContentView(questionsResScrlView[currentQuest]);
+            }
+        });
 
         setContentView(resultScrlView);
     }
