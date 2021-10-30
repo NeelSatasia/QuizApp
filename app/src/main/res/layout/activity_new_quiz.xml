@@ -54,14 +54,6 @@
                 android:layout_height="wrap_content"
                 android:text="Set Timer"
                 android:layout_marginRight="10dp"/>
-
-            <Button
-                android:id="@+id/addToFoldr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add To Folder(s)"
-                android:layout_marginRight="10dp"/>
-
         </LinearLayout>
     </HorizontalScrollView>
 
