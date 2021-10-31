@@ -4,10 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/custom_answer_result.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable/custom_button_rounded_corners.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_correct_answer_button.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_input.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_input_answer.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_input_question.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable/custom_main_background_gradient.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_options_in_quiz.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_question_in_quiz_textview.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_question_result.xml" value="0.4197916666666667" />

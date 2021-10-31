@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Quiz Title"
-        android:textSize="40dp"
+        android:textSize="30dp"
         android:gravity="center"
         android:layout_below="@+id/sbtBtn"
         android:layout_marginBottom="10dp"

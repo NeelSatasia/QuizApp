@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.google.gson.Gson;
@@ -40,6 +41,7 @@ public class Quizzes extends AppCompatActivity {
     Button takeQuizBtn;
     Button editQuizBtn;
     Button deleteQuizBtn;
+    Button historyOfQuizBtn;
 
     TextView noQuizzesLabel;
 
@@ -52,6 +54,7 @@ public class Quizzes extends AppCompatActivity {
 
         relLay = new RelativeLayout(this);
         relLay.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        relLay.setPadding(10, 0, 10, 0);
 
         scrlView.addView(relLay);
 
@@ -87,10 +90,7 @@ public class Quizzes extends AppCompatActivity {
             newQuizBtn.setText(quizzes.get(i).quizName);
             newQuizBtn.setTextColor(Color.WHITE);
 
-            Drawable buttonDrawable = newQuizBtn.getBackground();
-            buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-            DrawableCompat.setTint(buttonDrawable, Color.rgb(70, 130, 180));
-            newQuizBtn.setBackground(buttonDrawable);
+            newQuizBtn.setBackground(ContextCompat.getDrawable(Quizzes.this, R.drawable.custom_button_rounded_corners));
 
             RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             if(quizzesBtn.size() == 0) {
@@ -119,6 +119,7 @@ public class Quizzes extends AppCompatActivity {
                     takeQuizBtn = popupView.findViewById(R.id.takeQuizBtn);
                     editQuizBtn = popupView.findViewById(R.id.editQuizBtn);
                     deleteQuizBtn = popupView.findViewById(R.id.deleteQuizBtn);
+                    historyOfQuizBtn = popupView.findViewById(R.id.histBtn);
 
                     takeQuizBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -180,6 +181,14 @@ public class Quizzes extends AppCompatActivity {
                             noQuizzesLabel();
 
                             alertDialog.dismiss();
+                        }
+                    });
+
+                    historyOfQuizBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(Quizzes.this, QuizHistory.class);
+                            startActivity(intent);
                         }
                     });
                 }

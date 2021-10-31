@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Quizit">
         <activity
+            android:name=".QuizHistory"
+            android:exported="true" />
+        <activity
             android:name=".TakeQuiz"
             android:exported="true" />
         <activity
