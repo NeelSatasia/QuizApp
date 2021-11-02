@@ -367,6 +367,7 @@ public class SaveQuiz extends AppCompatActivity {
         if(k >= 0) {
             newQuestion.setText(questionsList.get(k).question);
         }
+        newQuestion.setHint("Enter question");
         newQuestion.setId(View.generateViewId());
         newQuestion.setBackgroundResource(R.drawable.custom_question_textview);
         newQuestion.setPadding(15, 15, 15, 15);

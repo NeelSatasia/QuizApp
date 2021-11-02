@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -19,6 +20,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -48,14 +51,11 @@ public class TakeQuiz extends AppCompatActivity {
 
     int currentQuestionIndex = 0;
 
-    ScrollView resultScrlView;
-
     boolean finishedQuiz = false;
-    boolean reviewingQuestionAfterQuiz = false;
 
     CountDownTimer quizTimer;
     long totalTimeInMillis;
-    boolean isQuizTimerRunning;
+    boolean isQuizTimerRunning = false;
 
     int currentQuest_afterSubmission = 0;
 
@@ -280,35 +280,51 @@ public class TakeQuiz extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(reviewingQuestionAfterQuiz) {
-            reviewingQuestionAfterQuiz = false;
-            setContentView(resultScrlView);
-        } else {
-            if(isQuizTimerRunning) {
-                quizTimer.cancel();
-            }
-
-            Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
-            startActivity(intent);
-        }
-    }
-
-    public void submitQuiz() {
         if(isQuizTimerRunning) {
             quizTimer.cancel();
         }
 
-        finishedQuiz = true;
-        reviewingQuestionAfterQuiz = true;
-        checkAnswers();
+        Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
+        startActivity(intent);
+    }
 
-        resultScrlView = new ScrollView(TakeQuiz.this);
-        resultScrlView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+    public void submitQuiz() {
+        if(isQuizTimerRunning) {
+            isQuizTimerRunning = false;
+            quizTimer.cancel();
+        }
+
+        finishedQuiz = true;
+        checkAnswers();
 
         RelativeLayout resultLay = new RelativeLayout(TakeQuiz.this);
         resultLay.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
 
-        resultScrlView.addView(resultLay);
+        Button saveResultBtn = new Button(this);
+        saveResultBtn.setText("Save Results");
+        saveResultBtn.setId(View.generateViewId());
+
+        Drawable saveRsltBtnDrawable = saveResultBtn.getBackground();
+        saveRsltBtnDrawable = DrawableCompat.wrap(saveRsltBtnDrawable);
+        DrawableCompat.setTint(saveRsltBtnDrawable, Color.rgb(77, 166, 255));
+        saveResultBtn.setBackground(saveRsltBtnDrawable);
+        saveResultBtn.setTextColor(Color.WHITE);
+
+        RelativeLayout.LayoutParams saveResultsBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        saveResultsBtnParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        saveResultsBtnParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        saveResultsBtnParams.bottomMargin = 10;
+        saveResultsBtnParams.rightMargin = 10;
+
+        resultLay.addView(saveResultBtn, saveResultsBtnParams);
+
+        saveResultBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         int totalCorrectAnswers = 0;
 
@@ -318,21 +334,21 @@ public class TakeQuiz extends AppCompatActivity {
             }
         }
 
-        TextView resultLabel = new TextView(TakeQuiz.this);
+        TextView resultLabel = new TextView(this);
         resultLabel.setText("Result: " + totalCorrectAnswers + " of " + quiz.questionList.size());
         resultLabel.setTextSize(25);
         resultLabel.setId(View.generateViewId());
 
         RelativeLayout.LayoutParams resultLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         resultLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        resultLabelParams.topMargin = 20;
+        resultLabelParams.topMargin = 15;
         resultLabelParams.leftMargin = 10;
         resultLabelParams.rightMargin = 10;
         resultLabelParams.bottomMargin = 20;
 
         resultLay.addView(resultLabel, resultLabelParams);
 
-        LinearLayout topLay = new LinearLayout(TakeQuiz.this);
+        LinearLayout topLay = new LinearLayout(this);
         topLay.setId(View.generateViewId());
         topLay.setGravity(Gravity.CENTER);
 
@@ -344,7 +360,7 @@ public class TakeQuiz extends AppCompatActivity {
 
         resultLay.addView(topLay, topLayParams);
 
-        Button backBtn = new Button(TakeQuiz.this);
+        Button backBtn = new Button(this);
         backBtn.setText("Back");
         backBtn.setId(View.generateViewId());
 
@@ -359,7 +375,7 @@ public class TakeQuiz extends AppCompatActivity {
 
         topLay.addView(backBtn, backBtnParams);
 
-        TextView questNumLabel = new TextView(TakeQuiz.this);
+        TextView questNumLabel = new TextView(this);
         questNumLabel.setText("Question Tracker");
         questNumLabel.setTextSize(20);
         questNumLabel.setId(View.generateViewId());
@@ -369,7 +385,7 @@ public class TakeQuiz extends AppCompatActivity {
 
         topLay.addView(questNumLabel, questNumParams);
 
-        Button nextBtn = new Button(TakeQuiz.this);
+        Button nextBtn = new Button(this);
         nextBtn.setText("Next");
         nextBtn.setId(View.generateViewId());
 
@@ -442,10 +458,12 @@ public class TakeQuiz extends AppCompatActivity {
                     optionsCB[k].setClickable(false);
                     optionsCB[k].setFocusable(false);
 
-                    if(quiz.questionList.get(i).correctAnswers.contains((Integer) k)) {
+                    if(userAnswers[i].contains((Integer) k)) {
                         optionsCB[k].setChecked(true);
+                    }
+
+                    if(quiz.questionList.get(i).correctAnswers.contains((Integer) k)) {
                         optionsCB[k].setTextColor(Color.rgb(0, 128, 0));
-                        optionsCB[k].setTextSize(20);
                     }
 
                     if(quiz.questionList.get(i).correctAnswers.contains((Integer) k) == false && userAnswers[i].contains((Integer) k)) {
@@ -565,6 +583,6 @@ public class TakeQuiz extends AppCompatActivity {
             }
         });
 
-        setContentView(resultScrlView);
+        setContentView(resultLay);
     }
 }
