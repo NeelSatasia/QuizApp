@@ -8,12 +8,12 @@ public class QuizInfo implements Serializable {
     String quizName;
     ArrayList<Question> questionList;
     String[] timer;
-    boolean passwordProtected;
+    int id;
 
-    public QuizInfo(String quizTitle, ArrayList<Question> questList, String[] timr, boolean isProtected) {
+    public QuizInfo(String quizTitle, ArrayList<Question> questList, String[] timr, int inputID) {
         questionList = questList;
         quizName = quizTitle;
         timer = timr;
-        passwordProtected = isProtected;
+        id = inputID;
     }
 }

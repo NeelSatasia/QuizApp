@@ -148,6 +148,8 @@ public class Quizzes extends AppCompatActivity {
                                     break;
                                 }
                             }
+
+                            intent.putExtra("Previous Activity", "Quizzes");
                             startActivity(intent);
                         }
                     });
@@ -174,6 +176,8 @@ public class Quizzes extends AppCompatActivity {
                                 }
 
                                 quizzesBtn.get(k).setLayoutParams(quizBtnLay);
+
+                                quizzes.get(k).id = k;
                             }
 
                             saveData();
@@ -205,6 +209,7 @@ public class Quizzes extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(Quizzes.this, MainActivity.class);
+        intent.putExtra("Previous Activity", "Quizzes");
         startActivity(intent);
     }
 

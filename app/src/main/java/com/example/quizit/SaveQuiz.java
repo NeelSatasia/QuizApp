@@ -42,7 +42,6 @@ public class SaveQuiz extends AppCompatActivity {
     ArrayList<TextView> viewsInQuestions;
     ArrayList<Question> questionsList;
     String[] timer = new String[3];
-    boolean passwordProtected = false;
     RelativeLayout layout;
     TextView quizName;
     Button addBtn;
@@ -716,7 +715,7 @@ public class SaveQuiz extends AppCompatActivity {
                     if (questionsList.get(i).mcQuestion) {
                         if(questionsList.get(i).correctAnswers.isEmpty()) {
                             isQuizReadyToBeCreated = false;
-                            userError = "Missing requirements!";
+                            userError = "Choose correct answer(s)";
                             break;
                         }
 
@@ -736,12 +735,12 @@ public class SaveQuiz extends AppCompatActivity {
             }
         } else {
             isQuizReadyToBeCreated = false;
-            userError =  "Missing requirements!";
+            userError =  "Missing quiz name or questions!";
         }
 
         if(isQuizReadyToBeCreated) {
             Intent intent = new Intent(this, Quizzes.class);
-            QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList, timer, passwordProtected);
+            QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList, timer, quizzes.size());
             if (editQuizID < 0) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("QuizzesList", newQuiz);
@@ -759,10 +758,13 @@ public class SaveQuiz extends AppCompatActivity {
     }
 
     public void getEditQuiz() {
-        SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("Quiz", null);
-        editQuizID = sharedPreferences.getInt("QuizID", -1);
+        Intent intent = getIntent();
+        String activity = intent.getStringExtra("Previous Activity");
+
+        if(activity.equals("Quizzes")) {
+            SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
+            editQuizID = sharedPreferences.getInt("QuizID", -1);
+        }
     }
 
     public void loadQuizzes() {

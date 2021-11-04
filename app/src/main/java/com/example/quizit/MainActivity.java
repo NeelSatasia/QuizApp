@@ -25,13 +25,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createNewQuiz(View view) {
-        SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("Quiz", null);
-        editor.putInt("QuizID", -1);
-        editor.apply();
-
         Intent intent = new Intent(this, SaveQuiz.class);
+        intent.putExtra("Previous Activity", "Main");
         startActivity(intent);
     }
 

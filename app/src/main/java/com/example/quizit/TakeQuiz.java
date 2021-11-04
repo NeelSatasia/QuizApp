@@ -303,7 +303,7 @@ public class TakeQuiz extends AppCompatActivity {
         Button saveResultBtn = new Button(this);
         saveResultBtn.setText("Save Results");
         saveResultBtn.setId(View.generateViewId());
-
+        //saveResultBtn.setBackground(ContextCompat.getDrawable(this, R.drawable.custom_button_rounded_corners));
         Drawable saveRsltBtnDrawable = saveResultBtn.getBackground();
         saveRsltBtnDrawable = DrawableCompat.wrap(saveRsltBtnDrawable);
         DrawableCompat.setTint(saveRsltBtnDrawable, Color.rgb(77, 166, 255));
@@ -318,14 +318,6 @@ public class TakeQuiz extends AppCompatActivity {
 
         resultLay.addView(saveResultBtn, saveResultsBtnParams);
 
-        saveResultBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
         int totalCorrectAnswers = 0;
 
         for(int i = 0; i < userAnswersCorrect.length; i++) {
@@ -333,6 +325,40 @@ public class TakeQuiz extends AppCompatActivity {
                 totalCorrectAnswers++;
             }
         }
+        int totalCorrectAnswers1 = totalCorrectAnswers;
+
+        saveResultBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                Gson gson = new Gson();
+                String json = sharedPreferences.getString("QuizList", null);
+                Type type = new TypeToken<ArrayList<ArrayList<QuizResult>>>() {}.getType();
+                ArrayList<ArrayList<QuizResult>> quizzesHistory = gson.fromJson(json, type);
+
+                QuizResult newQuizRes = new QuizResult(quiz.quizName, quiz.questionList, quiz.timer, userAnswers, totalCorrectAnswers1);
+
+                if(quizzesHistory != null) {
+                    for(int i = 0; i < quizzesHistory.size(); i++) {
+                        if(i == quiz.id) {
+                            quizzesHistory.get(i).add(newQuizRes);
+                            break;
+                        }
+                    }
+                }
+
+                SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences2.edit();
+                Gson gson2 = new Gson();
+                String json2 = gson2.toJson(quizzesHistory);
+                editor.putString("QuizList", json2);
+                editor.apply();
+
+                Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
+                intent.putExtra("Previous Activity", "TakeQuiz");
+                startActivity(intent);
+            }
+        });
 
         TextView resultLabel = new TextView(this);
         resultLabel.setText("Result: " + totalCorrectAnswers + " of " + quiz.questionList.size());
