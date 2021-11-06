@@ -101,7 +101,7 @@ public class Quizzes extends AppCompatActivity {
             quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
             quizBtnLay.leftMargin = 10;
             quizBtnLay.rightMargin = 10;
-            quizBtnLay.bottomMargin = 10;
+            quizBtnLay.bottomMargin = 20;
 
             quizzesBtn.add(newQuizBtn);
             quizzesBtn.get(quizzesBtn.size() - 1).setId(View.generateViewId());
@@ -161,6 +161,28 @@ public class Quizzes extends AppCompatActivity {
                                 if(quizzes.get(k).quizName.equals(newQuizBtn.getText().toString())) {
                                     quizzes.remove(k);
                                     quizzesBtn.remove(k);
+
+                                    SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                                    Gson gson = new Gson();
+                                    String json = sharedPreferences.getString("QuizResultList", null);
+                                    Type type = new TypeToken<ArrayList<ArrayList<QuizResult>>>() {}.getType();
+                                    ArrayList<ArrayList<QuizResult>> quizzesHistory = gson.fromJson(json, type);
+
+                                    if(quizzesHistory != null) {
+                                        for(int u = 0; u < quizzesHistory.size(); u++) {
+                                            if(u == k) {
+                                                quizzesHistory.remove(u);
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences2.edit();
+                                    Gson gson2 = new Gson();
+                                    String json2 = gson2.toJson(quizzesHistory);
+                                    editor.putString("QuizResultList", json2);
+                                    editor.apply();
                                     break;
                                 }
                             }
@@ -191,6 +213,11 @@ public class Quizzes extends AppCompatActivity {
                     historyOfQuizBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            SharedPreferences sharedPreferences2 = getSharedPreferences("QuizHistoryName", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences2.edit();
+                            editor.putString("Quiz Name", newQuizBtn.getText().toString());
+                            editor.apply();
+
                             Intent intent = new Intent(Quizzes.this, QuizHistory.class);
                             startActivity(intent);
                         }
