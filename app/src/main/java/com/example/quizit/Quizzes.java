@@ -71,7 +71,7 @@ public class Quizzes extends AppCompatActivity {
         relLay.addView(yourQuizzesLabel, titleLayParams);
 
         noQuizzesLabel = new TextView(this);
-        noQuizzesLabel.setText("No Quizzes Found!");
+        noQuizzesLabel.setText("Empty!");
         noQuizzesLabel.setTextSize(15);
 
         loadData();
@@ -87,10 +87,15 @@ public class Quizzes extends AppCompatActivity {
 
         for(int i = 0; i < quizzes.size(); i++) {
             Button newQuizBtn = new Button(this);
+            newQuizBtn.setAllCaps(false);
             newQuizBtn.setText(quizzes.get(i).quizName);
             newQuizBtn.setTextColor(Color.WHITE);
 
-            newQuizBtn.setBackground(ContextCompat.getDrawable(Quizzes.this, R.drawable.custom_button_rounded_corners));
+            Drawable saveRsltBtnDrawable = newQuizBtn.getBackground();
+            saveRsltBtnDrawable = DrawableCompat.wrap(saveRsltBtnDrawable);
+            DrawableCompat.setTint(saveRsltBtnDrawable, Color.rgb(51, 173, 255));
+            newQuizBtn.setBackground(saveRsltBtnDrawable);
+            newQuizBtn.setTextColor(Color.WHITE);
 
             RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             if(quizzesBtn.size() == 0) {
@@ -101,11 +106,11 @@ public class Quizzes extends AppCompatActivity {
             quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
             quizBtnLay.leftMargin = 10;
             quizBtnLay.rightMargin = 10;
-            quizBtnLay.bottomMargin = 20;
+            quizBtnLay.bottomMargin = 15;
 
             quizzesBtn.add(newQuizBtn);
             quizzesBtn.get(quizzesBtn.size() - 1).setId(View.generateViewId());
-            int j = i;
+
             newQuizBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -159,43 +164,31 @@ public class Quizzes extends AppCompatActivity {
                         public void onClick(View view) {
                             for (int k = 0; k < quizzes.size(); k++) {
                                 if(quizzes.get(k).quizName.equals(newQuizBtn.getText().toString())) {
+                                    SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences2.edit();
+                                    editor.remove(quizzes.get(k).quizName).commit();
+                                    editor.apply();
+
                                     quizzes.remove(k);
                                     quizzesBtn.remove(k);
 
-                                    SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
-                                    Gson gson = new Gson();
-                                    String json = sharedPreferences.getString("QuizResultList", null);
-                                    Type type = new TypeToken<ArrayList<ArrayList<QuizResult>>>() {}.getType();
-                                    ArrayList<ArrayList<QuizResult>> quizzesHistory = gson.fromJson(json, type);
-
-                                    if(quizzesHistory != null) {
-                                        for(int u = 0; u < quizzesHistory.size(); u++) {
-                                            if(u == k) {
-                                                quizzesHistory.remove(u);
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPreferences2.edit();
-                                    Gson gson2 = new Gson();
-                                    String json2 = gson2.toJson(quizzesHistory);
-                                    editor.putString("QuizResultList", json2);
-                                    editor.apply();
                                     break;
                                 }
                             }
                             relLay.removeView(newQuizBtn);
 
                             for(int k = 0; k < quizzes.size(); k++) {
-                                RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
                                 quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
                                 if(k == 0) {
                                     quizBtnLay.addRule(RelativeLayout.BELOW, yourQuizzesLabel.getId());
                                 } else {
                                     quizBtnLay.addRule(RelativeLayout.BELOW, quizzesBtn.get(k - 1).getId());
                                 }
+
+                                quizBtnLay.leftMargin = 10;
+                                quizBtnLay.rightMargin = 10;
+                                quizBtnLay.bottomMargin = 15;
 
                                 quizzesBtn.get(k).setLayoutParams(quizBtnLay);
 

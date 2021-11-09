@@ -3,6 +3,7 @@ package com.example.quizit;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -44,7 +45,7 @@ public class QuizHistory extends AppCompatActivity {
 
         RelativeLayout.LayoutParams quizTitleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         quizTitleParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        quizTitleParams.topMargin = 15;
+        quizTitleParams.topMargin = 20;
         quizTitleParams.leftMargin = 10;
         quizTitleParams.rightMargin = 10;
         quizTitleParams.bottomMargin = 20;
@@ -63,23 +64,24 @@ public class QuizHistory extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("QuizResultList", null);
-        Type type = new TypeToken<ArrayList<ArrayList<QuizResult>>>() {}.getType();
-        ArrayList<ArrayList<QuizResult>> quizzesHistory = gson.fromJson(json, type);
+        String json = sharedPreferences.getString(quizName, null);
+        Type type = new TypeToken<ArrayList<QuizResult>>() {}.getType();
+        ArrayList<QuizResult> quizHistory = gson.fromJson(json, type);
 
-        if(quizzesHistory != null) {
+        if(quizHistory != null) {
             ArrayList<Button> quizBtnsList = new ArrayList<Button>();
 
-            for (int i = 0; i < quizzesHistory.size(); i++) {
+            for (int i = 0; i < quizHistory.size(); i++) {
                 Button quizHistoryBtn = new Button(this);
-                quizHistoryBtn.setText(quizzesHistory.get(i).get(0).quizTitle);
+                quizHistoryBtn.setAllCaps(false);
+                quizHistoryBtn.setText(quizHistory.get(i).quizTitle + "  Result: " + quizHistory.get(i).userCorrectAnswers + " of " + quizHistory.get(i).questionList.size());
                 quizHistoryBtn.setId(View.generateViewId());
 
                 Drawable saveRsltBtnDrawable = quizHistoryBtn.getBackground();
                 saveRsltBtnDrawable = DrawableCompat.wrap(saveRsltBtnDrawable);
-                DrawableCompat.setTint(saveRsltBtnDrawable, Color.rgb(0, 153, 255));
+                DrawableCompat.setTint(saveRsltBtnDrawable, Color.rgb(217, 217, 217));
                 quizHistoryBtn.setBackground(saveRsltBtnDrawable);
-                quizHistoryBtn.setTextColor(Color.WHITE);
+                quizHistoryBtn.setTextColor(Color.BLACK);
 
                 quizBtnsList.add(quizHistoryBtn);
 
@@ -90,15 +92,20 @@ public class QuizHistory extends AppCompatActivity {
 
                 quizHistoryBtnParams.leftMargin = 10;
                 quizHistoryBtnParams.rightMargin = 10;
-                quizHistoryBtnParams.bottomMargin = 15;
+                quizHistoryBtnParams.bottomMargin = 10;
 
                 listRelLay.addView(quizHistoryBtn, quizHistoryBtnParams);
             }
-
         } else {
 
         }
 
         setContentView(mainRelLay);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, Quizzes.class);
+        startActivity(intent);
     }
 }

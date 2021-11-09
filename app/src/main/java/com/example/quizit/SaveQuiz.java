@@ -4,7 +4,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.DrawableCompat;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,7 +19,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,8 +26,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -43,7 +38,8 @@ public class SaveQuiz extends AppCompatActivity {
     ArrayList<Question> questionsList;
     String[] timer = new String[3];
     RelativeLayout layout;
-    TextView quizName;
+    EditText quizName;
+    String previousQuizName;
     Button addBtn;
     Button cancelBtn;
     Button setTimer;
@@ -97,6 +93,7 @@ public class SaveQuiz extends AppCompatActivity {
 
         if(editQuizID > -1) {
             quizName.setText(quizzes.get(editQuizID).quizName);
+            previousQuizName = quizzes.get(editQuizID).quizName;
             questionsList = quizzes.get(editQuizID).questionList;
             timer = quizzes.get(editQuizID).timer;
             createQuizBtn.setText("Save");
@@ -739,18 +736,17 @@ public class SaveQuiz extends AppCompatActivity {
         }
 
         if(isQuizReadyToBeCreated) {
-            Intent intent = new Intent(this, Quizzes.class);
             QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList, timer, quizzes.size());
             if (editQuizID < 0) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("QuizzesList", newQuiz);
-                intent.putExtras(bundle);
+                quizzes.add(newQuiz);
             } else {
+                previousQuizName = quizzes.get(editQuizID).quizName;
                 quizzes.set(editQuizID, newQuiz);
-
-                saveQuizzes();
             }
 
+            saveQuizzes();
+
+            Intent intent = new Intent(this, Quizzes.class);
             startActivity(intent);
         } else {
             Toast.makeText(this, userError, Toast.LENGTH_LONG).show();
@@ -786,5 +782,27 @@ public class SaveQuiz extends AppCompatActivity {
         String json = gson.toJson(quizzes);
         editor.putString("QuizzesList", json);
         editor.apply();
+
+        if(editQuizID >= 0 && quizName.getText().toString().equals(previousQuizName) == false) {
+            SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+            Gson gson2 = new Gson();
+            String json2 = sharedPreferences2.getString(previousQuizName, null);
+            Type type = new TypeToken<ArrayList<QuizResult>>() {}.getType();
+            ArrayList<QuizResult> quizHistory = gson2.fromJson(json2, type);
+
+            if (quizHistory != null) {
+                for (int i = 0; i < quizHistory.size(); i++) {
+                    quizHistory.get(i).quizTitle = quizzes.get(editQuizID).quizName;
+                }
+
+                SharedPreferences sharedPreferences3 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                SharedPreferences.Editor editor2 = sharedPreferences3.edit();
+                Gson gson3 = new Gson();
+                String json3 = gson3.toJson(quizHistory);
+                editor2.remove(previousQuizName).commit();
+                editor2.putString(quizName.getText().toString(), json3).commit();
+                editor2.apply();
+            }
+        }
     }
 }
