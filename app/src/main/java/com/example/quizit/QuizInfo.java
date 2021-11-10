@@ -8,12 +8,10 @@ public class QuizInfo implements Serializable {
     String quizName;
     ArrayList<Question> questionList;
     String[] timer;
-    int id;
 
-    public QuizInfo(String quizTitle, ArrayList<Question> questList, String[] timr, int inputID) {
+    public QuizInfo(String quizTitle, ArrayList<Question> questList, String[] timr) {
         questionList = questList;
         quizName = quizTitle;
         timer = timr;
-        id = inputID;
     }
 }

@@ -29,16 +29,16 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class SaveQuiz extends AppCompatActivity {
-
-    ArrayList<QuizInfo> quizzes;
     ArrayList<RelativeLayout> questionList_rel_lay;
     ArrayList<TextView> viewsInQuestions;
     ArrayList<Question> questionsList;
+    QuizInfo editQuiz;
     String[] timer = new String[3];
     RelativeLayout layout;
-    EditText quizName;
+    EditText quizNameED;
     String previousQuizName;
     Button addBtn;
     Button cancelBtn;
@@ -54,7 +54,7 @@ public class SaveQuiz extends AppCompatActivity {
     ArrayList<CheckBox> deleteQuesCheckBoxArr;
     int selectedDeleteQuests;
 
-    int editQuizID = -1;
+    String quizName;
 
     boolean selectedMC;
 
@@ -70,7 +70,7 @@ public class SaveQuiz extends AppCompatActivity {
         deleteQuesCheckBoxArr = new ArrayList<CheckBox>();
         questionsList = new ArrayList<Question>();
         layout = findViewById(R.id.newQuizLay);
-        quizName = findViewById(R.id.quizNameID);
+        quizNameED = findViewById(R.id.quizNameID);
         addBtn = findViewById(R.id.newQuestionbtn);
         cancelBtn = findViewById(R.id.cancelQuestionbtn);
         setTimer = findViewById(R.id.quizTimer);
@@ -84,23 +84,11 @@ public class SaveQuiz extends AppCompatActivity {
         cancelBtn.setBackground(buttonDrawable);
         cancelBtn.setTextColor(Color.rgb(166, 166, 166));
 
-        loadQuizzes();
         getEditQuiz();
+        uploadQuiz();
 
         for(int i = 0; i < timer.length; i++) {
             timer[i] = "00";
-        }
-
-        if(editQuizID > -1) {
-            quizName.setText(quizzes.get(editQuizID).quizName);
-            previousQuizName = quizzes.get(editQuizID).quizName;
-            questionsList = quizzes.get(editQuizID).questionList;
-            timer = quizzes.get(editQuizID).timer;
-            createQuizBtn.setText("Save");
-
-            uploadQuiz();
-        } else {
-            questionsList = new ArrayList<Question>();
         }
 
         addBtn.setOnClickListener(new View.OnClickListener() {
@@ -330,8 +318,12 @@ public class SaveQuiz extends AppCompatActivity {
     }
 
     public void uploadQuiz() {
-        for(int i = 0; i < quizzes.get(editQuizID).questionList.size(); i++) {
-            createNewQuestion(i, questionsList.get(i).options.length, questionsList.get(i).mcQuestion);
+        if(editQuiz != null) {
+            for (int i = 0; i < editQuiz.questionList.size(); i++) {
+                createNewQuestion(i, questionsList.get(i).options.length, questionsList.get(i).mcQuestion);
+            }
+        } else {
+            questionsList = new ArrayList<Question>();
         }
     }
 
@@ -554,7 +546,7 @@ public class SaveQuiz extends AppCompatActivity {
             previousQuestRelParams.bottomMargin = 70;
             if (questionList_rel_lay.size() >= 1) {
                 if (questionList_rel_lay.size() == 1) {
-                    previousQuestRelParams.addRule(RelativeLayout.BELOW, quizName.getId());
+                    previousQuestRelParams.addRule(RelativeLayout.BELOW, quizNameED.getId());
                 } else {
                     previousQuestRelParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(questionList_rel_lay.size() - 2).getId());
                 }
@@ -658,7 +650,7 @@ public class SaveQuiz extends AppCompatActivity {
             RelativeLayout.LayoutParams quesRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
             if (i == 0) {
-                quesRelLayParams.addRule(RelativeLayout.BELOW, quizName.getId());
+                quesRelLayParams.addRule(RelativeLayout.BELOW, quizNameED.getId());
             } else {
                 quesRelLayParams.addRule(RelativeLayout.BELOW, questionList_rel_lay.get(i - 1).getId());
             }
@@ -692,14 +684,25 @@ public class SaveQuiz extends AppCompatActivity {
 
         boolean isQuizReadyToBeCreated = true;
 
-        if(quizName.getText().toString().isEmpty() == false && questionsList.size() > 0) {
-            for(int i = 0; i < quizzes.size(); i++) {
-                if(i != editQuizID && quizzes.get(i).quizName.equals(quizName.getText().toString())) {
+        if(quizNameED.getText().toString().isEmpty() == false && questionsList.size() > 0) {
+            SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
+            Map<String, ?> keys = sharedPreferences.getAll();
+
+            for(Map.Entry<String,?> entry : keys.entrySet()){
+                if(entry.getKey().equals(quizNameED.getText().toString()) && (previousQuizName.isEmpty() == false && previousQuizName.equals(quizNameED.getText().toString()) == false)) {
                     isQuizReadyToBeCreated = false;
                     userError = "Quiz name already exists!";
                     break;
                 }
             }
+
+            /*for(int i = 0; i < quizzes.size(); i++) {
+                if(quizzes.get(i).quizName.equals(quizNameED.getText().toString())) {
+                    isQuizReadyToBeCreated = false;
+                    userError = "Quiz name already exists!";
+                    break;
+                }
+            }*/
 
             if(isQuizReadyToBeCreated) {
                 for (int i = 0; i < questionsList.size(); i++) {
@@ -736,15 +739,9 @@ public class SaveQuiz extends AppCompatActivity {
         }
 
         if(isQuizReadyToBeCreated) {
-            QuizInfo newQuiz = new QuizInfo(quizName.getText().toString(), questionsList, timer, quizzes.size());
-            if (editQuizID < 0) {
-                quizzes.add(newQuiz);
-            } else {
-                previousQuizName = quizzes.get(editQuizID).quizName;
-                quizzes.set(editQuizID, newQuiz);
-            }
+            QuizInfo newQuiz = new QuizInfo(quizNameED.getText().toString(), questionsList, timer);
 
-            saveQuizzes();
+            saveQuiz(newQuiz);
 
             Intent intent = new Intent(this, Quizzes.class);
             startActivity(intent);
@@ -759,31 +756,30 @@ public class SaveQuiz extends AppCompatActivity {
 
         if(activity.equals("Quizzes")) {
             SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
-            editQuizID = sharedPreferences.getInt("QuizID", -1);
+            quizName = sharedPreferences.getString("Quiz", null);
+
+            SharedPreferences sharedPreferences2 = getSharedPreferences("Quizzes", MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = sharedPreferences2.getString(quizNameED.getText().toString(), null);
+            Type type = new TypeToken<QuizInfo>() {}.getType();
+            editQuiz = gson.fromJson(json, type);
         }
     }
 
-    public void loadQuizzes() {
-        SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("QuizzesList", null);
-        Type type = new TypeToken<ArrayList<QuizInfo>>() {}.getType();
-        quizzes = gson.fromJson(json, type);
-
-        if(quizzes == null) {
-            quizzes = new ArrayList<QuizInfo>();
-        }
-    }
-
-    public void saveQuizzes() {
+    public void saveQuiz(QuizInfo newQuiz) {
         SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(quizzes);
-        editor.putString("QuizzesList", json);
+        String json = gson.toJson(newQuiz);
+        if(previousQuizName.isEmpty() == false && quizNameED.getText().toString().equals(previousQuizName)) {
+            editor.putString(quizNameED.getText().toString(), json).commit();
+        } else {
+            editor.remove(previousQuizName).commit();
+            editor.putString(quizNameED.getText().toString(), json).commit();
+        }
         editor.apply();
 
-        if(editQuizID >= 0 && quizName.getText().toString().equals(previousQuizName) == false) {
+        if(previousQuizName.isEmpty() == false && quizNameED.getText().toString().equals(previousQuizName) == false) {
             SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
             Gson gson2 = new Gson();
             String json2 = sharedPreferences2.getString(previousQuizName, null);
@@ -792,7 +788,7 @@ public class SaveQuiz extends AppCompatActivity {
 
             if (quizHistory != null) {
                 for (int i = 0; i < quizHistory.size(); i++) {
-                    quizHistory.get(i).quizTitle = quizzes.get(editQuizID).quizName;
+                    quizHistory.get(i).quizTitle = quizNameED.getText().toString();
                 }
 
                 SharedPreferences sharedPreferences3 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
@@ -800,7 +796,7 @@ public class SaveQuiz extends AppCompatActivity {
                 Gson gson3 = new Gson();
                 String json3 = gson3.toJson(quizHistory);
                 editor2.remove(previousQuizName).commit();
-                editor2.putString(quizName.getText().toString(), json3).commit();
+                editor2.putString(quizNameED.getText().toString(), json3).commit();
                 editor2.apply();
             }
         }
