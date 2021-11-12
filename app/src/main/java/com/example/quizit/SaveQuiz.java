@@ -87,7 +87,8 @@ public class SaveQuiz extends AppCompatActivity {
         getEditQuiz();
         uploadQuiz();
 
-        for(int i = 0; i < timer.length; i++) {
+
+        for (int i = 0; i < timer.length; i++) {
             timer[i] = "00";
         }
 
@@ -322,8 +323,6 @@ public class SaveQuiz extends AppCompatActivity {
             for (int i = 0; i < editQuiz.questionList.size(); i++) {
                 createNewQuestion(i, questionsList.get(i).options.length, questionsList.get(i).mcQuestion);
             }
-        } else {
-            questionsList = new ArrayList<Question>();
         }
     }
 
@@ -685,7 +684,7 @@ public class SaveQuiz extends AppCompatActivity {
         boolean isQuizReadyToBeCreated = true;
 
         if(quizNameED.getText().toString().isEmpty() == false && questionsList.size() > 0) {
-            SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
+            /*SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
             Map<String, ?> keys = sharedPreferences.getAll();
 
             for(Map.Entry<String,?> entry : keys.entrySet()){
@@ -694,7 +693,7 @@ public class SaveQuiz extends AppCompatActivity {
                     userError = "Quiz name already exists!";
                     break;
                 }
-            }
+            }*/
 
             /*for(int i = 0; i < quizzes.size(); i++) {
                 if(quizzes.get(i).quizName.equals(quizNameED.getText().toString())) {
@@ -756,13 +755,19 @@ public class SaveQuiz extends AppCompatActivity {
 
         if(activity.equals("Quizzes")) {
             SharedPreferences sharedPreferences = getSharedPreferences("EditQuiz", MODE_PRIVATE);
-            quizName = sharedPreferences.getString("Quiz", null);
+            quizName = sharedPreferences.getString("Quiz", "");
 
             SharedPreferences sharedPreferences2 = getSharedPreferences("Quizzes", MODE_PRIVATE);
             Gson gson = new Gson();
-            String json = sharedPreferences2.getString(quizNameED.getText().toString(), null);
+            String json = sharedPreferences2.getString(quizName, null);
             Type type = new TypeToken<QuizInfo>() {}.getType();
             editQuiz = gson.fromJson(json, type);
+
+            quizNameED.setText(quizName);
+            previousQuizName = quizName;
+            questionsList = editQuiz.questionList;
+            timer = editQuiz.timer;
+            createQuizBtn.setText("Save");
         }
     }
 
@@ -771,15 +776,13 @@ public class SaveQuiz extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(newQuiz);
-        if(previousQuizName.isEmpty() == false && quizNameED.getText().toString().equals(previousQuizName)) {
-            editor.putString(quizNameED.getText().toString(), json).commit();
-        } else {
-            editor.remove(previousQuizName).commit();
-            editor.putString(quizNameED.getText().toString(), json).commit();
+        if(quizName.equals(quizNameED.getText().toString()) == false) {
+            editor.remove(quizName).commit();
         }
+        editor.putString(quizNameED.getText().toString(), json).commit();
         editor.apply();
 
-        if(previousQuizName.isEmpty() == false && quizNameED.getText().toString().equals(previousQuizName) == false) {
+        if(editQuiz != null && quizNameED.getText().toString().equals(previousQuizName) == false) {
             SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
             Gson gson2 = new Gson();
             String json2 = sharedPreferences2.getString(previousQuizName, null);

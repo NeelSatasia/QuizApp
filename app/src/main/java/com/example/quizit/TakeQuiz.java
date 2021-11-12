@@ -243,8 +243,11 @@ public class TakeQuiz extends AppCompatActivity {
 
     public void loadQuiz() {
         SharedPreferences sharedPreferences = getSharedPreferences("TakeQuiz", MODE_PRIVATE);
+        String quizName = sharedPreferences.getString("Quiz", null);
+
+        SharedPreferences sharedPreferences2 = getSharedPreferences("Quizzes", MODE_PRIVATE);
         Gson gson = new Gson();
-        String json = sharedPreferences.getString("Quiz", null);
+        String json = sharedPreferences2.getString(quizName, null);
         Type type = new TypeToken<QuizInfo>() {}.getType();
         quiz = gson.fromJson(json, type);
     }

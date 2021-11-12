@@ -131,13 +131,6 @@ public class Quizzes extends AppCompatActivity {
                             public void onClick(View view) {
                                 Intent intent = new Intent(Quizzes.this, TakeQuiz.class);
 
-                                /*for (int i = 0; i < quizzes.size(); i++) {
-                                    if (newQuizBtn.getText().toString().equals(quizzes.get(i))) {
-                                        takeQuiz(quizzes.get(i));
-                                        break;
-                                    }
-                                }*/
-
                                 takeQuiz(newQuizBtn.getText().toString());
 
                                 startActivity(intent);
@@ -234,13 +227,9 @@ public class Quizzes extends AppCompatActivity {
     }
 
     public void takeQuiz(String quizName) {
-        SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
-
         SharedPreferences sharedPreferences2 = getSharedPreferences("TakeQuiz", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences2.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(sharedPreferences.getString(quizName, null));
-        editor.putString("Quiz", json);
+        editor.putString("Quiz", quizName).commit();
         editor.apply();
     }
 
