@@ -10,9 +10,10 @@
         android:id="@+id/sbtBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginRight="20dp"
         android:text="Submit"
         app:backgroundTint="#FF9800" />
@@ -37,7 +38,7 @@
         android:text="Quiz Title"
         android:textSize="30dp"
         android:gravity="center"
-        android:layout_below="@+id/sbtBtn"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
         android:padding="2dp"/>

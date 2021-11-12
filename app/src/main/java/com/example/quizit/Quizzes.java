@@ -75,13 +75,6 @@ public class Quizzes extends AppCompatActivity {
         noQuizzesLabel.setText("Empty!");
         noQuizzesLabel.setTextSize(15);
 
-        /*Bundle bundleObj = getIntent().getExtras();
-        if(bundleObj != null) {
-            quizzes.add((QuizInfo) bundleObj.getSerializable("QuizzesList"));
-
-            saveData();
-        }*/
-
         if(loadData()) {
             quizzesBtn = new ArrayList<Button>();
 

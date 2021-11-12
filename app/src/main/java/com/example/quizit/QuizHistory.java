@@ -1,5 +1,6 @@
 package com.example.quizit;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.drawable.DrawableCompat;
 
@@ -28,6 +29,9 @@ public class QuizHistory extends AppCompatActivity {
 
     TextView quizTitle;
 
+    AlertDialog.Builder alertDialogBuilder;
+    AlertDialog alertDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +49,7 @@ public class QuizHistory extends AppCompatActivity {
 
         RelativeLayout.LayoutParams quizTitleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         quizTitleParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        quizTitleParams.topMargin = 20;
+        quizTitleParams.topMargin = 25;
         quizTitleParams.leftMargin = 10;
         quizTitleParams.rightMargin = 10;
         quizTitleParams.bottomMargin = 20;
@@ -74,14 +78,14 @@ public class QuizHistory extends AppCompatActivity {
             for (int i = 0; i < quizHistory.size(); i++) {
                 Button quizHistoryBtn = new Button(this);
                 quizHistoryBtn.setAllCaps(false);
-                quizHistoryBtn.setText(quizHistory.get(i).quizTitle + "  Result: " + quizHistory.get(i).userCorrectAnswers + " of " + quizHistory.get(i).questionList.size());
+                quizHistoryBtn.setText("Result: " + quizHistory.get(i).userCorrectAnswers + " of " + quizHistory.get(i).questionList.size());
                 quizHistoryBtn.setId(View.generateViewId());
 
                 Drawable saveRsltBtnDrawable = quizHistoryBtn.getBackground();
                 saveRsltBtnDrawable = DrawableCompat.wrap(saveRsltBtnDrawable);
-                DrawableCompat.setTint(saveRsltBtnDrawable, Color.rgb(217, 217, 217));
+                DrawableCompat.setTint(saveRsltBtnDrawable, Color.rgb(0, 153, 255));
                 quizHistoryBtn.setBackground(saveRsltBtnDrawable);
-                quizHistoryBtn.setTextColor(Color.BLACK);
+                quizHistoryBtn.setTextColor(Color.WHITE);
 
                 quizBtnsList.add(quizHistoryBtn);
 
@@ -95,9 +99,52 @@ public class QuizHistory extends AppCompatActivity {
                 quizHistoryBtnParams.bottomMargin = 10;
 
                 listRelLay.addView(quizHistoryBtn, quizHistoryBtnParams);
+
+                quizHistoryBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        alertDialogBuilder = new AlertDialog.Builder(QuizHistory.this);
+                        View popupView = getLayoutInflater().inflate(R.layout.quizresultpopup, null);
+
+                        alertDialogBuilder.setView(popupView);
+                        alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+
+                        Button viewQuizResultBtn = popupView.findViewById(R.id.view);
+                        Button deleteQuizResultBtn = popupView.findViewById(R.id.delete);
+
+                        viewQuizResultBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                SharedPreferences sharedPreferences = getSharedPreferences("Quiz Result", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                //editor.putString("Quiz").commit();
+                                //editor.apply();
+
+                                Intent intent = new Intent(QuizHistory.this, ViewQuizResult.class);
+                                startActivity(intent);
+                            }
+                        });
+
+                        deleteQuizResultBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                            }
+                        });
+                    }
+                });
             }
         } else {
+            TextView emptyLabel = new TextView(this);
+            emptyLabel.setText("Empty!");
+            emptyLabel.setTextSize(20);
 
+            RelativeLayout.LayoutParams emptyLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            emptyLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            emptyLabelParams.addRule(RelativeLayout.BELOW, quizTitle.getId());
+
+            listRelLay.addView(emptyLabel, emptyLabelParams);
         }
 
         setContentView(mainRelLay);

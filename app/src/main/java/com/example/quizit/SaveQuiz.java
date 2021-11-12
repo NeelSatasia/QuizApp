@@ -54,7 +54,7 @@ public class SaveQuiz extends AppCompatActivity {
     ArrayList<CheckBox> deleteQuesCheckBoxArr;
     int selectedDeleteQuests;
 
-    String quizName;
+    String quizName = "";
 
     boolean selectedMC;
 
@@ -684,24 +684,24 @@ public class SaveQuiz extends AppCompatActivity {
         boolean isQuizReadyToBeCreated = true;
 
         if(quizNameED.getText().toString().isEmpty() == false && questionsList.size() > 0) {
-            /*SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
-            Map<String, ?> keys = sharedPreferences.getAll();
+            SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
 
-            for(Map.Entry<String,?> entry : keys.entrySet()){
-                if(entry.getKey().equals(quizNameED.getText().toString()) && (previousQuizName.isEmpty() == false && previousQuizName.equals(quizNameED.getText().toString()) == false)) {
+
+            if(editQuiz == null) {
+                if(sharedPreferences.contains(quizNameED.getText().toString())) {
                     isQuizReadyToBeCreated = false;
                     userError = "Quiz name already exists!";
-                    break;
                 }
-            }*/
-
-            /*for(int i = 0; i < quizzes.size(); i++) {
-                if(quizzes.get(i).quizName.equals(quizNameED.getText().toString())) {
-                    isQuizReadyToBeCreated = false;
-                    userError = "Quiz name already exists!";
-                    break;
+            } else {
+                Map<String, ?> keys = sharedPreferences.getAll();
+                for(Map.Entry<String,?> entry : keys.entrySet()) {
+                    if(entry.getKey().equals(quizNameED.getText().toString()) && quizName.equals(quizNameED.getText().toString()) == false) {
+                        isQuizReadyToBeCreated = false;
+                        userError = "Quiz name already exists!";
+                        break;
+                    }
                 }
-            }*/
+            }
 
             if(isQuizReadyToBeCreated) {
                 for (int i = 0; i < questionsList.size(); i++) {
@@ -776,9 +776,11 @@ public class SaveQuiz extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         Gson gson = new Gson();
         String json = gson.toJson(newQuiz);
+
         if(quizName.equals(quizNameED.getText().toString()) == false) {
             editor.remove(quizName).commit();
         }
+
         editor.putString(quizNameED.getText().toString(), json).commit();
         editor.apply();
 
