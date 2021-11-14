@@ -100,6 +100,7 @@ public class QuizHistory extends AppCompatActivity {
 
                 listRelLay.addView(quizHistoryBtn, quizHistoryBtnParams);
 
+                int i2 = i;
                 quizHistoryBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -118,8 +119,10 @@ public class QuizHistory extends AppCompatActivity {
                             public void onClick(View view) {
                                 SharedPreferences sharedPreferences = getSharedPreferences("Quiz Result", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                //editor.putString("Quiz").commit();
-                                //editor.apply();
+                                Gson gson = new Gson();
+                                String json = gson.toJson(quizHistory.get(i2));
+                                editor.putString("Quiz", json).commit();
+                                editor.apply();
 
                                 Intent intent = new Intent(QuizHistory.this, ViewQuizResult.class);
                                 startActivity(intent);

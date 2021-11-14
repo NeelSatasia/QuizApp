@@ -38,7 +38,7 @@ public class TakeQuiz extends AppCompatActivity {
 
     RelativeLayout[] questionsOptionsRelLays;
     ArrayList<Object>[] userAnswers;
-    Boolean[] userAnswersCorrect;
+    boolean[] userAnswersCorrect;
 
     TextView quizNameLabel;
     TextView questionLabel;
@@ -69,7 +69,7 @@ public class TakeQuiz extends AppCompatActivity {
         questionsOptionsRelLays = new RelativeLayout[quiz.questionList.size()];
 
         userAnswers = new ArrayList[quiz.questionList.size()];
-        userAnswersCorrect = new Boolean[userAnswers.length];
+        userAnswersCorrect = new boolean[userAnswers.length];
 
         for(int i = 0; i < quiz.questionList.size(); i++) {
             userAnswers[i] = new ArrayList<Object>();
@@ -339,7 +339,7 @@ public class TakeQuiz extends AppCompatActivity {
                 Type type = new TypeToken<ArrayList<QuizResult>>() {}.getType();
                 ArrayList<QuizResult> quizHistory = gson.fromJson(json, type);
 
-                QuizResult newQuizRes = new QuizResult(quiz.quizName, quiz.questionList, quiz.timer, userAnswers, totalCorrectAnswers1);
+                QuizResult newQuizRes = new QuizResult(quiz.quizName, quiz.questionList, quiz.timer, userAnswers, userAnswersCorrect, totalCorrectAnswers1);
 
                 if(quizHistory == null) {
                     quizHistory = new ArrayList<QuizResult>();

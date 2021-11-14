@@ -8,13 +8,15 @@ public class QuizResult {
     ArrayList<Question> questionList;
     String[] timeTook;
     ArrayList<Object>[] userAnswers;
+    boolean [] isUserAnswersCorrect;
     int userCorrectAnswers;
 
-    public QuizResult(String qt, ArrayList<Question> questList, String[] totalTimeTook, ArrayList<Object>[] userAns, int userCorrectAns) {
+    public QuizResult(String qt, ArrayList<Question> questList, String[] totalTimeTook, ArrayList<Object>[] userAns, boolean[] isUserAnsCorrect, int userCorrectAns) {
         quizTitle = qt;
         questionList = questList;
         timeTook = totalTimeTook;
         userAnswers = userAns;
+        isUserAnswersCorrect = isUserAnsCorrect;
         userCorrectAnswers = userCorrectAns;
     }
 }
