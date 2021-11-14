@@ -38,6 +38,7 @@ public class QuizHistory extends AppCompatActivity {
 
         mainRelLay = new RelativeLayout(this);
         mainRelLay.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
+        mainRelLay.setBackgroundColor(Color.rgb(230, 230, 230));
 
         SharedPreferences sharedPreferences2 = getSharedPreferences("QuizHistoryName", MODE_PRIVATE);
         String quizName = sharedPreferences2.getString("Quiz Name", "");
@@ -76,6 +77,8 @@ public class QuizHistory extends AppCompatActivity {
             ArrayList<Button> quizBtnsList = new ArrayList<Button>();
 
             for (int i = 0; i < quizHistory.size(); i++) {
+                QuizResult quizResult = quizHistory.get(i);
+
                 Button quizHistoryBtn = new Button(this);
                 quizHistoryBtn.setAllCaps(false);
                 quizHistoryBtn.setText("Result: " + quizHistory.get(i).userCorrectAnswers + " of " + quizHistory.get(i).questionList.size());
@@ -83,9 +86,9 @@ public class QuizHistory extends AppCompatActivity {
 
                 Drawable saveRsltBtnDrawable = quizHistoryBtn.getBackground();
                 saveRsltBtnDrawable = DrawableCompat.wrap(saveRsltBtnDrawable);
-                DrawableCompat.setTint(saveRsltBtnDrawable, Color.rgb(0, 153, 255));
+                DrawableCompat.setTint(saveRsltBtnDrawable, Color.WHITE);
                 quizHistoryBtn.setBackground(saveRsltBtnDrawable);
-                quizHistoryBtn.setTextColor(Color.WHITE);
+                quizHistoryBtn.setTextColor(Color.BLACK);
 
                 quizBtnsList.add(quizHistoryBtn);
 
@@ -94,13 +97,12 @@ public class QuizHistory extends AppCompatActivity {
                     quizHistoryBtnParams.addRule(RelativeLayout.BELOW, quizBtnsList.get(i - 1).getId());
                 }
 
-                quizHistoryBtnParams.leftMargin = 10;
-                quizHistoryBtnParams.rightMargin = 10;
+                quizHistoryBtnParams.leftMargin = 25;
+                quizHistoryBtnParams.rightMargin = 25;
                 quizHistoryBtnParams.bottomMargin = 10;
 
                 listRelLay.addView(quizHistoryBtn, quizHistoryBtnParams);
 
-                int i2 = i;
                 quizHistoryBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -120,7 +122,7 @@ public class QuizHistory extends AppCompatActivity {
                                 SharedPreferences sharedPreferences = getSharedPreferences("Quiz Result", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 Gson gson = new Gson();
-                                String json = gson.toJson(quizHistory.get(i2));
+                                    String json = gson.toJson(quizResult);
                                 editor.putString("Quiz", json).commit();
                                 editor.apply();
 
@@ -132,7 +134,43 @@ public class QuizHistory extends AppCompatActivity {
                         deleteQuizResultBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                quizHistory.remove(quizResult);
+                                quizBtnsList.remove(quizHistoryBtn);
 
+                                SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                                if(quizHistory.isEmpty()) {
+                                    editor.remove(quizName).commit();
+                                } else {
+                                    Gson gson = new Gson();
+                                    String json = gson.toJson(quizHistory);
+                                    editor.putString(quizName, json).commit();
+                                }
+
+                                editor.apply();
+
+                                if(quizHistory.isEmpty()) {
+                                    Intent intent = new Intent(QuizHistory.this, Quizzes.class);
+                                    startActivity(intent);
+                                }
+
+                                alertDialog.dismiss();
+
+                                listRelLay.removeAllViews();
+
+                                for(int j = 0; j < quizHistory.size(); j++) {
+                                    RelativeLayout.LayoutParams quizHistoryBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                    if (j > 0) {
+                                        quizHistoryBtnParams.addRule(RelativeLayout.BELOW, quizBtnsList.get(j - 1).getId());
+                                    }
+
+                                    quizHistoryBtnParams.leftMargin = 10;
+                                    quizHistoryBtnParams.rightMargin = 10;
+                                    quizHistoryBtnParams.bottomMargin = 10;
+
+                                    listRelLay.addView(quizBtnsList.get(j), quizHistoryBtnParams);
+                                }
                             }
                         });
                     }
@@ -141,11 +179,12 @@ public class QuizHistory extends AppCompatActivity {
         } else {
             TextView emptyLabel = new TextView(this);
             emptyLabel.setText("Empty!");
-            emptyLabel.setTextSize(20);
+            emptyLabel.setTextSize(15);
 
             RelativeLayout.LayoutParams emptyLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
             emptyLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
             emptyLabelParams.addRule(RelativeLayout.BELOW, quizTitle.getId());
+            emptyLabelParams.topMargin = 20;
 
             listRelLay.addView(emptyLabel, emptyLabelParams);
         }

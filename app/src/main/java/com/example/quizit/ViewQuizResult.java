@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -42,7 +43,7 @@ public class ViewQuizResult extends AppCompatActivity {
         SharedPreferences sharedPreferences2 = getSharedPreferences("Quiz Result", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences2.getString("Quiz", null);
-        Type type = new TypeToken<QuizInfo>() {}.getType();
+        Type type = new TypeToken<QuizResult>() {}.getType();
         quiz = gson.fromJson(json, type);
 
         TextView resultLabel = new TextView(this);
@@ -295,5 +296,12 @@ public class ViewQuizResult extends AppCompatActivity {
         });
 
         setContentView(mainRelLay);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, QuizHistory.class);
+        intent.putExtra("Previous Activity", "ViewQuizResult");
+        startActivity(intent);
     }
 }
