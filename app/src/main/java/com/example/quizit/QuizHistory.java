@@ -32,13 +32,17 @@ public class QuizHistory extends AppCompatActivity {
     AlertDialog.Builder alertDialogBuilder;
     AlertDialog alertDialog;
 
+    AlertDialog.Builder confirmADB;
+    AlertDialog confirmAD;
+
+    Button clearAllResultBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mainRelLay = new RelativeLayout(this);
         mainRelLay.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-        mainRelLay.setBackgroundColor(Color.rgb(230, 230, 230));
 
         SharedPreferences sharedPreferences2 = getSharedPreferences("QuizHistoryName", MODE_PRIVATE);
         String quizName = sharedPreferences2.getString("Quiz Name", "");
@@ -56,6 +60,23 @@ public class QuizHistory extends AppCompatActivity {
         quizTitleParams.bottomMargin = 20;
 
         mainRelLay.addView(quizTitle, quizTitleParams);
+
+        clearAllResultBtn = new Button(this);
+        clearAllResultBtn.setText("Clear All");
+
+        Drawable buttonDrawable2 = clearAllResultBtn.getBackground();
+        buttonDrawable2 = DrawableCompat.wrap(buttonDrawable2);
+        DrawableCompat.setTint(buttonDrawable2, Color.RED);
+        clearAllResultBtn.setBackground(buttonDrawable2);
+        clearAllResultBtn.setTextColor(Color.WHITE);
+
+        RelativeLayout.LayoutParams clearAllBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        clearAllBtnParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        clearAllBtnParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        clearAllBtnParams.rightMargin = 10;
+        clearAllBtnParams.bottomMargin = 10;
+
+        mainRelLay.addView(clearAllResultBtn, clearAllBtnParams);
 
         scrlView = new ScrollView(this);
         RelativeLayout.LayoutParams scrlViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -86,7 +107,7 @@ public class QuizHistory extends AppCompatActivity {
 
                 Drawable saveRsltBtnDrawable = quizHistoryBtn.getBackground();
                 saveRsltBtnDrawable = DrawableCompat.wrap(saveRsltBtnDrawable);
-                DrawableCompat.setTint(saveRsltBtnDrawable, Color.WHITE);
+                DrawableCompat.setTint(saveRsltBtnDrawable, Color.rgb(230, 230, 230));
                 quizHistoryBtn.setBackground(saveRsltBtnDrawable);
                 quizHistoryBtn.setTextColor(Color.BLACK);
 
@@ -122,7 +143,7 @@ public class QuizHistory extends AppCompatActivity {
                                 SharedPreferences sharedPreferences = getSharedPreferences("Quiz Result", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 Gson gson = new Gson();
-                                    String json = gson.toJson(quizResult);
+                                String json = gson.toJson(quizResult);
                                 editor.putString("Quiz", json).commit();
                                 editor.apply();
 
@@ -134,62 +155,133 @@ public class QuizHistory extends AppCompatActivity {
                         deleteQuizResultBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                quizHistory.remove(quizResult);
-                                quizBtnsList.remove(quizHistoryBtn);
+                                confirmADB = new AlertDialog.Builder(QuizHistory.this);
+                                View popupView = getLayoutInflater().inflate(R.layout.confirmationpopup, null);
 
-                                SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                confirmADB.setView(popupView);
+                                confirmAD = confirmADB.create();
+                                confirmAD.show();
 
-                                if(quizHistory.isEmpty()) {
-                                    editor.remove(quizName).commit();
-                                } else {
-                                    Gson gson = new Gson();
-                                    String json = gson.toJson(quizHistory);
-                                    editor.putString(quizName, json).commit();
-                                }
+                                Button confirmDeleteBtn = popupView.findViewById(R.id.confirm_delete);
+                                Button confirmCancelBtn = popupView.findViewById(R.id.confirm_cancel);
 
-                                editor.apply();
+                                confirmDeleteBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        quizHistory.remove(quizResult);
+                                        quizBtnsList.remove(quizHistoryBtn);
 
-                                if(quizHistory.isEmpty()) {
-                                    Intent intent = new Intent(QuizHistory.this, Quizzes.class);
-                                    startActivity(intent);
-                                }
+                                        SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                                alertDialog.dismiss();
+                                        if(quizHistory.isEmpty()) {
+                                            editor.remove(quizName).commit();
+                                        } else {
+                                            Gson gson = new Gson();
+                                            String json = gson.toJson(quizHistory);
+                                            editor.putString(quizName, json).commit();
+                                        }
 
-                                listRelLay.removeAllViews();
+                                        editor.apply();
 
-                                for(int j = 0; j < quizHistory.size(); j++) {
-                                    RelativeLayout.LayoutParams quizHistoryBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                                    if (j > 0) {
-                                        quizHistoryBtnParams.addRule(RelativeLayout.BELOW, quizBtnsList.get(j - 1).getId());
+                                        if(quizHistory.isEmpty()) {
+                                            Intent intent = new Intent(QuizHistory.this, Quizzes.class);
+                                            startActivity(intent);
+                                        }
+
+                                        alertDialog.dismiss();
+
+                                        listRelLay.removeAllViews();
+
+                                        for(int j = 0; j < quizHistory.size(); j++) {
+                                            RelativeLayout.LayoutParams quizHistoryBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                            if (j > 0) {
+                                                quizHistoryBtnParams.addRule(RelativeLayout.BELOW, quizBtnsList.get(j - 1).getId());
+                                            }
+
+                                            quizHistoryBtnParams.leftMargin = 10;
+                                            quizHistoryBtnParams.rightMargin = 10;
+                                            quizHistoryBtnParams.bottomMargin = 10;
+
+                                            listRelLay.addView(quizBtnsList.get(j), quizHistoryBtnParams);
+                                        }
+
+                                        confirmAD.dismiss();
+                                        alertDialog.dismiss();
                                     }
+                                });
 
-                                    quizHistoryBtnParams.leftMargin = 10;
-                                    quizHistoryBtnParams.rightMargin = 10;
-                                    quizHistoryBtnParams.bottomMargin = 10;
-
-                                    listRelLay.addView(quizBtnsList.get(j), quizHistoryBtnParams);
-                                }
+                                confirmCancelBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        confirmAD.dismiss();
+                                    }
+                                });
                             }
                         });
                     }
                 });
             }
+
+            clearAllResultBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(quizHistory.isEmpty() == false) {
+                        confirmADB = new AlertDialog.Builder(QuizHistory.this);
+                        View popupView = getLayoutInflater().inflate(R.layout.confirmationpopup, null);
+
+                        confirmADB.setView(popupView);
+                        confirmAD = confirmADB.create();
+                        confirmAD.show();
+
+                        Button confirmDeleteBtn = popupView.findViewById(R.id.confirm_delete);
+                        Button confirmCancelBtn = popupView.findViewById(R.id.confirm_cancel);
+
+                        confirmDeleteBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                quizHistory.clear();
+
+                                SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.remove(quizName).commit();
+                                editor.apply();
+
+                                listRelLay.removeAllViews();
+
+                                emptyLabel();
+
+                                confirmAD.dismiss();
+                            }
+                        });
+
+                        confirmCancelBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                confirmAD.dismiss();
+                            }
+                        });
+                    }
+                }
+            });
         } else {
-            TextView emptyLabel = new TextView(this);
-            emptyLabel.setText("Empty!");
-            emptyLabel.setTextSize(15);
-
-            RelativeLayout.LayoutParams emptyLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            emptyLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            emptyLabelParams.addRule(RelativeLayout.BELOW, quizTitle.getId());
-            emptyLabelParams.topMargin = 20;
-
-            listRelLay.addView(emptyLabel, emptyLabelParams);
+            emptyLabel();
         }
 
         setContentView(mainRelLay);
+    }
+
+    public void emptyLabel() {
+        TextView emptyLabel = new TextView(this);
+        emptyLabel.setText("Empty!");
+        emptyLabel.setTextSize(15);
+
+        RelativeLayout.LayoutParams emptyLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        emptyLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        emptyLabelParams.addRule(RelativeLayout.BELOW, quizTitle.getId());
+        emptyLabelParams.topMargin = 20;
+
+        listRelLay.addView(emptyLabel, emptyLabelParams);
     }
 
     @Override

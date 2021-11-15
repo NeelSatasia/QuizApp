@@ -89,7 +89,6 @@ public class ViewQuizResult extends AppCompatActivity {
 
         TextView questNumLabel = new TextView(this);
         questNumLabel.setText("Question Tracker");
-        questNumLabel.setTextSize(20);
         questNumLabel.setId(View.generateViewId());
 
         LinearLayout.LayoutParams questNumParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

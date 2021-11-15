@@ -39,6 +39,9 @@ public class Quizzes extends AppCompatActivity {
     AlertDialog.Builder alertDialogBuilder;
     AlertDialog alertDialog;
 
+    AlertDialog.Builder confirmADB;
+    AlertDialog confirmAD;
+
     Button takeQuizBtn;
     Button editQuizBtn;
     Button deleteQuizBtn;
@@ -145,38 +148,61 @@ public class Quizzes extends AppCompatActivity {
                         deleteQuizBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences2.edit();
-                                editor.remove(newQuizBtn.getText().toString()).commit();
-                                editor.apply();
+                                confirmADB = new AlertDialog.Builder(Quizzes.this);
+                                View popupView = getLayoutInflater().inflate(R.layout.confirmationpopup, null);
 
-                                quizzes.remove(newQuizBtn.getText().toString());
-                                saveData(newQuizBtn.getText().toString());
-                                quizzesBtn.remove(newQuizBtn);
+                                confirmADB.setView(popupView);
+                                confirmAD = confirmADB.create();
+                                confirmAD.show();
 
-                                relLay.removeView(newQuizBtn);
+                                Button confirmDeleteBtn = popupView.findViewById(R.id.confirm_delete);
+                                Button confirmCancelBtn = popupView.findViewById(R.id.confirm_cancel);
 
-                                for (int k = 0; k < quizzes.size(); k++) {
-                                    RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                                    quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                                    if (k == 0) {
-                                        quizBtnLay.addRule(RelativeLayout.BELOW, yourQuizzesLabel.getId());
-                                    } else {
-                                        quizBtnLay.addRule(RelativeLayout.BELOW, quizzesBtn.get(k - 1).getId());
+                                confirmDeleteBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences2.edit();
+                                        editor.remove(newQuizBtn.getText().toString()).commit();
+                                        editor.apply();
+
+                                        quizzes.remove(newQuizBtn.getText().toString());
+                                        saveData(newQuizBtn.getText().toString());
+                                        quizzesBtn.remove(newQuizBtn);
+
+                                        relLay.removeView(newQuizBtn);
+
+                                        for (int k = 0; k < quizzes.size(); k++) {
+                                            RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                            quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                                            if (k == 0) {
+                                                quizBtnLay.addRule(RelativeLayout.BELOW, yourQuizzesLabel.getId());
+                                            } else {
+                                                quizBtnLay.addRule(RelativeLayout.BELOW, quizzesBtn.get(k - 1).getId());
+                                            }
+
+                                            quizBtnLay.leftMargin = 10;
+                                            quizBtnLay.rightMargin = 10;
+                                            quizBtnLay.bottomMargin = 15;
+
+                                            quizzesBtn.get(k).setLayoutParams(quizBtnLay);
+                                        }
+
+                                        if(quizzes.isEmpty()) {
+                                            noQuizzesLabel();
+                                        }
+
+                                        confirmAD.dismiss();
+                                        alertDialog.dismiss();
                                     }
+                                });
 
-                                    quizBtnLay.leftMargin = 10;
-                                    quizBtnLay.rightMargin = 10;
-                                    quizBtnLay.bottomMargin = 15;
-
-                                    quizzesBtn.get(k).setLayoutParams(quizBtnLay);
-                                }
-
-                                if(quizzes.isEmpty()) {
-                                    noQuizzesLabel();
-                                }
-
-                                alertDialog.dismiss();
+                                confirmCancelBtn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        confirmAD.dismiss();
+                                    }
+                                });
                             }
                         });
 
