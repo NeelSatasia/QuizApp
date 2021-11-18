@@ -21,8 +21,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.w3c.dom.Text;
-
 import java.lang.reflect.Type;
 
 public class ViewQuizResult extends AppCompatActivity {
@@ -53,7 +51,7 @@ public class ViewQuizResult extends AppCompatActivity {
 
         RelativeLayout.LayoutParams resultLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         resultLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        resultLabelParams.topMargin = 15;
+        resultLabelParams.topMargin = 30;
         resultLabelParams.leftMargin = 10;
         resultLabelParams.rightMargin = 10;
         resultLabelParams.bottomMargin = 20;
@@ -89,6 +87,7 @@ public class ViewQuizResult extends AppCompatActivity {
 
         TextView questNumLabel = new TextView(this);
         questNumLabel.setText("Question Tracker");
+        questNumLabel.setTextSize(20);
         questNumLabel.setId(View.generateViewId());
 
         LinearLayout.LayoutParams questNumParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -169,15 +168,21 @@ public class ViewQuizResult extends AppCompatActivity {
                     optionsCB[k].setClickable(false);
                     optionsCB[k].setFocusable(false);
 
-                    if(quiz.userAnswers[i].contains((Integer) k)) {
+                    if(quiz.userAnswers.get(i).contains(k + "")) {
                         optionsCB[k].setChecked(true);
+                    }
+
+                    for(int u = 0; u < quiz.userAnswers.get(i).size(); u++) {
+                        if(quiz.userAnswers.get(i).get(u).equals((Integer) k)) {
+                            optionsCB[k].setChecked(true);
+                        }
                     }
 
                     if(quiz.questionList.get(i).correctAnswers.contains((Integer) k)) {
                         optionsCB[k].setTextColor(Color.rgb(0, 128, 0));
                     }
 
-                    if(quiz.questionList.get(i).correctAnswers.contains((Integer) k) == false && quiz.userAnswers[i].contains((Integer) k)) {
+                    if(quiz.questionList.get(i).correctAnswers.contains((Integer) k) == false && quiz.userAnswers.get(i).contains(k + "")) {
                         optionsCB[k].setTextColor(Color.RED);
                     }
 
@@ -207,7 +212,7 @@ public class ViewQuizResult extends AppCompatActivity {
                 answersRelLay.addView(yourAnsLabel, yourAnsLabelParams);
 
                 TextView userFrAnswer = new TextView(this);
-                userFrAnswer.setText((String) quiz.userAnswers[i].get(0));
+                userFrAnswer.setText(quiz.userAnswers.get(i).get(0));
                 userFrAnswer.setTextSize(20);
                 userFrAnswer.setHint("No response");
                 userFrAnswer.setId(View.generateViewId());

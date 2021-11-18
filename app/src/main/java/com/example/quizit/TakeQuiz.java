@@ -34,7 +34,7 @@ public class TakeQuiz extends AppCompatActivity {
     QuizInfo quiz;
 
     RelativeLayout[] questionsOptionsRelLays;
-    ArrayList<Object>[] userAnswers;
+    ArrayList<ArrayList<String>> userAnswers;
     boolean[] userAnswersCorrect;
 
     TextView quizNameLabel;
@@ -65,14 +65,14 @@ public class TakeQuiz extends AppCompatActivity {
 
         questionsOptionsRelLays = new RelativeLayout[quiz.questionList.size()];
 
-        userAnswers = new ArrayList[quiz.questionList.size()];
-        userAnswersCorrect = new boolean[userAnswers.length];
+        userAnswers = new ArrayList<ArrayList<String>>();
+        userAnswersCorrect = new boolean[quiz.questionList.size()];
 
         for(int i = 0; i < quiz.questionList.size(); i++) {
-            userAnswers[i] = new ArrayList<Object>();
+            userAnswers.add(new ArrayList<>());
 
             if(quiz.questionList.get(i).mcQuestion == false) {
-                userAnswers[i].add((String) "");
+                userAnswers.get(userAnswers.size() - 1).add("");
             }
 
             userAnswersCorrect[i] = false;
@@ -103,9 +103,9 @@ public class TakeQuiz extends AppCompatActivity {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                             if(optionsCB[j].isChecked()) {
-                                userAnswers[h].add((Integer) j);
-                            } else if(userAnswers[h].contains((Integer) j)){
-                                userAnswers[h].remove((Integer) j);
+                                userAnswers.get(h).add(j + "");
+                            } else if(userAnswers.get(h).contains(j + "")){
+                                userAnswers.get(h).remove(j + "");
                             }
                         }
                     });
@@ -135,7 +135,7 @@ public class TakeQuiz extends AppCompatActivity {
 
                     @Override
                     public void afterTextChanged(Editable editable) {
-                        userAnswers[h].set(0, frAns.getText().toString());
+                        userAnswers.get(h).set(0, frAns.getText().toString());
                     }
                 });
             }
@@ -258,11 +258,11 @@ public class TakeQuiz extends AppCompatActivity {
     }
 
     public void checkAnswers() {
-        for(int i = 0; i < userAnswers.length; i++) {
+        for(int i = 0; i < userAnswers.size(); i++) {
             if(quiz.questionList.get(i).mcQuestion) {
-                for(int j = 0; j < userAnswers[i].size(); j++) {
-                    if(quiz.questionList.get(i).correctAnswers.size() == userAnswers[i].size()) {
-                        if (quiz.questionList.get(i).correctAnswers.contains(userAnswers[i].get(j))) {
+                for(int j = 0; j < userAnswers.get(i).size(); j++) {
+                    if(quiz.questionList.get(i).correctAnswers.size() == userAnswers.get(i).size()) {
+                        if (quiz.questionList.get(i).correctAnswers.contains(userAnswers.get(i).get(j))) {
                             userAnswersCorrect[i] = true;
                         } else {
                             userAnswersCorrect[i] = false;
@@ -271,7 +271,7 @@ public class TakeQuiz extends AppCompatActivity {
                     }
                 }
             } else {
-                if(userAnswers[i].get(0).equals(quiz.questionList.get(i).frCorrectAnswer)) {
+                if(userAnswers.get(i).get(0).equals(quiz.questionList.get(i).frCorrectAnswer)) {
                     userAnswersCorrect[i] = true;
                 }
             }
@@ -480,7 +480,7 @@ public class TakeQuiz extends AppCompatActivity {
                     optionsCB[k].setClickable(false);
                     optionsCB[k].setFocusable(false);
 
-                    if(userAnswers[i].contains((Integer) k)) {
+                    if(userAnswers.get(i).contains(k + "")) {
                         optionsCB[k].setChecked(true);
                     }
 
@@ -488,7 +488,7 @@ public class TakeQuiz extends AppCompatActivity {
                         optionsCB[k].setTextColor(Color.rgb(0, 128, 0));
                     }
 
-                    if(quiz.questionList.get(i).correctAnswers.contains((Integer) k) == false && userAnswers[i].contains((Integer) k)) {
+                    if(quiz.questionList.get(i).correctAnswers.contains((Integer) k) == false && userAnswers.get(i).contains(k + "")) {
                         optionsCB[k].setTextColor(Color.RED);
                     }
 
@@ -518,7 +518,7 @@ public class TakeQuiz extends AppCompatActivity {
                 answersRelLay.addView(yourAnsLabel, yourAnsLabelParams);
 
                 TextView userFrAnswer = new TextView(TakeQuiz.this);
-                userFrAnswer.setText((String) userAnswers[i].get(0));
+                userFrAnswer.setText(userAnswers.get(i).get(0));
                 userFrAnswer.setTextSize(20);
                 userFrAnswer.setHint("No response");
                 userFrAnswer.setId(View.generateViewId());

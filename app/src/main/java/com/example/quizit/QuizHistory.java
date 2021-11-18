@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -133,6 +135,9 @@ public class QuizHistory extends AppCompatActivity {
                         alertDialogBuilder.setView(popupView);
                         alertDialog = alertDialogBuilder.create();
                         alertDialog.show();
+
+                        TextView quizNameLabel = popupView.findViewById(R.id.result_quiz_name_label);
+                        quizNameLabel.setText(quizName);
 
                         Button viewQuizResultBtn = popupView.findViewById(R.id.view);
                         Button deleteQuizResultBtn = popupView.findViewById(R.id.delete);
