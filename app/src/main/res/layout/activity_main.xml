@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/teal_200"
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/main_btns"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="20dp">
 
         <Button
             android:id="@+id/addQuizbtn"
@@ -20,23 +22,19 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/quizzesPagebtn"
             android:onClick="createNewQuiz"
-            android:text="Create New Quiz"
-            app:backgroundTint="#008080" />
-
-        <Button
-            android:id="@+id/quizzesPagebtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="goToUserQuizzes"
-            android:text="Your Quizzes"
-            app:backgroundTint="#008080" />
-
-        <Button
-            android:id="@+id/settingsbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/quizzesPagebtn"
-            android:text="Settings"
-            app:backgroundTint="#008080" />
+            android:text="New Quiz +"
+            app:backgroundTint="#3CB371"/>
     </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/main_btns">
+
+        <RelativeLayout
+            android:id="@+id/quizzes_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </ScrollView>
 </RelativeLayout>

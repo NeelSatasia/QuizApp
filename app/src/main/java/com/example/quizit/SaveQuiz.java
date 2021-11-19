@@ -742,7 +742,7 @@ public class SaveQuiz extends AppCompatActivity {
 
             saveQuiz(newQuiz);
 
-            Intent intent = new Intent(this, Quizzes.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         } else {
             Toast.makeText(this, userError, Toast.LENGTH_LONG).show();

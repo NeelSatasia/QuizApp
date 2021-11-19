@@ -25,9 +25,6 @@
             android:name=".SaveQuiz"
             android:exported="true" />
         <activity
-            android:name=".Quizzes"
-            android:exported="true" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

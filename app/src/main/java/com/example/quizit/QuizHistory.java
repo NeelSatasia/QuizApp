@@ -190,7 +190,7 @@ public class QuizHistory extends AppCompatActivity {
                                         editor.apply();
 
                                         if(quizHistory.isEmpty()) {
-                                            Intent intent = new Intent(QuizHistory.this, Quizzes.class);
+                                            Intent intent = new Intent(QuizHistory.this, MainActivity.class);
                                             startActivity(intent);
                                         }
 
@@ -291,7 +291,7 @@ public class QuizHistory extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, Quizzes.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 }
