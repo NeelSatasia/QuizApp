@@ -304,8 +304,9 @@ public class ViewQuizResult extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        this.finish();
+
         Intent intent = new Intent(this, QuizHistory.class);
-        intent.putExtra("Previous Activity", "ViewQuizResult");
         startActivity(intent);
     }
 }

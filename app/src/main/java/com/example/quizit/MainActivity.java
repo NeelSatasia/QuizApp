@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout.LayoutParams titleLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         titleLayParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         titleLayParams.topMargin = 20;
-        titleLayParams.bottomMargin = 50;
+        titleLayParams.bottomMargin = 30;
 
         relLay.addView(yourQuizzesLabel, titleLayParams);
 
@@ -145,8 +146,8 @@ public class MainActivity extends AppCompatActivity {
                     quizBtnLay.addRule(RelativeLayout.BELOW, quizzesBtn.get(quizzesBtn.size() - 1).getId());
                 }
                 quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                quizBtnLay.leftMargin = 10;
-                quizBtnLay.rightMargin = 10;
+                quizBtnLay.leftMargin = 20;
+                quizBtnLay.rightMargin = 20;
                 quizBtnLay.bottomMargin = 15;
 
                 quizzesBtn.add(newQuizBtn);
@@ -254,13 +255,20 @@ public class MainActivity extends AppCompatActivity {
                         historyOfQuizBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                SharedPreferences sharedPreferences2 = getSharedPreferences("QuizHistoryName", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences2.edit();
-                                editor.putString("Quiz Name", newQuizBtn.getText().toString());
-                                editor.apply();
+                                SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
 
-                                Intent intent = new Intent(MainActivity.this, QuizHistory.class);
-                                startActivity(intent);
+                                if(sharedPreferences.contains(newQuizBtn.getText().toString())) {
+
+                                    SharedPreferences sharedPreferences2 = getSharedPreferences("QuizHistoryName", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences2.edit();
+                                    editor.putString("Quiz Name", newQuizBtn.getText().toString());
+                                    editor.apply();
+
+                                    Intent intent = new Intent(MainActivity.this, QuizHistory.class);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(MainActivity.this, "No results saved", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
                     }

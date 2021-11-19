@@ -262,7 +262,8 @@ public class TakeQuiz extends AppCompatActivity {
             if(quiz.questionList.get(i).mcQuestion) {
                 for(int j = 0; j < userAnswers.get(i).size(); j++) {
                     if(quiz.questionList.get(i).correctAnswers.size() == userAnswers.get(i).size()) {
-                        if (quiz.questionList.get(i).correctAnswers.contains(userAnswers.get(i).get(j))) {
+                        int userAnswerIndex = Integer.parseInt(userAnswers.get(i).get(j));
+                        if (quiz.questionList.get(i).correctAnswers.contains(userAnswerIndex)) {
                             userAnswersCorrect[i] = true;
                         } else {
                             userAnswersCorrect[i] = false;
@@ -283,6 +284,8 @@ public class TakeQuiz extends AppCompatActivity {
         if(isQuizTimerRunning) {
             quizTimer.cancel();
         }
+
+        this.finish();
 
         Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
         startActivity(intent);
@@ -400,6 +403,7 @@ public class TakeQuiz extends AppCompatActivity {
 
         TextView questNumLabel = new TextView(this);
         questNumLabel.setText("Question Tracker");
+        questNumLabel.setTextSize(20);
         questNumLabel.setId(View.generateViewId());
 
         LinearLayout.LayoutParams questNumParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

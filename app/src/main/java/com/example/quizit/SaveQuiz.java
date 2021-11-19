@@ -806,4 +806,12 @@ public class SaveQuiz extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        this.finish();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
 }

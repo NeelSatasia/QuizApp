@@ -252,11 +252,12 @@ public class QuizHistory extends AppCompatActivity {
                                 editor.remove(quizName).commit();
                                 editor.apply();
 
-                                listRelLay.removeAllViews();
-
-                                emptyLabel();
-
                                 confirmAD.dismiss();
+
+                                QuizHistory.this.finish();
+
+                                Intent intent = new Intent(QuizHistory.this, MainActivity.class);
+                                startActivity(intent);
                             }
                         });
 
@@ -291,6 +292,8 @@ public class QuizHistory extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        this.finish();
+
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
