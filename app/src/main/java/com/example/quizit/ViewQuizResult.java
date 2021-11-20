@@ -261,41 +261,35 @@ public class ViewQuizResult extends AppCompatActivity {
 
         mainRelLay.addView(questionsResScrlView[0], questionRelScrlViewParams);
 
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(currentQuest_afterSubmission + 1 < questionsResScrlView.length) {
-                    mainRelLay.removeView(questionsResScrlView[currentQuest_afterSubmission]);
-                    currentQuest_afterSubmission++;
+        nextBtn.setOnClickListener(view -> {
+            if(currentQuest_afterSubmission + 1 < questionsResScrlView.length) {
+                mainRelLay.removeView(questionsResScrlView[currentQuest_afterSubmission]);
+                currentQuest_afterSubmission++;
 
-                    RelativeLayout.LayoutParams nextQuestRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    nextQuestRelLayParams.addRule(RelativeLayout.BELOW, topLay.getId());
-                    nextQuestRelLayParams.topMargin = 15;
-                    nextQuestRelLayParams.leftMargin = 10;
-                    nextQuestRelLayParams.rightMargin = 10;
+                RelativeLayout.LayoutParams nextQuestRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                nextQuestRelLayParams.addRule(RelativeLayout.BELOW, topLay.getId());
+                nextQuestRelLayParams.topMargin = 15;
+                nextQuestRelLayParams.leftMargin = 10;
+                nextQuestRelLayParams.rightMargin = 10;
 
-                    mainRelLay.addView(questionsResScrlView[currentQuest_afterSubmission], nextQuestRelLayParams);
-                    questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
-                }
+                mainRelLay.addView(questionsResScrlView[currentQuest_afterSubmission], nextQuestRelLayParams);
+                questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
             }
         });
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(currentQuest_afterSubmission - 1 >= 0) {
-                    mainRelLay.removeView(questionsResScrlView[currentQuest_afterSubmission]);
-                    currentQuest_afterSubmission--;
+        backBtn.setOnClickListener(view -> {
+            if(currentQuest_afterSubmission - 1 >= 0) {
+                mainRelLay.removeView(questionsResScrlView[currentQuest_afterSubmission]);
+                currentQuest_afterSubmission--;
 
-                    RelativeLayout.LayoutParams previousQuestRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    previousQuestRelLayParams.addRule(RelativeLayout.BELOW, topLay.getId());
-                    previousQuestRelLayParams.topMargin = 15;
-                    previousQuestRelLayParams.leftMargin = 10;
-                    previousQuestRelLayParams.rightMargin = 10;
+                RelativeLayout.LayoutParams previousQuestRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                previousQuestRelLayParams.addRule(RelativeLayout.BELOW, topLay.getId());
+                previousQuestRelLayParams.topMargin = 15;
+                previousQuestRelLayParams.leftMargin = 10;
+                previousQuestRelLayParams.rightMargin = 10;
 
-                    mainRelLay.addView(questionsResScrlView[currentQuest_afterSubmission], previousQuestRelLayParams);
-                    questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
-                }
+                mainRelLay.addView(questionsResScrlView[currentQuest_afterSubmission], previousQuestRelLayParams);
+                questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
             }
         });
 

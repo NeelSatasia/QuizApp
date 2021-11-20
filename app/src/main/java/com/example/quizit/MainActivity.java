@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         noQuizzesLabel.setTextSize(20);
 
         if(loadData()) {
-            quizzesBtn = new ArrayList<Button>();
+            quizzesBtn = new ArrayList<>();
 
             for (int i = 0; i < quizzes.size(); i++) {
                 Button newQuizBtn = new Button(this);
@@ -153,125 +153,102 @@ public class MainActivity extends AppCompatActivity {
                 quizzesBtn.add(newQuizBtn);
                 quizzesBtn.get(quizzesBtn.size() - 1).setId(View.generateViewId());
 
-                newQuizBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-                        View popupView = getLayoutInflater().inflate(R.layout.quizoptionpopup, null);
+                newQuizBtn.setOnClickListener(view -> {
+                    alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                    View popupView = getLayoutInflater().inflate(R.layout.quizoptionpopup, null);
 
-                        alertDialogBuilder.setView(popupView);
-                        alertDialog = alertDialogBuilder.create();
-                        alertDialog.show();
+                    alertDialogBuilder.setView(popupView);
+                    alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
 
-                        takeQuizBtn = popupView.findViewById(R.id.takeQuizBtn);
-                        editQuizBtn = popupView.findViewById(R.id.editQuizBtn);
-                        deleteQuizBtn = popupView.findViewById(R.id.deleteQuizBtn);
-                        historyOfQuizBtn = popupView.findViewById(R.id.histBtn);
+                    takeQuizBtn = popupView.findViewById(R.id.takeQuizBtn);
+                    editQuizBtn = popupView.findViewById(R.id.editQuizBtn);
+                    deleteQuizBtn = popupView.findViewById(R.id.deleteQuizBtn);
+                    historyOfQuizBtn = popupView.findViewById(R.id.histBtn);
 
-                        takeQuizBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent(MainActivity.this, TakeQuiz.class);
+                    takeQuizBtn.setOnClickListener(view1 -> {
+                        Intent intent = new Intent(MainActivity.this, TakeQuiz.class);
 
-                                takeQuiz(newQuizBtn.getText().toString());
+                        takeQuiz(newQuizBtn.getText().toString());
 
-                                startActivity(intent);
-                            }
-                        });
+                        startActivity(intent);
+                    });
 
-                        editQuizBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent(MainActivity.this, SaveQuiz.class);
+                    editQuizBtn.setOnClickListener(view12 -> {
+                        Intent intent = new Intent(MainActivity.this, SaveQuiz.class);
 
-                                editQuiz(newQuizBtn.getText().toString());
+                        editQuiz(newQuizBtn.getText().toString());
 
-                                intent.putExtra("Previous Activity", "Quizzes");
-                                startActivity(intent);
-                            }
-                        });
+                        intent.putExtra("Previous Activity", "Quizzes");
+                        startActivity(intent);
+                    });
 
-                        deleteQuizBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                confirmADB = new AlertDialog.Builder(MainActivity.this);
-                                View popupView = getLayoutInflater().inflate(R.layout.confirmationpopup, null);
+                    deleteQuizBtn.setOnClickListener(view13 -> {
+                        confirmADB = new AlertDialog.Builder(MainActivity.this);
+                        View popupView1 = getLayoutInflater().inflate(R.layout.confirmationpopup, null);
 
-                                confirmADB.setView(popupView);
-                                confirmAD = confirmADB.create();
-                                confirmAD.show();
+                        confirmADB.setView(popupView1);
+                        confirmAD = confirmADB.create();
+                        confirmAD.show();
 
-                                Button confirmDeleteBtn = popupView.findViewById(R.id.confirm_delete);
-                                Button confirmCancelBtn = popupView.findViewById(R.id.confirm_cancel);
+                        Button confirmDeleteBtn = popupView1.findViewById(R.id.confirm_delete);
+                        Button confirmCancelBtn = popupView1.findViewById(R.id.confirm_cancel);
 
-                                confirmDeleteBtn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = sharedPreferences2.edit();
-                                        editor.remove(newQuizBtn.getText().toString()).commit();
-                                        editor.apply();
+                        confirmDeleteBtn.setOnClickListener(view131 -> {
+                            SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences2.edit();
+                            editor.remove(newQuizBtn.getText().toString()).commit();
+                            editor.apply();
 
-                                        quizzes.remove(newQuizBtn.getText().toString());
-                                        saveData(newQuizBtn.getText().toString());
-                                        quizzesBtn.remove(newQuizBtn);
+                            quizzes.remove(newQuizBtn.getText().toString());
+                            saveData(newQuizBtn.getText().toString());
+                            quizzesBtn.remove(newQuizBtn);
 
-                                        relLay.removeView(newQuizBtn);
+                            relLay.removeView(newQuizBtn);
 
-                                        for (int k = 0; k < quizzes.size(); k++) {
-                                            RelativeLayout.LayoutParams quizBtnLay = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                                            quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                                            if (k == 0) {
-                                                quizBtnLay.addRule(RelativeLayout.BELOW, yourQuizzesLabel.getId());
-                                            } else {
-                                                quizBtnLay.addRule(RelativeLayout.BELOW, quizzesBtn.get(k - 1).getId());
-                                            }
-
-                                            quizBtnLay.leftMargin = 10;
-                                            quizBtnLay.rightMargin = 10;
-                                            quizBtnLay.bottomMargin = 15;
-
-                                            quizzesBtn.get(k).setLayoutParams(quizBtnLay);
-                                        }
-
-                                        if(quizzes.isEmpty()) {
-                                            noQuizzesLabel();
-                                        }
-
-                                        confirmAD.dismiss();
-                                        alertDialog.dismiss();
-                                    }
-                                });
-
-                                confirmCancelBtn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        confirmAD.dismiss();
-                                    }
-                                });
-                            }
-                        });
-
-                        historyOfQuizBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
-
-                                if(sharedPreferences.contains(newQuizBtn.getText().toString())) {
-
-                                    SharedPreferences sharedPreferences2 = getSharedPreferences("QuizHistoryName", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPreferences2.edit();
-                                    editor.putString("Quiz Name", newQuizBtn.getText().toString());
-                                    editor.apply();
-
-                                    Intent intent = new Intent(MainActivity.this, QuizHistory.class);
-                                    startActivity(intent);
+                            for (int k = 0; k < quizzes.size(); k++) {
+                                RelativeLayout.LayoutParams quizBtnLay1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                quizBtnLay1.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                                if (k == 0) {
+                                    quizBtnLay1.addRule(RelativeLayout.BELOW, yourQuizzesLabel.getId());
                                 } else {
-                                    Toast.makeText(MainActivity.this, "No results saved", Toast.LENGTH_SHORT).show();
+                                    quizBtnLay1.addRule(RelativeLayout.BELOW, quizzesBtn.get(k - 1).getId());
                                 }
+
+                                quizBtnLay1.leftMargin = 10;
+                                quizBtnLay1.rightMargin = 10;
+                                quizBtnLay1.bottomMargin = 15;
+
+                                quizzesBtn.get(k).setLayoutParams(quizBtnLay1);
                             }
+
+                            if(quizzes.isEmpty()) {
+                                noQuizzesLabel();
+                            }
+
+                            confirmAD.dismiss();
+                            alertDialog.dismiss();
                         });
-                    }
+
+                        confirmCancelBtn.setOnClickListener(view1312 -> confirmAD.dismiss());
+                    });
+
+                    historyOfQuizBtn.setOnClickListener(view14 -> {
+                        SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+
+                        if(sharedPreferences.contains(newQuizBtn.getText().toString())) {
+
+                            SharedPreferences sharedPreferences2 = getSharedPreferences("QuizHistoryName", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences2.edit();
+                            editor.putString("Quiz Name", newQuizBtn.getText().toString());
+                            editor.apply();
+
+                            Intent intent = new Intent(MainActivity.this, QuizHistory.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(MainActivity.this, "No results saved", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 });
 
                 relLay.addView(newQuizBtn, quizBtnLay);

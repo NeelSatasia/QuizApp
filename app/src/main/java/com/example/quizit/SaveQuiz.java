@@ -65,10 +65,10 @@ public class SaveQuiz extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_quiz);
 
-        questionList_rel_lay = new ArrayList<RelativeLayout>();
-        viewsInQuestions = new ArrayList<TextView>();
-        deleteQuesCheckBoxArr = new ArrayList<CheckBox>();
-        questionsList = new ArrayList<Question>();
+        questionList_rel_lay = new ArrayList<>();
+        viewsInQuestions = new ArrayList<>();
+        deleteQuesCheckBoxArr = new ArrayList<>();
+        questionsList = new ArrayList<>();
         layout = findViewById(R.id.newQuizLay);
         quizNameED = findViewById(R.id.quizNameID);
         addBtn = findViewById(R.id.newQuestionbtn);
@@ -92,229 +92,207 @@ public class SaveQuiz extends AppCompatActivity {
             timer[i] = "00";
         }
 
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addQuesADB = new AlertDialog.Builder(SaveQuiz.this);
-                View addQuesPopup = getLayoutInflater().inflate(R.layout.question_type, null);
+        addBtn.setOnClickListener(view -> {
+            addQuesADB = new AlertDialog.Builder(SaveQuiz.this);
+            View addQuesPopup = getLayoutInflater().inflate(R.layout.question_type, null);
 
-                addQuesADB.setView(addQuesPopup);
-                addQuesAD = addQuesADB.create();
-                addQuesAD.show();
+            addQuesADB.setView(addQuesPopup);
+            addQuesAD = addQuesADB.create();
+            addQuesAD.show();
 
-                RadioButton mcRadBtn = addQuesPopup.findViewById(R.id.mc);
-                RadioButton frRadBtn = addQuesPopup.findViewById(R.id.fr);
+            RadioButton mcRadBtn = addQuesPopup.findViewById(R.id.mc);
+            RadioButton frRadBtn = addQuesPopup.findViewById(R.id.fr);
 
-                EditText totalAnswers = addQuesPopup.findViewById(R.id.num);
+            EditText totalAnswers = addQuesPopup.findViewById(R.id.num);
 
-                Button okBtn = addQuesPopup.findViewById(R.id.okBtn);
+            Button okBtn = addQuesPopup.findViewById(R.id.okBtn);
 
-                selectedMC = true;
+            selectedMC = true;
 
-                mcRadBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if(mcRadBtn.isChecked()) {
-                            selectedMC = true;
-                            if(totalAnswers.isEnabled() == false) {
-                                totalAnswers.setEnabled(true);
-                                totalAnswers.setText("2");
-                            }
+            mcRadBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if(mcRadBtn.isChecked()) {
+                        selectedMC = true;
+                        if(totalAnswers.isEnabled() == false) {
+                            totalAnswers.setEnabled(true);
+                            totalAnswers.setText("2");
                         }
                     }
-                });
+                }
+            });
 
-                frRadBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                        if(frRadBtn.isChecked()) {
-                            totalAnswers.setText("1");
-                            totalAnswers.setEnabled(false);
-                            selectedMC = false;
+            frRadBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if(frRadBtn.isChecked()) {
+                        totalAnswers.setText("1");
+                        totalAnswers.setEnabled(false);
+                        selectedMC = false;
 
-                            if(okBtn.isEnabled() == false) {
-                                okBtn.setEnabled(true);
-                            }
+                        if(okBtn.isEnabled() == false) {
+                            okBtn.setEnabled(true);
                         }
                     }
-                });
+                }
+            });
 
-                totalAnswers.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            totalAnswers.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                    }
+                }
 
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                    }
+                }
 
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-                        if(mcRadBtn.isChecked()) {
-                            if (totalAnswers.getText().toString().equals("") || totalAnswers.getText().toString().equals("1")) {
-                                okBtn.setEnabled(false);
-                            } else if (okBtn.isEnabled() == false) {
-                                okBtn.setEnabled(true);
-                            }
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    if(mcRadBtn.isChecked()) {
+                        if (totalAnswers.getText().toString().equals("") || totalAnswers.getText().toString().equals("1")) {
+                            okBtn.setEnabled(false);
+                        } else if (!okBtn.isEnabled()) {
+                            okBtn.setEnabled(true);
                         }
                     }
-                });
+                }
+            });
 
-                okBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int totalOptions = Integer.parseInt(totalAnswers.getText().toString());
-                        addQuesAD.dismiss();
+            okBtn.setOnClickListener(view1 -> {
+                int totalOptions = Integer.parseInt(totalAnswers.getText().toString());
+                addQuesAD.dismiss();
 
-                        createNewQuestion(-1, totalOptions, selectedMC);
-                    }
-                });
-            }
+                createNewQuestion(-1, totalOptions, selectedMC);
+            });
         });
 
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteQuestion();
+        cancelBtn.setOnClickListener(view -> deleteQuestion());
+
+        setTimer.setOnClickListener(view -> {
+            setTimerADB = new AlertDialog.Builder(SaveQuiz.this);
+            View timerPopup = getLayoutInflater().inflate(R.layout.quiz_timer_layout, null);
+
+            setTimerADB.setView(timerPopup);
+            setTimerAD = setTimerADB.create();
+            setTimerAD.show();
+
+            Spinner hrs = timerPopup.findViewById(R.id.hrs);
+            Spinner mins = timerPopup.findViewById(R.id.mins);
+            Spinner secs = timerPopup.findViewById(R.id.secs);
+
+            String[] hours = new String[25];
+            int defaultHrIndex = 0;
+
+            for(int i = 0; i < hours.length; i++) {
+                if(i < 10) {
+                    hours[i] = "0" + i;
+                } else {
+                    hours[i] = i + "";
+                }
+
+                if(timer[0].equals(hours[i])) {
+                    defaultHrIndex = i;
+                }
             }
-        });
 
-        setTimer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setTimerADB = new AlertDialog.Builder(SaveQuiz.this);
-                View timerPopup = getLayoutInflater().inflate(R.layout.quiz_timer_layout, null);
+            ArrayAdapter<String> hrsAdapter = new ArrayAdapter<>(SaveQuiz.this, android.R.layout.simple_spinner_dropdown_item, hours);
+            hrs.setAdapter(hrsAdapter);
+            hrs.setSelection(defaultHrIndex);
 
-                setTimerADB.setView(timerPopup);
-                setTimerAD = setTimerADB.create();
-                setTimerAD.show();
-
-                Spinner hrs = timerPopup.findViewById(R.id.hrs);
-                Spinner mins = timerPopup.findViewById(R.id.mins);
-                Spinner secs = timerPopup.findViewById(R.id.secs);
-
-                String[] hours = new String[25];
-                int defaultHrIndex = 0;
-
-                for(int i = 0; i < hours.length; i++) {
-                    if(i < 10) {
-                        hours[i] = "0" + i;
-                    } else {
-                        hours[i] = i + "";
-                    }
-
-                    if(timer[0].equals(hours[i])) {
-                        defaultHrIndex = i;
-                    }
+            hrs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String hrsStr = adapterView.getSelectedItem().toString();
+                    timer[0] = hrsStr;
                 }
 
-                ArrayAdapter<String> hrsAdapter = new ArrayAdapter<String>(SaveQuiz.this, android.R.layout.simple_spinner_dropdown_item, hours);
-                hrs.setAdapter(hrsAdapter);
-                hrs.setSelection(defaultHrIndex);
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
 
-                hrs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        String hrsStr = adapterView.getSelectedItem().toString();
-                        timer[0] = hrsStr;
-                    }
+                }
+            });
 
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
+            String[] minutes = new String[61];
+            int defaultMinIndex = 0;
 
-                    }
-                });
-
-                String[] minutes = new String[61];
-                int defaultMinIndex = 0;
-
-                for(int i = 0; i < minutes.length; i++) {
-                    if(i < 10) {
-                        minutes[i] = "0" + i;
-                    } else {
-                        minutes[i] = i + "";
-                    }
-
-                    if(timer[1].equals(minutes[i])) {
-                        defaultMinIndex = i;
-                    }
+            for(int i = 0; i < minutes.length; i++) {
+                if(i < 10) {
+                    minutes[i] = "0" + i;
+                } else {
+                    minutes[i] = i + "";
                 }
 
-                ArrayAdapter<String> minsAdapter = new ArrayAdapter<String>(SaveQuiz.this, android.R.layout.simple_spinner_dropdown_item, minutes);
-                mins.setAdapter(minsAdapter);
-                mins.setSelection(defaultMinIndex);
-
-                mins.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        String minsStr = adapterView.getSelectedItem().toString();
-                        timer[1] = minsStr;
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-
-                String[] seconds = new String[61];
-                int defaultSecIndex = 0;
-
-                for(int i = 0; i < seconds.length; i++) {
-                    if(i < 10) {
-                        seconds[i] = "0" + i;
-                    } else {
-                        seconds[i] = i + "";
-                    }
-
-                    if(timer[2].equals(seconds[i])) {
-                        defaultSecIndex = i;
-                    }
+                if(timer[1].equals(minutes[i])) {
+                    defaultMinIndex = i;
                 }
-
-                ArrayAdapter<String> secsAdapter = new ArrayAdapter<String>(SaveQuiz.this, android.R.layout.simple_spinner_dropdown_item, seconds);
-                secs.setAdapter(secsAdapter);
-                secs.setSelection(defaultSecIndex);
-
-                secs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        String secsStr = adapterView.getSelectedItem().toString();
-                        timer[2] = secsStr;
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-
-                    }
-                });
-
-                Button resetBtn = timerPopup.findViewById(R.id.resetBtn);
-
-                resetBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        hrs.setSelection(0);
-                        mins.setSelection(0);
-                        secs.setSelection(0);
-
-                        for(int i = 0; i < timer.length; i++) {
-                            timer[i] = "00";
-                        }
-                    }
-                });
-
-                Button setTimerBtn = timerPopup.findViewById(R.id.setTimrBtn);
-
-                setTimerBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        setTimerAD.dismiss();
-                    }
-                });
             }
+
+            ArrayAdapter<String> minsAdapter = new ArrayAdapter<>(SaveQuiz.this, android.R.layout.simple_spinner_dropdown_item, minutes);
+            mins.setAdapter(minsAdapter);
+            mins.setSelection(defaultMinIndex);
+
+            mins.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String minsStr = adapterView.getSelectedItem().toString();
+                    timer[1] = minsStr;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+            String[] seconds = new String[61];
+            int defaultSecIndex = 0;
+
+            for(int i = 0; i < seconds.length; i++) {
+                if(i < 10) {
+                    seconds[i] = "0" + i;
+                } else {
+                    seconds[i] = i + "";
+                }
+
+                if(timer[2].equals(seconds[i])) {
+                    defaultSecIndex = i;
+                }
+            }
+
+            ArrayAdapter<String> secsAdapter = new ArrayAdapter<>(SaveQuiz.this, android.R.layout.simple_spinner_dropdown_item, seconds);
+            secs.setAdapter(secsAdapter);
+            secs.setSelection(defaultSecIndex);
+
+            secs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String secsStr = adapterView.getSelectedItem().toString();
+                    timer[2] = secsStr;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+            Button resetBtn = timerPopup.findViewById(R.id.resetBtn);
+
+            resetBtn.setOnClickListener(view12 -> {
+                hrs.setSelection(0);
+                mins.setSelection(0);
+                secs.setSelection(0);
+
+                for(int i = 0; i < timer.length; i++) {
+                    timer[i] = "00";
+                }
+            });
+
+            Button setTimerBtn = timerPopup.findViewById(R.id.setTimrBtn);
+
+            setTimerBtn.setOnClickListener(view13 -> setTimerAD.dismiss());
         });
     }
 
@@ -334,7 +312,7 @@ public class SaveQuiz extends AppCompatActivity {
         newQuestionRelativeLayout.setBackgroundResource(R.drawable.custom_input_question);
 
         if(k < 0) {
-            questionsList.add(new Question("", new String[totalOptions], new ArrayList<Integer>(), "", mcQues));
+            questionsList.add(new Question("", new String[totalOptions], new ArrayList<>(), "", mcQues));
         }
 
         RelativeLayout.LayoutParams newQuestionRelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -586,7 +564,7 @@ public class SaveQuiz extends AppCompatActivity {
 
                         addBtn.setEnabled(false);
                     }
-                    if(cancelBtn.isEnabled() == false) {
+                    if(!cancelBtn.isEnabled()) {
                         Drawable buttonDrawable = cancelBtn.getBackground();
                         buttonDrawable = DrawableCompat.wrap(buttonDrawable);
                         DrawableCompat.setTint(buttonDrawable, Color.RED);
@@ -601,7 +579,7 @@ public class SaveQuiz extends AppCompatActivity {
                     selectedDeleteQuests--;
 
                     if(selectedDeleteQuests == 0) {
-                        if (addBtn.isEnabled() == false) {
+                        if (!addBtn.isEnabled()) {
                             Drawable buttonDrawable = addBtn.getBackground();
                             buttonDrawable = DrawableCompat.wrap(buttonDrawable);
                             DrawableCompat.setTint(buttonDrawable, Color.rgb(30, 144, 255));
@@ -683,7 +661,7 @@ public class SaveQuiz extends AppCompatActivity {
 
         boolean isQuizReadyToBeCreated = true;
 
-        if(quizNameED.getText().toString().isEmpty() == false && questionsList.size() > 0) {
+        if(!quizNameED.getText().toString().isEmpty() && questionsList.size() > 0) {
             SharedPreferences sharedPreferences = getSharedPreferences("Quizzes", MODE_PRIVATE);
 
 
@@ -695,7 +673,7 @@ public class SaveQuiz extends AppCompatActivity {
             } else {
                 Map<String, ?> keys = sharedPreferences.getAll();
                 for(Map.Entry<String,?> entry : keys.entrySet()) {
-                    if(entry.getKey().equals(quizNameED.getText().toString()) && quizName.equals(quizNameED.getText().toString()) == false) {
+                    if(entry.getKey().equals(quizNameED.getText().toString()) && !quizName.equals(quizNameED.getText().toString())) {
                         isQuizReadyToBeCreated = false;
                         userError = "Quiz name already exists!";
                         break;
@@ -777,14 +755,14 @@ public class SaveQuiz extends AppCompatActivity {
         Gson gson = new Gson();
         String json = gson.toJson(newQuiz);
 
-        if(quizName.equals(quizNameED.getText().toString()) == false) {
+        if(!quizName.equals(quizNameED.getText().toString())) {
             editor.remove(quizName).commit();
         }
 
         editor.putString(quizNameED.getText().toString(), json).commit();
         editor.apply();
 
-        if(editQuiz != null && quizNameED.getText().toString().equals(previousQuizName) == false) {
+        if(editQuiz != null && !quizNameED.getText().toString().equals(previousQuizName)) {
             SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
             Gson gson2 = new Gson();
             String json2 = sharedPreferences2.getString(previousQuizName, null);

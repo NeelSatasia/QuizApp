@@ -65,7 +65,7 @@ public class TakeQuiz extends AppCompatActivity {
 
         questionsOptionsRelLays = new RelativeLayout[quiz.questionList.size()];
 
-        userAnswers = new ArrayList<ArrayList<String>>();
+        userAnswers = new ArrayList<>();
         userAnswersCorrect = new boolean[quiz.questionList.size()];
 
         for(int i = 0; i < quiz.questionList.size(); i++) {
@@ -158,32 +158,21 @@ public class TakeQuiz extends AppCompatActivity {
 
         displayQuestion(currentQuestionIndex);
 
-        nextQues.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(currentQuestionIndex + 1 < quiz.questionList.size()) {
-                    currentQuestionIndex++;
-                    displayQuestion(currentQuestionIndex);
-                }
+        nextQues.setOnClickListener(view -> {
+            if(currentQuestionIndex + 1 < quiz.questionList.size()) {
+                currentQuestionIndex++;
+                displayQuestion(currentQuestionIndex);
             }
         });
 
-        backQues.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(currentQuestionIndex - 1 >= 0) {
-                    currentQuestionIndex--;
-                    displayQuestion(currentQuestionIndex);
-                }
+        backQues.setOnClickListener(view -> {
+            if(currentQuestionIndex - 1 >= 0) {
+                currentQuestionIndex--;
+                displayQuestion(currentQuestionIndex);
             }
         });
 
-        submitQuizBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                submitQuiz();
-            }
-        });
+        submitQuizBtn.setOnClickListener(view -> submitQuiz());
 
         long hrInMillis = Integer.parseInt(quiz.timer[0]) * 60 * 60 * 1000;
         long mins = Integer.parseInt(quiz.timer[1]) * 60 * 1000;
@@ -330,34 +319,31 @@ public class TakeQuiz extends AppCompatActivity {
         }
         int totalCorrectAnswers1 = totalCorrectAnswers;
 
-        saveResultBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
-                Gson gson = new Gson();
-                String json = sharedPreferences.getString(quiz.quizName, null);
-                Type type = new TypeToken<ArrayList<QuizResult>>() {}.getType();
-                ArrayList<QuizResult> quizHistory = gson.fromJson(json, type);
+        saveResultBtn.setOnClickListener(view -> {
+            SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+            Gson gson = new Gson();
+            String json = sharedPreferences.getString(quiz.quizName, null);
+            Type type = new TypeToken<ArrayList<QuizResult>>() {}.getType();
+            ArrayList<QuizResult> quizHistory = gson.fromJson(json, type);
 
-                QuizResult newQuizRes = new QuizResult(quiz.quizName, quiz.questionList, quiz.timer, userAnswers, userAnswersCorrect, totalCorrectAnswers1);
+            QuizResult newQuizRes = new QuizResult(quiz.quizName, quiz.questionList, quiz.timer, userAnswers, userAnswersCorrect, totalCorrectAnswers1);
 
-                if(quizHistory == null) {
-                    quizHistory = new ArrayList<QuizResult>();
-                }
-
-                quizHistory.add(newQuizRes);
-
-                SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences2.edit();
-                Gson gson2 = new Gson();
-                String json2 = gson2.toJson(quizHistory);
-                editor.putString(quiz.quizName, json2).commit();
-                editor.apply();
-
-                Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
-                intent.putExtra("Previous Activity", "TakeQuiz");
-                startActivity(intent);
+            if(quizHistory == null) {
+                quizHistory = new ArrayList<>();
             }
+
+            quizHistory.add(newQuizRes);
+
+            SharedPreferences sharedPreferences2 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences2.edit();
+            Gson gson2 = new Gson();
+            String json2 = gson2.toJson(quizHistory);
+            editor.putString(quiz.quizName, json2).commit();
+            editor.apply();
+
+            Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
+            intent.putExtra("Previous Activity", "TakeQuiz");
+            startActivity(intent);
         });
 
         TextView resultLabel = new TextView(this);
@@ -492,7 +478,7 @@ public class TakeQuiz extends AppCompatActivity {
                         optionsCB[k].setTextColor(Color.rgb(0, 128, 0));
                     }
 
-                    if(quiz.questionList.get(i).correctAnswers.contains((Integer) k) == false && userAnswers.get(i).contains(k + "")) {
+                    if(!quiz.questionList.get(i).correctAnswers.contains((Integer) k) && userAnswers.get(i).contains(k + "")) {
                         optionsCB[k].setTextColor(Color.RED);
                     }
 
@@ -534,7 +520,7 @@ public class TakeQuiz extends AppCompatActivity {
 
                 answersRelLay.addView(userFrAnswer, userFrAnswerLayParams);
 
-                if(userAnswersCorrect[i] == false) {
+                if(!userAnswersCorrect[i]) {
                     TextView corrAnsLabel = new TextView(TakeQuiz.this);
                     corrAnsLabel.setText("Correct Answer:");
                     corrAnsLabel.setTextSize(20);
@@ -571,41 +557,35 @@ public class TakeQuiz extends AppCompatActivity {
 
         resultLay.addView(questionsResScrlView[0], questionRelScrlViewParams);
 
-        nextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(currentQuest_afterSubmission + 1 < questionsResScrlView.length) {
-                    resultLay.removeView(questionsResScrlView[currentQuest_afterSubmission]);
-                    currentQuest_afterSubmission++;
+        nextBtn.setOnClickListener(view -> {
+            if(currentQuest_afterSubmission + 1 < questionsResScrlView.length) {
+                resultLay.removeView(questionsResScrlView[currentQuest_afterSubmission]);
+                currentQuest_afterSubmission++;
 
-                    RelativeLayout.LayoutParams nextQuestRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    nextQuestRelLayParams.addRule(RelativeLayout.BELOW, topLay.getId());
-                    nextQuestRelLayParams.topMargin = 15;
-                    nextQuestRelLayParams.leftMargin = 10;
-                    nextQuestRelLayParams.rightMargin = 10;
+                RelativeLayout.LayoutParams nextQuestRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                nextQuestRelLayParams.addRule(RelativeLayout.BELOW, topLay.getId());
+                nextQuestRelLayParams.topMargin = 15;
+                nextQuestRelLayParams.leftMargin = 10;
+                nextQuestRelLayParams.rightMargin = 10;
 
-                    resultLay.addView(questionsResScrlView[currentQuest_afterSubmission], nextQuestRelLayParams);
-                    questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
-                }
+                resultLay.addView(questionsResScrlView[currentQuest_afterSubmission], nextQuestRelLayParams);
+                questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
             }
         });
 
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(currentQuest_afterSubmission - 1 >= 0) {
-                    resultLay.removeView(questionsResScrlView[currentQuest_afterSubmission]);
-                    currentQuest_afterSubmission--;
+        backBtn.setOnClickListener(view -> {
+            if(currentQuest_afterSubmission - 1 >= 0) {
+                resultLay.removeView(questionsResScrlView[currentQuest_afterSubmission]);
+                currentQuest_afterSubmission--;
 
-                    RelativeLayout.LayoutParams previousQuestRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    previousQuestRelLayParams.addRule(RelativeLayout.BELOW, topLay.getId());
-                    previousQuestRelLayParams.topMargin = 15;
-                    previousQuestRelLayParams.leftMargin = 10;
-                    previousQuestRelLayParams.rightMargin = 10;
+                RelativeLayout.LayoutParams previousQuestRelLayParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                previousQuestRelLayParams.addRule(RelativeLayout.BELOW, topLay.getId());
+                previousQuestRelLayParams.topMargin = 15;
+                previousQuestRelLayParams.leftMargin = 10;
+                previousQuestRelLayParams.rightMargin = 10;
 
-                    resultLay.addView(questionsResScrlView[currentQuest_afterSubmission], previousQuestRelLayParams);
-                    questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
-                }
+                resultLay.addView(questionsResScrlView[currentQuest_afterSubmission], previousQuestRelLayParams);
+                questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
             }
         });
 

@@ -97,7 +97,7 @@ public class QuizHistory extends AppCompatActivity {
         ArrayList<QuizResult> quizHistory = gson.fromJson(json, type);
 
         if(quizHistory != null) {
-            ArrayList<Button> quizBtnsList = new ArrayList<Button>();
+            ArrayList<Button> quizBtnsList = new ArrayList<>();
 
             for (int i = 0; i < quizHistory.size(); i++) {
                 QuizResult quizResult = quizHistory.get(i);
@@ -126,148 +126,120 @@ public class QuizHistory extends AppCompatActivity {
 
                 listRelLay.addView(quizHistoryBtn, quizHistoryBtnParams);
 
-                quizHistoryBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        alertDialogBuilder = new AlertDialog.Builder(QuizHistory.this);
-                        View popupView = getLayoutInflater().inflate(R.layout.quizresultpopup, null);
+                quizHistoryBtn.setOnClickListener(view -> {
+                    alertDialogBuilder = new AlertDialog.Builder(QuizHistory.this);
+                    View popupView = getLayoutInflater().inflate(R.layout.quizresultpopup, null);
 
-                        alertDialogBuilder.setView(popupView);
-                        alertDialog = alertDialogBuilder.create();
-                        alertDialog.show();
+                    alertDialogBuilder.setView(popupView);
+                    alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
 
-                        TextView quizNameLabel = popupView.findViewById(R.id.result_quiz_name_label);
-                        quizNameLabel.setText(quizName);
+                    TextView quizNameLabel = popupView.findViewById(R.id.result_quiz_name_label);
+                    quizNameLabel.setText(quizName);
 
-                        Button viewQuizResultBtn = popupView.findViewById(R.id.view);
-                        Button deleteQuizResultBtn = popupView.findViewById(R.id.delete);
+                    Button viewQuizResultBtn = popupView.findViewById(R.id.view);
+                    Button deleteQuizResultBtn = popupView.findViewById(R.id.delete);
 
-                        viewQuizResultBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                SharedPreferences sharedPreferences = getSharedPreferences("Quiz Result", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                Gson gson = new Gson();
-                                String json = gson.toJson(quizResult);
-                                editor.putString("Quiz", json).commit();
-                                editor.apply();
+                    viewQuizResultBtn.setOnClickListener(view12 -> {
+                        SharedPreferences sharedPreferences12 = getSharedPreferences("Quiz Result", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences12.edit();
+                        Gson gson12 = new Gson();
+                        String json12 = gson12.toJson(quizResult);
+                        editor.putString("Quiz", json12).commit();
+                        editor.apply();
 
-                                Intent intent = new Intent(QuizHistory.this, ViewQuizResult.class);
-                                startActivity(intent);
-                            }
-                        });
+                        Intent intent = new Intent(QuizHistory.this, ViewQuizResult.class);
+                        startActivity(intent);
+                    });
 
-                        deleteQuizResultBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                confirmADB = new AlertDialog.Builder(QuizHistory.this);
-                                View popupView = getLayoutInflater().inflate(R.layout.confirmationpopup, null);
-
-                                confirmADB.setView(popupView);
-                                confirmAD = confirmADB.create();
-                                confirmAD.show();
-
-                                Button confirmDeleteBtn = popupView.findViewById(R.id.confirm_delete);
-                                Button confirmCancelBtn = popupView.findViewById(R.id.confirm_cancel);
-
-                                confirmDeleteBtn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        quizHistory.remove(quizResult);
-                                        quizBtnsList.remove(quizHistoryBtn);
-
-                                        SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-                                        if(quizHistory.isEmpty()) {
-                                            editor.remove(quizName).commit();
-                                        } else {
-                                            Gson gson = new Gson();
-                                            String json = gson.toJson(quizHistory);
-                                            editor.putString(quizName, json).commit();
-                                        }
-
-                                        editor.apply();
-
-                                        if(quizHistory.isEmpty()) {
-                                            Intent intent = new Intent(QuizHistory.this, MainActivity.class);
-                                            startActivity(intent);
-                                        }
-
-                                        alertDialog.dismiss();
-
-                                        listRelLay.removeAllViews();
-
-                                        for(int j = 0; j < quizHistory.size(); j++) {
-                                            RelativeLayout.LayoutParams quizHistoryBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                                            if (j > 0) {
-                                                quizHistoryBtnParams.addRule(RelativeLayout.BELOW, quizBtnsList.get(j - 1).getId());
-                                            }
-
-                                            quizHistoryBtnParams.leftMargin = 10;
-                                            quizHistoryBtnParams.rightMargin = 10;
-                                            quizHistoryBtnParams.bottomMargin = 10;
-
-                                            listRelLay.addView(quizBtnsList.get(j), quizHistoryBtnParams);
-                                        }
-
-                                        confirmAD.dismiss();
-                                        alertDialog.dismiss();
-                                    }
-                                });
-
-                                confirmCancelBtn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        confirmAD.dismiss();
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-
-            clearAllResultBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(quizHistory.isEmpty() == false) {
+                    deleteQuizResultBtn.setOnClickListener(view1 -> {
                         confirmADB = new AlertDialog.Builder(QuizHistory.this);
-                        View popupView = getLayoutInflater().inflate(R.layout.confirmationpopup, null);
+                        View popupView1 = getLayoutInflater().inflate(R.layout.confirmationpopup, null);
 
-                        confirmADB.setView(popupView);
+                        confirmADB.setView(popupView1);
                         confirmAD = confirmADB.create();
                         confirmAD.show();
 
-                        Button confirmDeleteBtn = popupView.findViewById(R.id.confirm_delete);
-                        Button confirmCancelBtn = popupView.findViewById(R.id.confirm_cancel);
+                        Button confirmDeleteBtn = popupView1.findViewById(R.id.confirm_delete);
+                        Button confirmCancelBtn = popupView1.findViewById(R.id.confirm_cancel);
 
-                        confirmDeleteBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                quizHistory.clear();
+                        confirmDeleteBtn.setOnClickListener(view11 -> {
+                            quizHistory.remove(quizResult);
+                            quizBtnsList.remove(quizHistoryBtn);
 
-                                SharedPreferences sharedPreferences = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                            SharedPreferences sharedPreferences1 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences1.edit();
+
+                            if(quizHistory.isEmpty()) {
                                 editor.remove(quizName).commit();
-                                editor.apply();
+                            } else {
+                                Gson gson1 = new Gson();
+                                String json1 = gson1.toJson(quizHistory);
+                                editor.putString(quizName, json1).commit();
+                            }
 
-                                confirmAD.dismiss();
+                            editor.apply();
 
-                                QuizHistory.this.finish();
-
+                            if(quizHistory.isEmpty()) {
                                 Intent intent = new Intent(QuizHistory.this, MainActivity.class);
                                 startActivity(intent);
                             }
+
+                            alertDialog.dismiss();
+
+                            listRelLay.removeAllViews();
+
+                            for(int j = 0; j < quizHistory.size(); j++) {
+                                RelativeLayout.LayoutParams quizHistoryBtnParams1 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                                if (j > 0) {
+                                    quizHistoryBtnParams1.addRule(RelativeLayout.BELOW, quizBtnsList.get(j - 1).getId());
+                                }
+
+                                quizHistoryBtnParams1.leftMargin = 10;
+                                quizHistoryBtnParams1.rightMargin = 10;
+                                quizHistoryBtnParams1.bottomMargin = 10;
+
+                                listRelLay.addView(quizBtnsList.get(j), quizHistoryBtnParams1);
+                            }
+
+                            confirmAD.dismiss();
+                            alertDialog.dismiss();
                         });
 
-                        confirmCancelBtn.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                confirmAD.dismiss();
-                            }
-                        });
-                    }
+                        confirmCancelBtn.setOnClickListener(view112 -> confirmAD.dismiss());
+                    });
+                });
+            }
+
+            clearAllResultBtn.setOnClickListener(view -> {
+                if(quizHistory.isEmpty() == false) {
+                    confirmADB = new AlertDialog.Builder(QuizHistory.this);
+                    View popupView = getLayoutInflater().inflate(R.layout.confirmationpopup, null);
+
+                    confirmADB.setView(popupView);
+                    confirmAD = confirmADB.create();
+                    confirmAD.show();
+
+                    Button confirmDeleteBtn = popupView.findViewById(R.id.confirm_delete);
+                    Button confirmCancelBtn = popupView.findViewById(R.id.confirm_cancel);
+
+                    confirmDeleteBtn.setOnClickListener(view14 -> {
+                        quizHistory.clear();
+
+                        SharedPreferences sharedPreferences13 = getSharedPreferences("QuizzesHistory", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences13.edit();
+                        editor.remove(quizName).commit();
+                        editor.apply();
+
+                        confirmAD.dismiss();
+
+                        QuizHistory.this.finish();
+
+                        Intent intent = new Intent(QuizHistory.this, MainActivity.class);
+                        startActivity(intent);
+                    });
+
+                    confirmCancelBtn.setOnClickListener(view13 -> confirmAD.dismiss());
                 }
             });
         } else {
