@@ -9,18 +9,11 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -121,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         relLay.addView(yourQuizzesLabel, titleLayParams);
 
         noQuizzesLabel = new TextView(this);
-        noQuizzesLabel.setText("Empty!");
+        noQuizzesLabel.setText("Empty");
         noQuizzesLabel.setTextSize(20);
 
         if(loadData()) {
@@ -146,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
                     quizBtnLay.addRule(RelativeLayout.BELOW, quizzesBtn.get(quizzesBtn.size() - 1).getId());
                 }
                 quizBtnLay.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                quizBtnLay.leftMargin = 20;
-                quizBtnLay.rightMargin = 20;
+                quizBtnLay.leftMargin = 30;
+                quizBtnLay.rightMargin = 30;
                 quizBtnLay.bottomMargin = 15;
 
                 quizzesBtn.add(newQuizBtn);

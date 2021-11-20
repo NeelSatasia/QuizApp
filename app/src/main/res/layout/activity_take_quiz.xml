@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/take_quiz_rel_lay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TakeQuiz">
@@ -24,24 +25,20 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textSize="20dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignBottom="@+id/sbtBtn"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:gravity="center"/>
 
     <TextView
         android:id="@+id/quizTitleLabel"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Quiz Title"
         android:textSize="30dp"
         android:gravity="center"
-        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
-        android:padding="2dp"/>
+        android:layout_below="@+id/timr"/>
 
     <TextView
         android:id="@+id/questionLabel"

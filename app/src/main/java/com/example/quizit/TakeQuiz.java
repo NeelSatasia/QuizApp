@@ -37,6 +37,8 @@ public class TakeQuiz extends AppCompatActivity {
     ArrayList<ArrayList<String>> userAnswers;
     boolean[] userAnswersCorrect;
 
+    RelativeLayout quizRelLay;
+    LinearLayout trackerLay;
     TextView quizNameLabel;
     TextView questionLabel;
     TextView questionTracker;
@@ -45,6 +47,7 @@ public class TakeQuiz extends AppCompatActivity {
     Button nextQues;
     Button backQues;
     Button submitQuizBtn;
+    ScrollView optionScrlView;
 
     int currentQuestionIndex = 0;
 
@@ -141,6 +144,9 @@ public class TakeQuiz extends AppCompatActivity {
             }
         }
 
+        quizRelLay = findViewById(R.id.take_quiz_rel_lay);
+        trackerLay = findViewById(R.id.btns);
+
         quizNameLabel = findViewById(R.id.quizTitleLabel);
         quizNameLabel.setText(quiz.quizName);
 
@@ -149,6 +155,8 @@ public class TakeQuiz extends AppCompatActivity {
         questionTracker = findViewById(R.id.questTracker);
 
         questionRelLay = findViewById(R.id.mainRelLay);
+
+        optionScrlView = findViewById(R.id.mainScrlView);
 
         nextQues = findViewById(R.id.nextQuesBtn);
         backQues = findViewById(R.id.backQuesBtn);
@@ -224,6 +232,46 @@ public class TakeQuiz extends AppCompatActivity {
             }.start();
 
             isQuizTimerRunning = true;
+        } else {
+            RelativeLayout.LayoutParams quizTitleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            quizTitleParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            quizTitleParams.topMargin = 20;
+            quizTitleParams.bottomMargin = 30;
+
+            quizNameLabel.setLayoutParams(quizTitleParams);
+
+            RelativeLayout.LayoutParams trackerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            trackerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            trackerParams.addRule(RelativeLayout.BELOW, quizNameLabel.getId());
+            trackerParams.bottomMargin = 50;
+
+            trackerLay.setLayoutParams(trackerParams);
+
+            RelativeLayout.LayoutParams questLabelParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            questLabelParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            questLabelParams.addRule(RelativeLayout.BELOW, trackerLay.getId());
+            questLabelParams.leftMargin = 20;
+            questLabelParams.rightMargin = 20;
+            questLabelParams.bottomMargin = 15;
+
+            questionLabel.setLayoutParams(questLabelParams);
+
+            RelativeLayout.LayoutParams optionScrlViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            optionScrlViewParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            optionScrlViewParams.addRule(RelativeLayout.BELOW, questionLabel.getId());
+            optionScrlViewParams.addRule(RelativeLayout.ALIGN_LEFT, questionLabel.getId());
+            optionScrlViewParams.addRule(RelativeLayout.ALIGN_RIGHT, questionLabel.getId());
+            optionScrlViewParams.bottomMargin = 30;
+
+            optionScrlView.setLayoutParams(optionScrlViewParams);
+
+            RelativeLayout.LayoutParams sbtBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            sbtBtnParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            sbtBtnParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            sbtBtnParams.rightMargin = 30;
+            sbtBtnParams.bottomMargin = 20;
+
+            submitQuizBtn.setLayoutParams(sbtBtnParams);
         }
     }
 
@@ -326,7 +374,7 @@ public class TakeQuiz extends AppCompatActivity {
             Type type = new TypeToken<ArrayList<QuizResult>>() {}.getType();
             ArrayList<QuizResult> quizHistory = gson.fromJson(json, type);
 
-            QuizResult newQuizRes = new QuizResult(quiz.quizName, quiz.questionList, quiz.timer, userAnswers, userAnswersCorrect, totalCorrectAnswers1);
+            QuizResult newQuizRes = new QuizResult(quiz.quizName, quiz.questionList, userAnswers, userAnswersCorrect, totalCorrectAnswers1);
 
             if(quizHistory == null) {
                 quizHistory = new ArrayList<>();

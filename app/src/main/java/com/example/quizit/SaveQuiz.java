@@ -645,6 +645,7 @@ public class SaveQuiz extends AppCompatActivity {
         buttonDrawable = DrawableCompat.wrap(buttonDrawable);
         DrawableCompat.setTint(buttonDrawable, Color.rgb(230, 230, 230));
         cancelBtn.setBackground(buttonDrawable);
+        cancelBtn.setTextColor(Color.rgb(166, 166, 166));
 
         cancelBtn.setEnabled(false);
 
