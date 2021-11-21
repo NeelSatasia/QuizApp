@@ -159,6 +159,17 @@ public class ViewQuizResult extends AppCompatActivity {
             answersScrlView.addView(answersRelLay);
 
             if(quiz.questionList.get(i).mcQuestion) {
+                TextView selectedAnsLabel = new TextView(this);
+                selectedAnsLabel.setText("Selected Answer(s):");
+                selectedAnsLabel.setTextSize(15);
+                selectedAnsLabel.setId(View.generateViewId());
+
+                RelativeLayout.LayoutParams selectedAnsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                selectedAnsParams.leftMargin = 20;
+                selectedAnsParams.bottomMargin = 30;
+
+                answersRelLay.addView(selectedAnsLabel, selectedAnsParams);
+
                 CheckBox[] optionsCB = new CheckBox[quiz.questionList.get(i).options.length];
 
                 for(int k = 0; k < optionsCB.length; k++) {
@@ -182,7 +193,7 @@ public class ViewQuizResult extends AppCompatActivity {
                         optionsCB[k].setTextColor(Color.rgb(0, 128, 0));
                     }
 
-                    if(quiz.questionList.get(i).correctAnswers.contains((Integer) k) == false && quiz.userAnswers.get(i).contains(k + "")) {
+                    if(!quiz.questionList.get(i).correctAnswers.contains((Integer) k) && quiz.userAnswers.get(i).contains(k + "")) {
                         optionsCB[k].setTextColor(Color.RED);
                     }
 
@@ -190,10 +201,12 @@ public class ViewQuizResult extends AppCompatActivity {
 
                     if(k > 0) {
                         optionParams.addRule(RelativeLayout.BELOW, optionsCB[k - 1].getId());
+                    } else {
+                        optionParams.addRule(RelativeLayout.BELOW, selectedAnsLabel.getId());
                     }
 
                     optionParams.leftMargin = 20;
-                    optionParams.rightMargin = 10;
+                    optionParams.rightMargin = 20;
                     optionParams.bottomMargin = 10;
 
                     answersRelLay.addView(optionsCB[k], optionParams);

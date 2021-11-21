@@ -75,8 +75,8 @@ public class QuizHistory extends AppCompatActivity {
         RelativeLayout.LayoutParams clearAllBtnParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         clearAllBtnParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         clearAllBtnParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        clearAllBtnParams.rightMargin = 10;
-        clearAllBtnParams.bottomMargin = 10;
+        clearAllBtnParams.rightMargin = 20;
+        clearAllBtnParams.bottomMargin = 20;
 
         mainRelLay.addView(clearAllResultBtn, clearAllBtnParams);
 

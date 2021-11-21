@@ -11,7 +11,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="createNewQuiz"
-            android:text="New Quiz +"
+            android:text="+ New Quiz"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp"

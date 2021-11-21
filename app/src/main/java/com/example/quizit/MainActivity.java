@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         relLay.addView(yourQuizzesLabel, titleLayParams);
 
         noQuizzesLabel = new TextView(this);
-        noQuizzesLabel.setText("Empty");
+        noQuizzesLabel.setText("(Empty)");
         noQuizzesLabel.setTextSize(20);
 
         if(loadData()) {

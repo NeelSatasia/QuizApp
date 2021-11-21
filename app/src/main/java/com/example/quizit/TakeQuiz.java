@@ -26,6 +26,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -74,7 +76,7 @@ public class TakeQuiz extends AppCompatActivity {
         for(int i = 0; i < quiz.questionList.size(); i++) {
             userAnswers.add(new ArrayList<>());
 
-            if(quiz.questionList.get(i).mcQuestion == false) {
+            if(!quiz.questionList.get(i).mcQuestion) {
                 userAnswers.get(userAnswers.size() - 1).add("");
             }
 
@@ -182,9 +184,9 @@ public class TakeQuiz extends AppCompatActivity {
 
         submitQuizBtn.setOnClickListener(view -> submitQuiz());
 
-        long hrInMillis = Integer.parseInt(quiz.timer[0]) * 60 * 60 * 1000;
-        long mins = Integer.parseInt(quiz.timer[1]) * 60 * 1000;
-        long secs = Integer.parseInt(quiz.timer[2]) * 1000;
+        long hrInMillis = (long) Integer.parseInt(quiz.timer[0]) * 60 * 60 * 1000;
+        long mins = (long) Integer.parseInt(quiz.timer[1]) * 60 * 1000;
+        long secs = Integer.parseInt(quiz.timer[2]) * 1000L;
 
         totalTimeInMillis = hrInMillis + mins + secs;
 
@@ -509,6 +511,17 @@ public class TakeQuiz extends AppCompatActivity {
             answersScrlView.addView(answersRelLay);
 
             if(quiz.questionList.get(i).mcQuestion) {
+                TextView selectedAnsLabel = new TextView(this);
+                selectedAnsLabel.setText("Selected Answer(s):");
+                selectedAnsLabel.setTextSize(15);
+                selectedAnsLabel.setId(View.generateViewId());
+
+                RelativeLayout.LayoutParams selectedAnsParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                selectedAnsParams.leftMargin = 20;
+                selectedAnsParams.bottomMargin = 30;
+
+                answersRelLay.addView(selectedAnsLabel, selectedAnsParams);
+
                 CheckBox[] optionsCB = new CheckBox[quiz.questionList.get(i).options.length];
 
                 for(int k = 0; k < optionsCB.length; k++) {
@@ -534,16 +547,18 @@ public class TakeQuiz extends AppCompatActivity {
 
                     if(k > 0) {
                         optionParams.addRule(RelativeLayout.BELOW, optionsCB[k - 1].getId());
+                    } else {
+                        optionParams.addRule(RelativeLayout.BELOW, selectedAnsLabel.getId());
                     }
 
-                    optionParams.leftMargin = 20;
-                    optionParams.rightMargin = 10;
+                    optionParams.leftMargin = 30;
+                    optionParams.rightMargin = 30;
                     optionParams.bottomMargin = 10;
 
                     answersRelLay.addView(optionsCB[k], optionParams);
                 }
             } else {
-                TextView yourAnsLabel = new TextView(TakeQuiz.this);
+                TextView yourAnsLabel = new TextView(this);
                 yourAnsLabel.setText("Your Answer:");
                 yourAnsLabel.setTextSize(20);
                 yourAnsLabel.setTextColor(Color.rgb(0, 128, 0));
@@ -555,7 +570,7 @@ public class TakeQuiz extends AppCompatActivity {
 
                 answersRelLay.addView(yourAnsLabel, yourAnsLabelParams);
 
-                TextView userFrAnswer = new TextView(TakeQuiz.this);
+                TextView userFrAnswer = new TextView(this);
                 userFrAnswer.setText(userAnswers.get(i).get(0));
                 userFrAnswer.setTextSize(20);
                 userFrAnswer.setHint("No response");
@@ -569,7 +584,7 @@ public class TakeQuiz extends AppCompatActivity {
                 answersRelLay.addView(userFrAnswer, userFrAnswerLayParams);
 
                 if(!userAnswersCorrect[i]) {
-                    TextView corrAnsLabel = new TextView(TakeQuiz.this);
+                    TextView corrAnsLabel = new TextView(this);
                     corrAnsLabel.setText("Correct Answer:");
                     corrAnsLabel.setTextSize(20);
                     corrAnsLabel.setId(View.generateViewId());
@@ -583,7 +598,7 @@ public class TakeQuiz extends AppCompatActivity {
 
                     answersRelLay.addView(corrAnsLabel, corrAnsLayParams);
 
-                    TextView corrfrAns = new TextView(TakeQuiz.this);
+                    TextView corrfrAns = new TextView(this);
                     corrfrAns.setText(quiz.questionList.get(i).frCorrectAnswer);
                     corrfrAns.setTextSize(20);
 
