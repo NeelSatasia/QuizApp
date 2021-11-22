@@ -1,24 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/newQuizScrollLay"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SaveQuiz">
-
-    <Button
-        android:id="@+id/createQuizBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
-        android:onClick="createNewQuiz"
-        android:text="Create"
-        app:backgroundTint="#4CAF50" />
 
     <HorizontalScrollView
         android:id="@+id/btns"
@@ -29,7 +15,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp">
 
@@ -89,4 +74,16 @@
 
         </RelativeLayout>
     </ScrollView>
+
+    <ImageButton
+        android:id="@+id/createQuizBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_save"
+        android:background="@drawable/circle"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:onClick="createNewQuiz"/>
 </RelativeLayout>

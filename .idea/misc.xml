@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-anydpi/ic_back.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable-anydpi/ic_edit.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable-anydpi/ic_next.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable/circle.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_answer_result.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_button_rounded_corners.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_correct_answer_button.xml" value="0.4197916666666667" />

@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -70,18 +71,13 @@ public class ViewQuizResult extends AppCompatActivity {
 
         mainRelLay.addView(topLay, topLayParams);
 
-        Button backBtn = new Button(this);
-        backBtn.setText("Back");
+        ImageButton backBtn = new ImageButton(this);
+        backBtn.setBackgroundColor(Color.WHITE);
+        backBtn.setImageResource(R.drawable.ic_back);
         backBtn.setId(View.generateViewId());
 
-        Drawable buttonDrawable = backBtn.getBackground();
-        buttonDrawable = DrawableCompat.wrap(buttonDrawable);
-        DrawableCompat.setTint(buttonDrawable, Color.rgb(153, 153, 153));
-        backBtn.setBackground(buttonDrawable);
-        backBtn.setTextColor(Color.WHITE);
-
         LinearLayout.LayoutParams backBtnParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        backBtnParams.rightMargin = 10;
+        backBtnParams.rightMargin = 30;
 
         topLay.addView(backBtn, backBtnParams);
 
@@ -91,23 +87,18 @@ public class ViewQuizResult extends AppCompatActivity {
         questNumLabel.setId(View.generateViewId());
 
         LinearLayout.LayoutParams questNumParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        questNumParams.rightMargin = 10;
+        questNumParams.rightMargin = 30;
 
         topLay.addView(questNumLabel, questNumParams);
 
-        Button nextBtn = new Button(this);
-        nextBtn.setText("Next");
+        ImageButton nextBtn = new ImageButton(this);
+        nextBtn.setBackgroundColor(Color.WHITE);
+        nextBtn.setImageResource(R.drawable.ic_next);
         nextBtn.setId(View.generateViewId());
-
-        Drawable buttonDrawable2 = nextBtn.getBackground();
-        buttonDrawable2 = DrawableCompat.wrap(buttonDrawable2);
-        DrawableCompat.setTint(buttonDrawable2, Color.rgb(76, 175, 80));
-        nextBtn.setBackground(buttonDrawable2);
-        nextBtn.setTextColor(Color.WHITE);
 
         topLay.addView(nextBtn);
 
-        questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
+        questNumLabel.setText("Question: " + (currentQuest_afterSubmission + 1) + " of " + quiz.questionList.size());
         ScrollView[] questionsResScrlView = new ScrollView[quiz.questionList.size()];
 
         for(int i = 0; i < questionsResScrlView.length; i++) {
@@ -286,7 +277,7 @@ public class ViewQuizResult extends AppCompatActivity {
                 nextQuestRelLayParams.rightMargin = 10;
 
                 mainRelLay.addView(questionsResScrlView[currentQuest_afterSubmission], nextQuestRelLayParams);
-                questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
+                questNumLabel.setText("Question: " + (currentQuest_afterSubmission + 1) + " of " + quiz.questionList.size());
             }
         });
 
@@ -302,7 +293,7 @@ public class ViewQuizResult extends AppCompatActivity {
                 previousQuestRelLayParams.rightMargin = 10;
 
                 mainRelLay.addView(questionsResScrlView[currentQuest_afterSubmission], previousQuestRelLayParams);
-                questNumLabel.setText("Question " + (currentQuest_afterSubmission + 1));
+                questNumLabel.setText("Question: " + (currentQuest_afterSubmission + 1) + " of " + quiz.questionList.size());
             }
         });
 

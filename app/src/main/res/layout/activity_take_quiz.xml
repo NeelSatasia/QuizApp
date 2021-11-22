@@ -86,15 +86,16 @@
         android:orientation="horizontal"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="25dp"
-        android:layout_below="@+id/quizTitleLabel">
+        android:layout_below="@+id/quizTitleLabel"
+        android:gravity="center_vertical">
 
-        <Button
+        <ImageButton
             android:id="@+id/backQuesBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="Back"
-            app:backgroundTint="#999999"/>
+            android:src="@drawable/ic_back"
+            android:backgroundTint="@android:color/transparent"
+            android:layout_marginRight="10dp"/>
 
         <TextView
             android:id="@+id/questTracker"
@@ -104,11 +105,11 @@
             android:textSize="20dp"
             android:layout_marginRight="10dp"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/nextQuesBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Next"
-            app:backgroundTint="#4CAF50" />
+            android:src="@drawable/ic_next"
+            android:backgroundTint="@android:color/transparent"/>
     </LinearLayout>
 </RelativeLayout>

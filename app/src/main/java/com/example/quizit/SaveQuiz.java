@@ -2,6 +2,7 @@ package com.example.quizit;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -43,7 +45,7 @@ public class SaveQuiz extends AppCompatActivity {
     Button addBtn;
     Button cancelBtn;
     Button setTimer;
-    Button createQuizBtn;
+    ImageButton createQuizBtn;
 
     AlertDialog.Builder addQuesADB;
     AlertDialog addQuesAD;
@@ -335,6 +337,7 @@ public class SaveQuiz extends AppCompatActivity {
         newQuestion.setHint("Enter question");
         newQuestion.setId(View.generateViewId());
         newQuestion.setBackgroundResource(R.drawable.custom_question_textview);
+        newQuestion.setSingleLine(false);
         newQuestion.setPadding(15, 15, 15, 15);
 
         RelativeLayout.LayoutParams newQuestionLayout = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -389,8 +392,7 @@ public class SaveQuiz extends AppCompatActivity {
                 options[i] = new EditText(SaveQuiz.this);
                 options[i].setHint("Option " + (i + 1));
                 options[i].setId(View.generateViewId());
-                options[i].setMaxLines(1);
-                options[i].setHorizontallyScrolling(true);
+                options[i].setSingleLine(false);
                 options[i].setBackgroundResource(R.drawable.custom_input);
                 options[i].setPadding(15, 15, 15, 15);
 
@@ -484,6 +486,7 @@ public class SaveQuiz extends AppCompatActivity {
             frCorrectAnswers.setId(View.generateViewId());
             frCorrectAnswers.setBackgroundResource(R.drawable.custom_input);
             frCorrectAnswers.setPadding(15, 15, 15, 15);
+            frCorrectAnswers.setSingleLine(false);
 
             if(k >= 0) {
                 frCorrectAnswers.setText(questionsList.get(k).frCorrectAnswer);
@@ -746,7 +749,8 @@ public class SaveQuiz extends AppCompatActivity {
             previousQuizName = quizName;
             questionsList = editQuiz.questionList;
             timer = editQuiz.timer;
-            createQuizBtn.setText("Save");
+            createQuizBtn.setBackground(ContextCompat.getDrawable(this, R.drawable.circle));
+            createQuizBtn.setImageResource(R.drawable.ic_edit);
         }
     }
 
