@@ -19,6 +19,7 @@
         <entry key="app/src/main/res/drawable/custom_question_result.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_question_textview.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_right_answer.xml" value="0.4197916666666667" />
+        <entry key="app/src/main/res/drawable/custom_toast_background.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_wrong_answer.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/drawable/custom_wrong_answer_button.xml" value="0.4197916666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.36186594202898553" />
@@ -26,6 +27,7 @@
         <entry key="app/src/main/res/layout/activity_take_quiz.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/activity_view_quiz_result.xml" value="0.389945652173913" />
         <entry key="app/src/main/res/layout/confirmationpopup.xml" value="0.38632246376811596" />
+        <entry key="app/src/main/res/layout/custom_toast_layout.xml" value="0.38632246376811596" />
         <entry key="app/src/main/res/layout/edit_quiz.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/question_type.xml" value="0.4036458333333333" />
         <entry key="app/src/main/res/layout/quiz_timer_layout.xml" value="0.4036458333333333" />

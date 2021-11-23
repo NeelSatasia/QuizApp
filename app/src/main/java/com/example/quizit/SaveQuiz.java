@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -12,7 +13,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -727,7 +731,18 @@ public class SaveQuiz extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         } else {
-            Toast.makeText(this, userError, Toast.LENGTH_LONG).show();
+            LayoutInflater layInflater = getLayoutInflater();
+            View lay = layInflater.inflate(R.layout.custom_toast_layout, (ViewGroup) findViewById(R.id.toast_lay));
+
+            TextView toastText = lay.findViewById(R.id.toast_text);
+            toastText.setText(userError);
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.setGravity(Gravity.BOTTOM, 0, 0);
+            toast.setDuration(Toast.LENGTH_SHORT);
+            toast.setView(lay);
+
+            toast.show();
         }
     }
 

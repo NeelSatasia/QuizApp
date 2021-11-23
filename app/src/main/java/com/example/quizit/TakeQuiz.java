@@ -1,5 +1,6 @@
 package com.example.quizit;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -61,6 +62,9 @@ public class TakeQuiz extends AppCompatActivity {
     boolean isQuizTimerRunning = false;
 
     int currentQuest_afterSubmission = 0;
+
+    AlertDialog.Builder confirmADB;
+    AlertDialog confirmAD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -320,14 +324,30 @@ public class TakeQuiz extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(isQuizTimerRunning) {
-            quizTimer.cancel();
-        }
+        confirmADB = new AlertDialog.Builder(this);
+        View confirmPopup = getLayoutInflater().inflate(R.layout.confirmationpopup, null);
 
-        this.finish();
+        confirmADB.setView(confirmPopup);
+        confirmAD = confirmADB.create();
+        confirmAD.show();
 
-        Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
-        startActivity(intent);
+        Button okBtn = confirmPopup.findViewById(R.id.confirm_ok);
+        Button cancelBtn = confirmPopup.findViewById(R.id.confirm_cancel);
+
+        okBtn.setOnClickListener(view -> {
+            if(isQuizTimerRunning) {
+                quizTimer.cancel();
+            }
+
+            confirmAD.dismiss();
+
+            TakeQuiz.this.finish();
+
+            Intent intent = new Intent(TakeQuiz.this, MainActivity.class);
+            startActivity(intent);
+        });
+
+        cancelBtn.setOnClickListener(view -> confirmAD.dismiss());
     }
 
     public void submitQuiz() {

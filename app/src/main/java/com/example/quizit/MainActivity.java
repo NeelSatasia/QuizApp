@@ -2,6 +2,7 @@ package com.example.quizit;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.Intent;
@@ -9,7 +10,10 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -184,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
                         confirmAD = confirmADB.create();
                         confirmAD.show();
 
-                        Button confirmDeleteBtn = popupView1.findViewById(R.id.confirm_delete);
+                        Button confirmDeleteBtn = popupView1.findViewById(R.id.confirm_ok);
                         Button confirmCancelBtn = popupView1.findViewById(R.id.confirm_cancel);
 
                         confirmDeleteBtn.setOnClickListener(view131 -> {
@@ -239,7 +243,18 @@ public class MainActivity extends AppCompatActivity {
                             Intent intent = new Intent(MainActivity.this, QuizHistory.class);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(MainActivity.this, "No results saved", Toast.LENGTH_SHORT).show();
+                            LayoutInflater layInflater = getLayoutInflater();
+                            View lay = layInflater.inflate(R.layout.custom_toast_layout, (ViewGroup) findViewById(R.id.toast_lay));
+
+                            TextView toastText = lay.findViewById(R.id.toast_text);
+                            toastText.setText("No results saved!");
+
+                            Toast toast = new Toast(getApplicationContext());
+                            toast.setGravity(Gravity.BOTTOM, 0, 0);
+                            toast.setDuration(Toast.LENGTH_SHORT);
+                            toast.setView(lay);
+
+                            toast.show();
                         }
                     });
                 });

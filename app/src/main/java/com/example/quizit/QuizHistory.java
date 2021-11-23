@@ -160,7 +160,7 @@ public class QuizHistory extends AppCompatActivity {
                         confirmAD = confirmADB.create();
                         confirmAD.show();
 
-                        Button confirmDeleteBtn = popupView1.findViewById(R.id.confirm_delete);
+                        Button confirmDeleteBtn = popupView1.findViewById(R.id.confirm_ok);
                         Button confirmCancelBtn = popupView1.findViewById(R.id.confirm_cancel);
 
                         confirmDeleteBtn.setOnClickListener(view11 -> {
@@ -220,7 +220,7 @@ public class QuizHistory extends AppCompatActivity {
                     confirmAD = confirmADB.create();
                     confirmAD.show();
 
-                    Button confirmDeleteBtn = popupView.findViewById(R.id.confirm_delete);
+                    Button confirmDeleteBtn = popupView.findViewById(R.id.confirm_ok);
                     Button confirmCancelBtn = popupView.findViewById(R.id.confirm_cancel);
 
                     confirmDeleteBtn.setOnClickListener(view14 -> {
