@@ -37,15 +37,16 @@
             android:id="@+id/num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="4"
-            android:textSize="25dp"
-            android:hint="Total Options"
-            android:inputType="number"
-            android:gravity="center"
             android:layout_below="@+id/answerType"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:hint="Total Options"
+            android:inputType="number"
+            android:maxLength="2"
+            android:text="4"
+            android:textSize="25dp" />
 
         <Button
             android:id="@+id/okBtn"

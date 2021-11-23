@@ -6,7 +6,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.example.quizit"
+        applicationId "com.quizitpackage.quizit"
         minSdk 17
         targetSdk 31
         versionCode 1

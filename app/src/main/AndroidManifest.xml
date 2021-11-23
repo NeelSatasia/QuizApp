@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.quizit">
+    package="com.quizitpackage.quizit">
 
     <application
         android:allowBackup="true"
@@ -10,22 +10,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Quizit">
         <activity
-            android:name=".ViewQuizResult"
+            android:name="com.quizitpackage.quizit.ViewQuizResult"
             android:exported="false" />
         <activity
-            android:name=".QuizHistory"
+            android:name="com.quizitpackage.quizit.QuizHistory"
             android:exported="true" />
         <activity
-            android:name=".TakeQuiz"
+            android:name="com.quizitpackage.quizit.TakeQuiz"
             android:exported="true" />
         <activity
-            android:name=".Settings"
+            android:name="com.quizitpackage.quizit.Settings"
             android:exported="true" />
         <activity
-            android:name=".SaveQuiz"
+            android:name="com.quizitpackage.quizit.SaveQuiz"
             android:exported="true" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.quizitpackage.quizit.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

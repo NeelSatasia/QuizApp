@@ -1,4 +1,4 @@
-package com.example.quizit;
+package com.quizitpackage.quizit;
 
 import java.io.Serializable;
 import java.util.ArrayList;
